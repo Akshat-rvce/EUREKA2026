@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState } from "react";
-import { motion } from "framer-motion";
 import { Sparkles, ArrowUpRight, Users, CreditCard, CalendarCheck, ShieldCheck, Share2, Check } from "lucide-react";
 import confetti from "canvas-confetti";
 import { SITE_CONFIG, UNSTOP_EVENT_URL } from "@/config/site";
@@ -16,12 +15,11 @@ export function RegisterSection() {
     playSuccessChime();
     setIsRedirecting(true);
 
-    // Fire celebratory confetti bursts
     confetti({
       particleCount: 80,
       spread: 70,
       origin: { y: 0.6 },
-      colors: ["#FFD166", "#FF6B6B", "#4DDBC5", "#B266FF"],
+      colors: ["#FFD166", "#00F0FF", "#10B981", "#FFFFFF"],
     });
 
     setTimeout(() => {
@@ -40,92 +38,95 @@ export function RegisterSection() {
   };
 
   return (
-    <section id="register" className="relative w-full py-28 bg-[#0a0618] border-t border-white/5 overflow-hidden">
+    <section id="register" className="relative w-full py-28 bg-[#030305] border-t border-white/[0.08] overflow-hidden text-white">
       {/* Background Radiance */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-gradient-to-r from-amber-500/15 via-rose-500/15 to-purple-600/15 rounded-full blur-[200px] pointer-events-none" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-cyan-500/5 rounded-full blur-[200px] pointer-events-none" />
 
       <div className="max-w-5xl mx-auto px-6 md:px-12 relative z-10 text-center">
         {/* Top Tag */}
-        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-amber-400/10 border border-amber-400/25 text-amber-300 text-xs font-mono mb-8 shadow-[0_0_20px_rgba(255,209,102,0.2)]">
+        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-amber-400 text-xs font-mono mb-8">
           <Sparkles className="w-3.5 h-3.5" />
-          <span>APPLICATIONS LIVE ON UNSTOP</span>
+          <span>APPLICATIONS OPEN ON UNSTOP</span>
         </div>
 
         {/* Headline */}
-        <h2 className="font-display text-4xl sm:text-6xl md:text-7xl font-extrabold tracking-tight text-white mb-6">
-          Claim Your Spot at <span className="text-gradient-eureka">EUREKA '26</span>
+        <h2 className="font-display text-4xl sm:text-6xl md:text-7xl font-black tracking-tight text-white mb-6">
+          Claim Your Spot at{" "}
+          <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-amber-400 to-yellow-500">
+            EUREKA &apos;26
+          </span>
         </h2>
 
-        <p className="font-body text-base sm:text-xl text-purple-200/80 max-w-2xl mx-auto mb-12 leading-relaxed">
-          Showcase your hardware prototype before India's leading tech leaders, academic mentors, and venture scouts at RVCE Bangalore.
+        <p className="text-base sm:text-xl text-slate-300 max-w-2xl mx-auto mb-12 font-normal leading-relaxed">
+          Showcase your hardware prototype before India&apos;s leading engineering directors, researchers, and venture scouts at RVCE Bangalore.
         </p>
 
-        {/* Large Magnetic CTA Card */}
-        <div className="p-8 md:p-12 rounded-3xl glass-panel-gold border border-amber-300/40 max-w-3xl mx-auto shadow-[0_25px_70px_rgba(0,0,0,0.7)] mb-12">
-          {/* Key Quick Facts Grid */}
+        {/* Large CTA Card */}
+        <div className="p-8 md:p-12 rounded-3xl bg-white/[0.02] border border-white/10 max-w-3xl mx-auto shadow-2xl mb-12 backdrop-blur-xl">
+          {/* Quick Facts Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-10 text-left border-b border-white/10 pb-8">
             <div className="flex items-start gap-3">
-              <div className="p-2.5 rounded-xl bg-purple-900/60 text-amber-300 border border-purple-400/20">
+              <div className="p-2.5 rounded-xl bg-white/5 text-amber-400 border border-white/10">
                 <Users className="w-5 h-5" />
               </div>
               <div>
-                <div className="text-xs font-mono text-purple-300/60">TEAM COMPOSITION</div>
+                <div className="text-[11px] font-mono text-slate-400">TEAM SIZE</div>
                 <div className="text-sm font-bold text-white mt-0.5">{SITE_CONFIG.registration.teamSize}</div>
               </div>
             </div>
 
             <div className="flex items-start gap-3">
-              <div className="p-2.5 rounded-xl bg-purple-900/60 text-teal-300 border border-purple-400/20">
+              <div className="p-2.5 rounded-xl bg-white/5 text-cyan-400 border border-white/10">
                 <CreditCard className="w-5 h-5" />
               </div>
               <div>
-                <div className="text-xs font-mono text-purple-300/60">ENTRY FEE</div>
+                <div className="text-[11px] font-mono text-slate-400">REGISTRATION FEE</div>
                 <div className="text-sm font-bold text-white mt-0.5">{SITE_CONFIG.registration.fee.split("(")[0]}</div>
               </div>
             </div>
 
             <div className="flex items-start gap-3">
-              <div className="p-2.5 rounded-xl bg-purple-900/60 text-rose-300 border border-purple-400/20">
+              <div className="p-2.5 rounded-xl bg-white/5 text-emerald-400 border border-white/10">
                 <CalendarCheck className="w-5 h-5" />
               </div>
               <div>
-                <div className="text-xs font-mono text-purple-300/60">DEADLINE</div>
+                <div className="text-[11px] font-mono text-slate-400">DEADLINE</div>
                 <div className="text-sm font-bold text-white mt-0.5">20 Nov 2026</div>
               </div>
             </div>
           </div>
 
-          {/* Primary Action Button */}
+          {/* Primary Action Buttons */}
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <a
               href={UNSTOP_EVENT_URL}
               onClick={handleRegisterClick}
               onMouseEnter={playHoverSound}
-              className="w-full sm:w-auto px-10 py-5 rounded-full bg-gradient-to-r from-amber-400 via-rose-500 to-amber-300 text-black font-display font-black text-lg md:text-xl shadow-[0_0_40px_rgba(255,209,102,0.6)] hover:shadow-[0_0_60px_rgba(255,209,102,0.9)] flex items-center justify-center gap-3 transition-all transform hover:scale-[1.03] active:scale-95"
+              className="w-full sm:w-auto px-9 py-4 rounded-xl bg-gradient-to-r from-amber-400 to-yellow-500 hover:from-amber-300 hover:to-yellow-400 text-black font-display font-bold text-base shadow-[0_0_35px_rgba(251,191,36,0.3)] hover:shadow-[0_0_45px_rgba(251,191,36,0.5)] flex items-center justify-center gap-2.5 transition-all duration-300"
             >
-              <Sparkles className="w-6 h-6 text-black" />
+              <Sparkles className="w-5 h-5 text-black" />
               <span>{isRedirecting ? "Connecting to Unstop..." : "Register Now on Unstop"}</span>
-              <ArrowUpRight className="w-6 h-6 text-black" />
+              <ArrowUpRight className="w-5 h-5 text-black" />
             </a>
 
             <button
               onClick={handleShareLink}
               onMouseEnter={playHoverSound}
-              className="w-full sm:w-auto px-6 py-5 rounded-full bg-white/5 hover:bg-white/10 text-purple-200 border border-white/10 hover:border-white/20 text-sm font-mono flex items-center justify-center gap-2 transition-all"
+              className="w-full sm:w-auto px-6 py-4 rounded-xl bg-white/5 hover:bg-white/10 text-slate-200 border border-white/10 text-xs font-mono flex items-center justify-center gap-2 transition-colors"
             >
-              {copied ? <Check className="w-4 h-4 text-teal-400" /> : <Share2 className="w-4 h-4" />}
+              {copied ? <Check className="w-4 h-4 text-emerald-400" /> : <Share2 className="w-4 h-4" />}
               <span>{copied ? "Link Copied!" : "Share Event"}</span>
             </button>
           </div>
 
-          <div className="text-xs font-mono text-purple-300/60 mt-6 flex items-center justify-center gap-2">
-            <ShieldCheck className="w-3.5 h-3.5 text-teal-400" />
-            <span>Secure registration & verified payment handled directly on Unstop portal.</span>
+          <div className="text-xs font-mono text-slate-400 mt-6 flex items-center justify-center gap-2">
+            <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
+            <span>Secure registration &amp; team verification managed directly via Unstop.</span>
           </div>
         </div>
 
         {/* Eligibility Note */}
-        <div className="max-w-xl mx-auto text-xs text-purple-300/70 font-mono">
+        <div className="max-w-xl mx-auto text-xs text-slate-400 font-mono">
           {SITE_CONFIG.registration.eligibility}
         </div>
       </div>

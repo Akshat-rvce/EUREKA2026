@@ -17,7 +17,7 @@ export default function Home() {
   const [introFinished, setIntroFinished] = useState(false);
 
   return (
-    <main className="relative min-h-screen bg-[#0a0618] text-white selection:bg-[#FFD166] selection:text-black overflow-hidden">
+    <main className="relative min-h-screen bg-black text-white selection:bg-amber-400 selection:text-black overflow-hidden">
       {/* Cinematic Intro Loader */}
       <IntroLoader onComplete={() => setIntroFinished(true)} />
 

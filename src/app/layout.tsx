@@ -1,20 +1,20 @@
 import type { Metadata, Viewport } from "next";
-import { Syne, Outfit } from "next/font/google";
+import { Space_Grotesk, Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import { SmoothScrollProvider } from "@/components/providers/SmoothScrollProvider";
 import { CustomCursor } from "@/components/ui/CustomCursor";
 
-const syne = Syne({
+const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
-  variable: "--font-syne",
-  weight: ["400", "600", "700", "800"],
+  variable: "--font-space",
+  weight: ["500", "600", "700"],
   display: "swap",
 });
 
-const outfit = Outfit({
+const plusJakarta = Plus_Jakarta_Sans({
   subsets: ["latin"],
-  variable: "--font-outfit",
-  weight: ["300", "400", "500", "600", "700"],
+  variable: "--font-jakarta",
+  weight: ["400", "500", "600", "700", "800"],
   display: "swap",
 });
 
@@ -127,7 +127,7 @@ export default function RootLayout({
   };
 
   return (
-    <html lang="en" className={`${syne.variable} ${outfit.variable} dark scroll-smooth`}>
+    <html lang="en" className={`${spaceGrotesk.variable} ${plusJakarta.variable} dark scroll-smooth`}>
       <head>
         <script
           type="application/ld+json"

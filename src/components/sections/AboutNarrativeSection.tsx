@@ -1,285 +1,242 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { Zap, Globe, Layers, Award, CheckCircle2 } from "lucide-react";
+import React, { useState } from "react";
+import { Zap, Globe, Layers, Award, CheckCircle2, ArrowRight } from "lucide-react";
 import { STATS } from "@/config/site";
+import { playClickSound, playHoverSound } from "@/utils/audio";
 
-const BEATS = [
+const PHASES = [
   {
     step: "01",
     tag: "THE GENESIS",
     title: "Engineering Without Boundaries",
+    subtitle: "Premier National Hardware & Software Expo by RVCE EEE",
     description:
-      "EUREKA '26 is the premier National Project Expo-cum-Hackathon hosted by the Department of Electronics & Electrical Engineering at RV College of Engineering (RVCE), Bangalore. Designed to bridge academic research with industrial breakthrough.",
+      "EUREKA '26 is the premier National Project Expo-cum-Hackathon hosted by the Department of Electrical & Electronics Engineering at RV College of Engineering (RVCE), Bangalore. Designed to bridge groundbreaking academic research with industrial deployment.",
     icon: Zap,
-    accent: "from-amber-400 to-amber-600",
-    color: "#FFD166",
-    points: ["Premier RVCE EEE Flagship", "Hardware & Software Integration", "Direct Industry Evaluation"],
+    accent: "text-amber-400",
+    bgAccent: "bg-amber-400/10 border-amber-400/30",
+    points: [
+      "Department of EEE flagship national event",
+      "Comprehensive hardware & embedded software integration",
+      "Live scrutiny by veteran industry engineers & researchers",
+      "Dedicated test bench power & lab testing instrumentation",
+    ],
   },
   {
     step: "02",
     tag: "PAN-INDIA CONVERGENCE",
     title: "India's Sharpest Innovators Under One Roof",
+    subtitle: "500+ top engineering minds from 28 states",
     description:
-      "Open to university and engineering colleges across all 28 states. From autonomous electric vehicles and microgrid architectures to edge neural accelerators and bio-telemetry wearables, compete with the top student hardware builders.",
+      "Bringing together visionary student innovators from leading IITs, NITs, BITS, and premier tech colleges across India. Compete alongside top hardware builders in electric mobility, green grids, edge intelligence, and deep tech.",
     icon: Globe,
-    accent: "from-teal-400 to-emerald-500",
-    color: "#4DDBC5",
-    points: ["500+ Top Selected Delegates", "Inter-College & Multi-Disciplinary", "Bangalore Innovation Hub"],
+    accent: "text-cyan-400",
+    bgAccent: "bg-cyan-400/10 border-cyan-400/30",
+    points: [
+      "Open to university & college delegates pan-India",
+      "Inter-college and multi-disciplinary teams permitted",
+      "Located at Bangalore's premier technological epicenter (RVCE)",
+      "Direct networking with hardware founders & faculty chairs",
+    ],
   },
   {
     step: "03",
-    tag: "THE DUAL MATRIX FORMAT",
-    title: "Expo Screening to High-Stakes Finales",
+    tag: "DUAL-STAGE MATRIX",
+    title: "Expo Screening to Grand Finale Defense",
+    subtitle: "Rigorous 2-round battle format for prototype excellence",
     description:
-      "A dual-phase battle format engineered for rigor: Round 1 features a massive project expo with continuous peer and academic jury screening. Only the Top 24 qualify to take the main stage for Round 2 pitch-offs.",
+      "Engineered for true technical rigor: Round 1 features a massive, live project exhibition where 100+ prototype stalls undergo continuous jury scoring. The Top 24 teams advance to the Main Stage Pitch Defense in Round 2.",
     icon: Layers,
-    accent: "from-rose-400 to-pink-600",
-    color: "#FF6B6B",
-    points: ["Round 1: 100+ Live Prototype Stalls", "Cut-throat Top 24 Shortlist", "Round 2: Main Stage Pitch Defense"],
+    accent: "text-emerald-400",
+    bgAccent: "bg-emerald-400/10 border-emerald-400/30",
+    points: [
+      "Round 1: 100+ Live Working Prototype Stalls",
+      "Continuous peer and academic jury benchmarking",
+      "Top 24 Teams qualify for the Grand Pitch Defense",
+      "Live technical defense + market scalability Q&A",
+    ],
   },
   {
     step: "04",
-    tag: "THE PRIZE & GLORY",
+    tag: "PRIZES & ACCELERATION",
     title: "Real Recognition. Real Grants. Real Impact.",
+    subtitle: "₹1,00,000+ Cash Pool + RVCE Incubation Fast-Track",
     description:
-      "Beyond the ₹1,00,000+ cash prize pool, finalists receive direct venture mentorship, incubation fast-tracks through the RVCE Innovation Ecosystem, and special track distinction awards recognized by industry partners.",
+      "Beyond direct cash rewards, top teams receive fast-tracked incubation pathways through the RVCE Innovation Ecosystem, seed venture guidance, patent filing mentorship, and direct recruitment/internship interviews.",
     icon: Award,
-    accent: "from-purple-400 to-indigo-500",
-    color: "#C084FC",
-    points: ["₹1,00,000+ Direct Cash Grants", "RVCE Incubation Fast-Track", "Internship & Fellowship Offers"],
+    accent: "text-purple-400",
+    bgAccent: "bg-purple-400/10 border-purple-400/30",
+    points: [
+      "₹1,00,000+ in Total Cash Grants & Track Awards",
+      "Fast-track incubation through RVCE Entrepreneurship Cell",
+      "Industry fellowship, internship & recruitment opps",
+      "Official Merit Certificates recognized across academia & industry",
+    ],
   },
 ];
 
 export function AboutNarrativeSection() {
-  const sectionRef = useRef<HTMLElement>(null);
-  const pinContainerRef = useRef<HTMLDivElement>(null);
-  const [activeBeat, setActiveBeat] = useState(0);
-  const [hasAnimatedStats, setHasAnimatedStats] = useState(false);
-  const statsRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    gsap.registerPlugin(ScrollTrigger);
-
-    const isDesktop = window.innerWidth >= 1024;
-    const pinContainer = pinContainerRef.current;
-    const section = sectionRef.current;
-
-    if (!pinContainer || !section) return;
-
-    if (isDesktop) {
-      const beats = gsap.utils.toArray<HTMLElement>(".narrative-beat");
-
-      // ScrollTrigger Pinning for Desktop Storytelling
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: section,
-          pin: true,
-          start: "top top",
-          end: "+=2400",
-          scrub: 0.8,
-          onUpdate: (self) => {
-            const index = Math.min(
-              BEATS.length - 1,
-              Math.floor(self.progress * BEATS.length)
-            );
-            setActiveBeat(index);
-          },
-        },
-      });
-
-      // Animate transitions between beats
-      beats.forEach((beat, i) => {
-        if (i !== 0) {
-          tl.fromTo(
-            beat,
-            { opacity: 0, scale: 0.9, y: 50 },
-            { opacity: 1, scale: 1, y: 0, duration: 1, ease: "power2.out" }
-          );
-        }
-      });
-    }
-
-    // Stats counter trigger
-    if (statsRef.current) {
-      ScrollTrigger.create({
-        trigger: statsRef.current,
-        start: "top 80%",
-        onEnter: () => setHasAnimatedStats(true),
-      });
-    }
-
-    return () => {
-      ScrollTrigger.getAll().forEach((st) => {
-        if (st.vars.trigger === section || st.vars.trigger === statsRef.current) {
-          st.kill();
-        }
-      });
-    };
-  }, []);
+  const [activePhase, setActivePhase] = useState(0);
 
   return (
     <section
       id="about"
-      ref={sectionRef}
-      className="relative w-full min-h-screen py-24 bg-[#0a0618] border-t border-white/5 overflow-hidden"
+      className="relative w-full py-24 bg-[#050508] border-t border-white/[0.08] overflow-hidden text-white"
     >
-      {/* Background Decorative Blur */}
-      <div className="absolute top-1/2 left-0 w-[500px] h-[500px] bg-purple-900/15 rounded-full blur-[140px] pointer-events-none" />
-      <div className="absolute bottom-0 right-0 w-[400px] h-[400px] bg-amber-500/10 rounded-full blur-[130px] pointer-events-none" />
+      {/* Background Subtle Cyber Glow */}
+      <div className="absolute top-1/2 left-0 w-[500px] h-[500px] bg-cyan-500/5 rounded-full blur-[160px] pointer-events-none" />
+      <div className="absolute bottom-0 right-0 w-[400px] h-[400px] bg-amber-500/5 rounded-full blur-[140px] pointer-events-none" />
 
-      <div className="max-w-7xl mx-auto px-6 md:px-12">
-        {/* Section Header */}
+      <div className="max-w-7xl mx-auto px-6 md:px-12 relative z-10">
+        
+        {/* Section Heading */}
         <div className="flex flex-col items-center text-center mb-16">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-400/10 border border-amber-400/20 text-amber-300 text-xs font-mono mb-4">
-            <span>ABOUT THE EXPO & HACKATHON</span>
+          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-white/5 border border-white/10 text-cyan-400 text-xs font-mono mb-4">
+            <span>ABOUT EUREKA &apos;26</span>
           </div>
-          <h2 className="font-display text-4xl md:text-6xl font-extrabold tracking-tight text-white max-w-3xl">
-            Where Pioneering Minds Shape the <span className="text-gradient-eureka">Future of Tech</span>
+          <h2 className="font-display text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight text-white max-w-3xl">
+            Where Pioneering Minds Build the{" "}
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-teal-300 to-emerald-400">
+              Future of Hardware
+            </span>
           </h2>
+          <p className="text-sm sm:text-base text-slate-400 max-w-2xl mt-4 font-normal leading-relaxed">
+            Organized by the Department of Electrical &amp; Electronics Engineering at RVCE Bangalore, EUREKA &apos;26 offers a world-class stage for hardware engineers, researchers, and tech visionaries.
+          </p>
         </div>
 
-        {/* Desktop Pinned Narrative / Mobile Interactive Stack */}
-        <div
-          ref={pinContainerRef}
-          className="relative grid grid-cols-1 lg:grid-cols-12 gap-8 items-center min-h-[500px]"
-        >
-          {/* Left Column: Interactive Progress & Navigation (Desktop) */}
-          <div className="hidden lg:flex lg:col-span-5 flex-col gap-4">
-            <div className="text-xs uppercase tracking-[0.25em] font-mono text-purple-300/70 mb-2">
-              THE EUREKA JOURNEY
-            </div>
-            {BEATS.map((beat, index) => {
-              const Icon = beat.icon;
-              const isActive = activeBeat === index;
+        {/* Interactive 4-Phase Grid Showcase (Zero overlapping bugs) */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch mb-20">
+          
+          {/* Phase Selector Tabs (Left) */}
+          <div className="lg:col-span-4 flex flex-col gap-3">
+            <span className="text-xs uppercase tracking-[0.2em] font-mono text-slate-400 mb-1">
+              EXPLORE THE EXPEDITION
+            </span>
+            {PHASES.map((phase, idx) => {
+              const Icon = phase.icon;
+              const isSelected = activePhase === idx;
               return (
-                <div
-                  key={beat.step}
-                  className={`p-6 rounded-2xl transition-all duration-500 border ${
-                    isActive
-                      ? "bg-purple-900/40 border-amber-300/40 shadow-[0_10px_30px_rgba(0,0,0,0.4)] scale-[1.02]"
-                      : "bg-[#140c30]/40 border-white/5 opacity-50 hover:opacity-80"
+                <button
+                  key={phase.step}
+                  onClick={() => {
+                    playClickSound();
+                    setActivePhase(idx);
+                  }}
+                  onMouseEnter={playHoverSound}
+                  className={`text-left p-4 sm:p-5 rounded-2xl transition-all duration-300 border flex items-center justify-between ${
+                    isSelected
+                      ? "bg-white/[0.08] border-white/25 shadow-[0_4px_25px_rgba(0,0,0,0.5)]"
+                      : "bg-white/[0.02] border-white/[0.06] hover:bg-white/[0.04] opacity-70 hover:opacity-100"
                   }`}
                 >
-                  <div className="flex items-center gap-4">
+                  <div className="flex items-center gap-3.5">
                     <div
-                      className="w-10 h-10 rounded-xl flex items-center justify-center font-mono font-bold text-sm"
-                      style={{
-                        backgroundColor: isActive ? `${beat.color}20` : "rgba(255,255,255,0.05)",
-                        color: isActive ? beat.color : "#9ca3af",
-                        border: `1px solid ${isActive ? beat.color : "rgba(255,255,255,0.1)"}`,
-                      }}
+                      className={`w-9 h-9 rounded-xl flex items-center justify-center font-mono font-bold text-xs border ${
+                        isSelected ? phase.bgAccent : "bg-white/5 border-white/10 text-slate-400"
+                      }`}
                     >
-                      {beat.step}
+                      {phase.step}
                     </div>
                     <div>
-                      <div className="text-xs font-mono uppercase tracking-wider text-purple-300/70">
-                        {beat.tag}
+                      <div className="text-[10px] font-mono tracking-wider uppercase text-slate-400">
+                        {phase.tag}
                       </div>
-                      <div className="font-display font-bold text-lg text-white">
-                        {beat.title}
+                      <div className="font-display font-bold text-sm sm:text-base text-white">
+                        {phase.title}
                       </div>
                     </div>
                   </div>
-                </div>
-              );
-            })}
-          </div>
-
-          {/* Right Column: Dynamic Stage Card */}
-          <div className="lg:col-span-7 relative">
-            {BEATS.map((beat, index) => {
-              const Icon = beat.icon;
-              const isActive = activeBeat === index;
-
-              return (
-                <div
-                  key={beat.step}
-                  className={`narrative-beat p-8 md:p-12 rounded-3xl glass-panel relative overflow-hidden transition-all duration-700 ${
-                    index === 0
-                      ? "block"
-                      : "lg:absolute lg:inset-0 " + (isActive ? "opacity-100 scale-100 z-20 pointer-events-auto" : "lg:opacity-0 lg:scale-95 lg:pointer-events-none")
-                  } mb-8 lg:mb-0`}
-                  style={{
-                    borderTop: `2px solid ${beat.color}`,
-                  }}
-                >
-                  {/* Subtle Accent Glow */}
-                  <div
-                    className="absolute -right-20 -top-20 w-60 h-60 rounded-full blur-[80px] opacity-20 pointer-events-none"
-                    style={{ backgroundColor: beat.color }}
+                  <ArrowRight
+                    className={`w-4 h-4 transition-transform ${
+                      isSelected ? "text-white translate-x-1" : "text-white/20"
+                    }`}
                   />
-
-                  {/* Top Tag & Number */}
-                  <div className="flex items-center justify-between mb-8">
-                    <div className="flex items-center gap-3">
-                      <div
-                        className="p-3 rounded-2xl"
-                        style={{ backgroundColor: `${beat.color}15`, color: beat.color }}
-                      >
-                        <Icon className="w-6 h-6" />
-                      </div>
-                      <div>
-                        <span className="text-xs font-mono uppercase tracking-widest text-purple-300/80">
-                          {beat.tag}
-                        </span>
-                        <div className="font-mono text-xs text-white/40">PHASE {beat.step} OF 04</div>
-                      </div>
-                    </div>
-                    <span className="font-display text-4xl md:text-5xl font-extrabold text-white/10">
-                      {beat.step}
-                    </span>
-                  </div>
-
-                  <h3 className="font-display text-2xl md:text-4xl font-extrabold text-white tracking-tight mb-4">
-                    {beat.title}
-                  </h3>
-
-                  <p className="font-body text-base md:text-lg text-purple-200/80 leading-relaxed mb-8">
-                    {beat.description}
-                  </p>
-
-                  {/* Highlights Bullet Matrix */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-4 border-t border-white/10">
-                    {beat.points.map((point) => (
-                      <div key={point} className="flex items-center gap-2.5 text-sm font-body text-purple-100">
-                        <CheckCircle2 className="w-4 h-4 flex-shrink-0" style={{ color: beat.color }} />
-                        <span>{point}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
+                </button>
               );
             })}
           </div>
+
+          {/* Active Phase Deep Detail Card (Right) */}
+          <div className="lg:col-span-8 p-8 sm:p-10 rounded-3xl bg-white/[0.03] border border-white/10 backdrop-blur-xl flex flex-col justify-between shadow-2xl relative overflow-hidden">
+            {/* Header with Phase Badge */}
+            <div>
+              <div className="flex items-center justify-between mb-6 pb-4 border-b border-white/10">
+                <div className="flex items-center gap-3">
+                  <div className={`p-3 rounded-2xl border ${PHASES[activePhase].bgAccent}`}>
+                    {React.createElement(PHASES[activePhase].icon, {
+                      className: `w-5 h-5 ${PHASES[activePhase].accent}`,
+                    })}
+                  </div>
+                  <div>
+                    <span className="text-xs font-mono uppercase tracking-widest text-slate-400">
+                      PHASE {PHASES[activePhase].step} OF 04
+                    </span>
+                    <div className="font-display font-semibold text-sm text-white">
+                      {PHASES[activePhase].tag}
+                    </div>
+                  </div>
+                </div>
+                <span className="font-mono text-3xl font-black text-white/10">
+                  {PHASES[activePhase].step}
+                </span>
+              </div>
+
+              {/* Title & Description */}
+              <h3 className="font-display text-2xl sm:text-3xl font-bold text-white mb-2">
+                {PHASES[activePhase].title}
+              </h3>
+              <p className="text-xs sm:text-sm font-mono text-cyan-400 mb-4">
+                {PHASES[activePhase].subtitle}
+              </p>
+              <p className="text-sm sm:text-base text-slate-300 leading-relaxed font-normal mb-8">
+                {PHASES[activePhase].description}
+              </p>
+            </div>
+
+            {/* Key Bullets */}
+            <div>
+              <div className="text-xs uppercase tracking-wider text-slate-400 font-mono mb-3">
+                KEY HIGHLIGHTS &amp; EXPECTATIONS
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+                {PHASES[activePhase].points.map((pt) => (
+                  <div key={pt} className="flex items-start gap-2.5 text-xs sm:text-sm text-slate-200">
+                    <CheckCircle2 className={`w-4 h-4 mt-0.5 flex-shrink-0 ${PHASES[activePhase].accent}`} />
+                    <span>{pt}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
         </div>
 
-        {/* Live Count-Up Stats Strip */}
-        <div
-          ref={statsRef}
-          className="mt-24 p-8 md:p-12 rounded-3xl glass-panel-gold grid grid-cols-2 md:grid-cols-4 gap-8 divide-y md:divide-y-0 md:divide-x divide-white/10"
-        >
+        {/* Live Event Stats Counter Strip */}
+        <div className="p-8 sm:p-10 rounded-3xl bg-white/[0.03] border border-white/10 backdrop-blur-xl grid grid-cols-2 md:grid-cols-4 gap-6 divide-y md:divide-y-0 md:divide-x divide-white/10 shadow-2xl">
           {STATS.map((stat, idx) => (
             <div
               key={stat.label}
-              className={`flex flex-col items-center text-center ${idx > 1 ? "pt-6 md:pt-0" : ""} ${idx % 2 !== 0 && idx <= 1 ? "pl-4 md:pl-0" : ""}`}
+              className={`flex flex-col items-center text-center ${idx > 1 ? "pt-6 md:pt-0" : ""} ${
+                idx % 2 !== 0 && idx <= 1 ? "pl-4 md:pl-0" : ""
+              }`}
             >
-              <div className="font-display text-4xl sm:text-5xl md:text-6xl font-extrabold text-amber-300 mb-2 flex items-center font-mono">
-                {stat.prefix && <span>{stat.prefix}</span>}
-                <span>{hasAnimatedStats ? stat.value : 0}</span>
-                {stat.suffix && <span className="text-amber-400 text-3xl sm:text-4xl">{stat.suffix}</span>}
+              <div className="font-display text-4xl sm:text-5xl font-black text-white mb-1.5 font-mono">
+                {stat.prefix && <span className="text-amber-400">{stat.prefix}</span>}
+                <span>{stat.value}</span>
+                {stat.suffix && <span className="text-cyan-400">{stat.suffix}</span>}
               </div>
-              <div className="font-display font-bold text-sm sm:text-base text-white">
+              <div className="font-display font-semibold text-sm sm:text-base text-slate-200">
                 {stat.label}
               </div>
-              <div className="text-xs text-purple-300/60 font-mono mt-0.5">
+              <div className="text-xs text-slate-400 font-mono mt-0.5">
                 {stat.subtext}
               </div>
             </div>
           ))}
         </div>
+
       </div>
     </section>
   );

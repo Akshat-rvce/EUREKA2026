@@ -50,11 +50,15 @@ export interface TrackItem {
   number: string;
   title: string;
   tagline: string;
+  prizePool: string;
   description: string;
   iconName: string;
   tags: string[];
   gradient: string;
   accentColor: string;
+  problemStatements: string[];
+  hardwareStack: string[];
+  evaluationCriteria: { criteria: string; weight: string }[];
 }
 
 export const TRACKS: TrackItem[] = [
@@ -62,61 +66,131 @@ export const TRACKS: TrackItem[] = [
     id: "track-1",
     number: "01",
     title: "Smart Mobility & Electric Vehicles",
-    tagline: "Next-gen powertrain, BMS, V2X, autonomous EV subsystems",
+    tagline: "Next-gen powertrain, BMS, V2X, regenerative braking & autonomous EV subsystems",
+    prizePool: "₹15,000 Track Winner + Swag & Mentorship",
     description:
-      "Focus on electric powertrain optimization, intelligent battery management systems (BMS), wireless charging, connected vehicle telematics, and autonomous safety micro-controllers.",
+      "Design and engineer intelligent EV technologies: advanced Battery Management Systems (BMS) with thermal runaway prediction, ultra-efficient motor controllers, bidirectional vehicle-to-grid (V2G) converters, and autonomous driver-assistance edge units.",
     iconName: "Zap",
-    tags: ["BMS", "V2G", "Power Electronics", "Autonomous", "CAN Bus"],
-    gradient: "from-amber-500/20 via-purple-900/30 to-slate-950/80",
+    tags: ["BMS & Thermal", "V2G & V2X", "Motor Drives", "CAN Bus", "ADAS Edge AI"],
+    gradient: "from-amber-500/15 via-black to-black",
     accentColor: "#FFD166",
+    problemStatements: [
+      "AI-driven State-of-Health (SOH) and thermal runaway early warning system for Lithium/Solid-State battery packs.",
+      "High-efficiency GaN/SiC bidirectional onboard charger with Vehicle-to-Home (V2H) capability.",
+      "Low-cost edge ADAS sensor fusion module with real-time blindspot & collision prevention for 2-wheelers.",
+      "Smart wireless resonant charging platform with dynamic foreign-object detection."
+    ],
+    hardwareStack: ["STM32 / TI C2000 MCU", "GaN / SiC MOSFETs", "CAN / LIN Transceivers", "LiFePO4 / NMC Cells", "Hall / Current Sensors"],
+    evaluationCriteria: [
+      { criteria: "Hardware Architecture & Efficiency", weight: "35%" },
+      { criteria: "Safety, Reliability & BMS Precision", weight: "25%" },
+      { criteria: "Real-time Telemetry & Edge Intelligence", weight: "20%" },
+      { criteria: "Scalability & Market Viability", weight: "20%" },
+    ],
   },
   {
     id: "track-2",
     number: "02",
     title: "Clean Energy & Smart Grid Systems",
-    tagline: "Renewables, microgrids, high-efficiency converters & storage",
+    tagline: "Renewables, microgrids, high-efficiency converters, power quality & storage",
+    prizePool: "₹15,000 Track Winner + Swag & Mentorship",
     description:
-      "Innovations in distributed renewable energy generation, smart microgrid management, IoT-based power quality monitoring, bidirectional inverters, and hybrid energy storage systems.",
+      "Pioneer the future of decentralized green energy. Build microgrid dispatch controllers, smart inverters with active harmonic suppression, solid-state transformers, and IoT power monitors for sustainable smart cities.",
     iconName: "SunMedium",
-    tags: ["Solar/Wind IoT", "Microgrids", "Power Quality", "Solid State Transformers"],
-    gradient: "from-emerald-500/20 via-purple-900/30 to-slate-950/80",
-    accentColor: "#4DDBC5",
+    tags: ["Solar/Wind IoT", "Microgrid EMS", "Power Quality", "Solid State Transformers", "Energy Storage"],
+    gradient: "from-emerald-500/15 via-black to-black",
+    accentColor: "#10B981",
+    problemStatements: [
+      "Autonomous hybrid solar-wind microgrid energy management controller with demand-response forecasting.",
+      "Grid-tied multilevel inverter with active power factor correction (PFC) and harmonic mitigation.",
+      "IoT non-intrusive load monitoring (NILM) edge device for industrial energy auditing.",
+      "Decentralized peer-to-peer (P2P) renewable energy trading hardware meter with tamper detection."
+    ],
+    hardwareStack: ["ESP32-S3 / Raspberry Pi Pico", "Current / Voltage CT Sensors", "IGBT / MOSFET Inverter H-Bridge", "Optoisolators", "MQTT / Modbus"],
+    evaluationCriteria: [
+      { criteria: "Power Conversion Efficiency & Harmonic Control", weight: "35%" },
+      { criteria: "Grid Stability & Response Speed", weight: "25%" },
+      { criteria: "Telemetry & Cloud Dashboard Integration", weight: "20%" },
+      { criteria: "Environmental & Economic Impact", weight: "20%" },
+    ],
   },
   {
     id: "track-3",
     number: "03",
     title: "AIoT & Edge Embedded Intelligence",
-    tagline: "Ultra-low power TinyML, industrial telemetry & edge robotics",
+    tagline: "Ultra-low power TinyML, industrial telemetry, smart robotics & edge accelerators",
+    prizePool: "₹15,000 Track Winner + Swag & Mentorship",
     description:
-      "Hardware-software codesign using edge processors, TinyML neural acceleration, industrial IoT telemetry, smart sensors, FPGA co-processors, and real-time embedded systems.",
+      "Merge physical sensors with neural inference right on the silicon. Build real-time anomaly detection for industrial machinery, ultra-low power wearable neural chips, autonomous warehouse rovers, and secure wireless sensor meshes.",
     iconName: "Cpu",
-    tags: ["TinyML", "ESP32/STM32", "Edge AI", "FPGA", "Robotics"],
-    gradient: "from-cyan-500/20 via-purple-900/30 to-slate-950/80",
-    accentColor: "#38BDF8",
+    tags: ["TinyML", "ESP32 / STM32", "Edge AI", "FPGA Accelerators", "Industrial Robotics"],
+    gradient: "from-cyan-500/15 via-black to-black",
+    accentColor: "#00F0FF",
+    problemStatements: [
+      "On-device TinyML vibration & acoustic anomaly detector for predictive machine maintenance.",
+      "FPGA-accelerated low-latency computer vision system for real-time robotic quality inspection.",
+      "Sub-GHz LoRaWAN multi-hop sensor mesh for agricultural soil nutrient & weather telemetry.",
+      "Edge biometric authentication gateway with anti-spoofing thermal and vision fusion."
+    ],
+    hardwareStack: ["Xilinx / Gowin FPGA", "ARM Cortex-M4/M7", "Seeed Xiao BLE / ESP32-CAM", "IMU & MEMS Sensors", "LoRa / BLE 5.3"],
+    evaluationCriteria: [
+      { criteria: "Algorithm Optimization & On-device Inference Latency", weight: "35%" },
+      { criteria: "Hardware Power Efficiency & Battery Life", weight: "25%" },
+      { criteria: "Industrial Robustness & Fault Tolerance", weight: "20%" },
+      { criteria: "End-to-End System Usability", weight: "20%" },
+    ],
   },
   {
     id: "track-4",
     number: "04",
     title: "Biomedical & Assistive Tech",
-    tagline: "Wearable diagnostics, patient monitoring & neuro-assist devices",
+    tagline: "Wearable diagnostics, patient monitoring, bio-signal telemetry & assistive bionics",
+    prizePool: "₹15,000 Track Winner + Swag & Mentorship",
     description:
-      "Non-invasive bio-potential acquisition (ECG/EMG/EEG), wearable health telemetry, smart prosthetics, assistive communication tools, and affordable diagnostic instrumentation.",
+      "Engineering technologies that save and elevate lives. Develop non-invasive bio-potential acquisition devices (ECG/EMG/EEG), smart bionic prosthetics with haptic feedback, real-time fall detectors for the elderly, and ICU telemetry monitors.",
     iconName: "Activity",
-    tags: ["Bio-Sensors", "Wearables", "Assistive Robotics", "Signal Processing"],
-    gradient: "from-rose-500/20 via-purple-900/30 to-slate-950/80",
-    accentColor: "#FF6B6B",
+    tags: ["Bio-Sensors (ECG/EMG)", "Smart Prosthetics", "Wearable Telemetry", "Assistive Audio/Vision"],
+    gradient: "from-rose-500/15 via-black to-black",
+    accentColor: "#F43F5E",
+    problemStatements: [
+      "Continuous non-invasive multi-lead ECG & arrhythmia detection wearable with emergency cellular alert.",
+      "EMG-controlled multi-articulated prosthetic hand with closed-loop tactile force feedback.",
+      "Smart assistive navigation glasses with spatial audio obstacle alerts for visually impaired individuals.",
+      "Portable vital-signs screening kit with automated triage reporting for rural health clinics."
+    ],
+    hardwareStack: ["ADS1299 / AD8232 Bio-Amps", "Servo & Actuator Drivers", "Bluetooth LE SoC", "OLED / E-Paper Display", "Rechargeable LiPo PMIC"],
+    evaluationCriteria: [
+      { criteria: "Clinical Accuracy, Signal Quality & Noise Rejection", weight: "35%" },
+      { criteria: "Ergonomics, Patient Safety & Wearability", weight: "25%" },
+      { criteria: "Affordability & Accessibility in Indian Context", weight: "20%" },
+      { criteria: "Demonstrated Working Prototype", weight: "20%" },
+    ],
   },
   {
     id: "track-5",
     number: "05",
     title: "Open Hardware & Deep Tech Innovation",
-    tagline: "Disruptive multidisciplinary engineering solutions",
+    tagline: "Disruptive multidisciplinary engineering, quantum sensors, aerospace & defense",
+    prizePool: "₹15,000 Track Winner + Swag & Mentorship",
     description:
-      "For visionary projects spanning space electronics, quantum sensor prototypes, agritech automation, defense hardware, and cross-domain breakthroughs.",
+      "For radical breakthroughs that redefine engineering frontiers. Build CubeSat sub-systems, quantum magnetometer demonstrators, autonomous drone delivery hardware, agritech harvesting robots, and advanced RF communication systems.",
     iconName: "Sparkles",
-    tags: ["DeepTech", "Agritech", "Avionics", "Quantum/Sensors", "Automation"],
-    gradient: "from-purple-500/20 via-indigo-900/30 to-slate-950/80",
-    accentColor: "#C084FC",
+    tags: ["Aerospace / Drones", "Quantum Sensors", "Agritech Robotics", "Defense Tech", "Software-Defined Radio"],
+    gradient: "from-purple-500/15 via-black to-black",
+    accentColor: "#A855F7",
+    problemStatements: [
+      "Autonomous precision agriculture drone payload with multispectral crop-health analysis.",
+      "Software-Defined Radio (SDR) emergency mesh transceiver for disaster relief zones.",
+      "Low-cost CubeSat attitude determination and control system (ADCS) test bench.",
+      "Laser vibrometer acoustic sensor for structural health monitoring of bridges and dams."
+    ],
+    hardwareStack: ["HackRF / RTL-SDR", "Brushless Drone Motors & ESCs", "Pixhawk Flight Controller", "LiDAR / Time-of-Flight Sensors", "NVIDIA Jetson Nano"],
+    evaluationCriteria: [
+      { criteria: "Novelty, Technical Ambition & Hard-tech Complexity", weight: "40%" },
+      { criteria: "Proof-of-Concept Fidelity & Live Demonstration", weight: "30%" },
+      { criteria: "Commercialization / Dual-Use Potential", weight: "15%" },
+      { criteria: "Presentation & Interdisciplinary Rigor", weight: "15%" },
+    ],
   },
 ];
 
