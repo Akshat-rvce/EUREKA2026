@@ -9,12 +9,10 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@next/swc-win32-x64-msvc": "^16.3.8",
     "@react-three/drei": "^10.7.9",
     "@react-three/fiber": "^9.8.1",
     "@splinetool/react-spline": "^4.1.0",
     "@splinetool/runtime": "^2.0.65",
-    "@tailwindcss/oxide-win32-x64-msvc": "4.3.3",
     "canvas-confetti": "^1.9.4",
     "clsx": "^2.1.1",
     "firebase": "^11.4.0",
@@ -22,7 +20,6 @@
     "gsap": "^3.12.7",
     "html5-qrcode": "^2.3.8",
     "lenis": "^1.1.20",
-    "lightningcss-win32-x64-msvc": "1.33.0",
     "lucide-react": "^1.16.0",
     "motion-utils": "13.5.0",
     "next": "^15.2.0",
@@ -31,6 +28,11 @@
     "react-icons": "^5.7.0",
     "tailwind-merge": "^3.0.2",
     "three": "^0.174.0"
+  },
+  "optionalDependencies": {
+    "@next/swc-win32-x64-msvc": "^16.3.8",
+    "@tailwindcss/oxide-win32-x64-msvc": "4.3.3",
+    "lightningcss-win32-x64-msvc": "1.33.0"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.0.9",
