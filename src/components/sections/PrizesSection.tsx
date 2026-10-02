@@ -59,11 +59,11 @@ const MAIN_PRIZES = [
 ];
 
 const TRACK_PRIZES = [
-  { name: "Smart Mobility & EVs", prize: "₹15,000", icon: "⚡" },
-  { name: "Clean Energy & Smart Grid", prize: "₹15,000", icon: "🌱" },
-  { name: "AIoT & Edge Intelligence", prize: "₹15,000", icon: "🤖" },
-  { name: "Biomedical & Assistive Tech", prize: "₹15,000", icon: "🏥" },
-  { name: "Open Hardware & DeepTech", prize: "₹15,000", icon: "🚀" },
+  { name: "Robotics, IoT & Intelligent Automation", prize: "₹15,000", icon: "🤖" },
+  { name: "Sustainable Energy, Smart Systems & Infra", prize: "₹15,000", icon: "🌱" },
+  { name: "AI, Computing & Digital Technologies", prize: "₹15,000", icon: "⚡" },
+  { name: "Healthcare, Assistive Tech & Social Impact", prize: "₹15,000", icon: "🏥" },
+  { name: "Open Innovation", prize: "₹15,000", icon: "🚀" },
 ];
 
 const SPECIAL_AWARDS = [
@@ -96,7 +96,7 @@ export function PrizesSection() {
   };
 
   return (
-    <section id="prizes" className="relative w-full py-24 bg-[#050508] border-t border-white/[0.08] overflow-hidden text-white">
+    <section id="prizes" className="relative w-full py-14 bg-[#050508] border-t border-white/[0.08] overflow-hidden text-white">
       {/* Background Lighting */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] bg-amber-500/5 rounded-full blur-[200px] pointer-events-none" />
 

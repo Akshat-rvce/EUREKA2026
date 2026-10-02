@@ -59,7 +59,7 @@ const INITIAL_TEAMS: Team[] = [
     teamName: "VoltNexus",
     projectTitle: "Bi-directional Solid State EV Powertrain & Smart Active BMS",
     trackId: "track-1",
-    trackName: "Smart Mobility & Electric Vehicles",
+    trackName: "Robotics, IoT & Intelligent Automation",
     college: "RV College of Engineering, Bangalore",
     members: [
       { name: "Aarav Sharma", email: "aarav.s@rvce.edu.in", phone: "+91 98451 11223", college: "RVCE" },
@@ -77,7 +77,7 @@ const INITIAL_TEAMS: Team[] = [
     teamName: "GridPulse AI",
     projectTitle: "Autonomous Microgrid Dispatch using TinyML on ESP32 Dual-Core",
     trackId: "track-2",
-    trackName: "Clean Energy & Smart Grid Systems",
+    trackName: "Sustainable Energy, Smart Systems & Infrastructure",
     college: "National Institute of Technology Karnataka (NITK), Surathkal",
     members: [
       { name: "Rohan Kulkarni", email: "rohan.k@nitk.edu.in", phone: "+91 97420 33445", college: "NITK" },
@@ -95,7 +95,7 @@ const INITIAL_TEAMS: Team[] = [
     teamName: "NeuroFlex",
     projectTitle: "Surface EMG Wearable Prosthetic Hand with Haptic Neural Feedback",
     trackId: "track-4",
-    trackName: "Biomedical & Assistive Tech",
+    trackName: "Healthcare, Assistive Technology & Social Impact",
     college: "Indian Institute of Science (IISc), Bangalore",
     members: [
       { name: "Priya Varma", email: "priya.v@iisc.ac.in", phone: "+91 99801 55667", college: "IISc" },
@@ -113,7 +113,7 @@ const INITIAL_TEAMS: Team[] = [
     teamName: "EdgeSentinel",
     projectTitle: "FPGA-Accelerated Real-Time Visual Telemetry for Industrial Robotics",
     trackId: "track-3",
-    trackName: "AIoT & Edge Embedded Intelligence",
+    trackName: "AI, Computing & Digital Technologies",
     college: "PES University, Bangalore",
     members: [
       { name: "Kiran Deshmukh", email: "kiran.d@pes.edu", phone: "+91 98860 77889", college: "PESU" },
@@ -130,7 +130,7 @@ const INITIAL_TEAMS: Team[] = [
     teamName: "AstroWave",
     projectTitle: "Sub-gigahertz Quantum RF Sensor Array for CubeSat Telemetry",
     trackId: "track-5",
-    trackName: "Open Hardware & Deep Tech Innovation",
+    trackName: "Open Innovation",
     college: "BMS College of Engineering, Bangalore",
     members: [
       { name: "Varun Reddy", email: "varun.r@bmsce.ac.in", phone: "+91 96110 99001", college: "BMSCE" },

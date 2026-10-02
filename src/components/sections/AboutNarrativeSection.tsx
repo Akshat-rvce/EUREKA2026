@@ -82,7 +82,7 @@ export function AboutNarrativeSection() {
   return (
     <section
       id="about"
-      className="relative w-full py-24 bg-[#050508] border-t border-white/[0.08] overflow-hidden text-white"
+      className="relative w-full py-14 bg-[#050508] border-t border-white/[0.08] overflow-hidden text-white"
     >
       {/* Background Subtle Cyber Glow */}
       <div className="absolute top-1/2 left-0 w-[500px] h-[500px] bg-cyan-500/5 rounded-full blur-[160px] pointer-events-none" />

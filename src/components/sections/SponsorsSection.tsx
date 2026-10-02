@@ -6,7 +6,7 @@ import { playHoverSound } from "@/utils/audio";
 
 export function SponsorsSection() {
   return (
-    <section id="sponsors" className="relative w-full py-28 px-6 sm:px-12 md:px-20 lg:px-28 bg-black text-white border-t border-white/10">
+    <section id="sponsors" className="relative w-full py-14 px-6 sm:px-12 md:px-20 lg:px-28 bg-black text-white border-t border-white/10">
       <div className="max-w-7xl mx-auto">
         {/* Header: Exactly one headline + at most one short line */}
         <div className="mb-14">

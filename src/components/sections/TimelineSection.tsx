@@ -9,7 +9,7 @@ export function TimelineSection() {
   return (
     <section
       id="timeline"
-      className="relative w-full py-24 bg-black border-t border-white/[0.08] overflow-hidden text-white"
+      className="relative w-full py-14 bg-black border-t border-white/[0.08] overflow-hidden text-white"
     >
       {/* Background Lighting */}
       <div className="absolute top-1/3 left-1/3 w-[600px] h-[600px] bg-cyan-500/5 rounded-full blur-[180px] pointer-events-none" />

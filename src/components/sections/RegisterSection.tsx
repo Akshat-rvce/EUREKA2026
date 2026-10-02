@@ -38,7 +38,7 @@ export function RegisterSection() {
   };
 
   return (
-    <section id="register" className="relative w-full py-28 bg-[#030305] border-t border-white/[0.08] overflow-hidden text-white">
+    <section id="register" className="relative w-full py-14 bg-[#030305] border-t border-white/[0.08] overflow-hidden text-white">
       {/* Background Radiance */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-cyan-500/5 rounded-full blur-[200px] pointer-events-none" />
 

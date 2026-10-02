@@ -29,7 +29,7 @@ export function TracksSection() {
   };
 
   return (
-    <section id="tracks" className="relative w-full py-24 bg-black border-t border-white/[0.08] overflow-hidden text-white">
+    <section id="tracks" className="relative w-full py-14 bg-black border-t border-white/[0.08] overflow-hidden text-white">
       {/* Background Ambience */}
       <div className="absolute top-1/4 right-0 w-[550px] h-[550px] bg-cyan-500/5 rounded-full blur-[160px] pointer-events-none" />
       <div className="absolute bottom-10 left-10 w-[450px] h-[450px] bg-amber-500/5 rounded-full blur-[150px] pointer-events-none" />
@@ -38,10 +38,10 @@ export function TracksSection() {
       <div className="max-w-7xl mx-auto px-6 md:px-12 relative z-10">
         
         {/* Section Header */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6 pb-6 border-b border-white/10">
+        <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-6 pb-6 border-b border-white/10">
           <div>
             <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-white/5 border border-white/10 text-amber-400 text-xs font-mono mb-4">
-              <span>5 FRONTIER DOMAINS</span>
+              <span>5 INNOVATION TRACKS</span>
             </div>
             <h2 className="font-display text-4xl sm:text-5xl md:text-6xl font-black tracking-tight text-white">
               Innovation <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-amber-400 to-yellow-500">Tracks</span>

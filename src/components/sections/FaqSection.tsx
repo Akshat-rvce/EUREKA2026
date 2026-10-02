@@ -14,10 +14,10 @@ export function FaqSection() {
   };
 
   return (
-    <section id="faq" className="relative w-full py-28 px-6 sm:px-12 md:px-20 lg:px-28 bg-black text-white border-t border-white/10">
+    <section id="faq" className="relative w-full py-14 px-6 sm:px-12 md:px-20 lg:px-28 bg-black text-white border-t border-white/10">
       <div className="max-w-4xl mx-auto">
         {/* Header: Exactly one headline + at most one short line */}
-        <div className="mb-14">
+        <div className="mb-10">
           <h2 className="font-display text-4xl sm:text-5xl md:text-6xl font-black tracking-tight text-white mb-3">
             FAQ
           </h2>
