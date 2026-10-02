@@ -40,29 +40,38 @@ export function Footer() {
             <ul className="space-y-2 text-xs font-mono text-slate-400">
               <li>
                 <a
-                  href="#events"
+                  href="#hero"
                   onMouseEnter={playHoverSound}
                   className="hover:text-white transition-colors"
                 >
-                  Events
+                  Overview
                 </a>
               </li>
               <li>
                 <a
-                  href="#team"
+                  href="#prizes"
                   onMouseEnter={playHoverSound}
                   className="hover:text-white transition-colors"
                 >
-                  Team
+                  Prizes &amp; Rewards
                 </a>
               </li>
               <li>
                 <a
-                  href="#about"
+                  href="#tracks"
                   onMouseEnter={playHoverSound}
                   className="hover:text-white transition-colors"
                 >
-                  About &amp; Prizes
+                  Tracks
+                </a>
+              </li>
+              <li>
+                <a
+                  href="#faq"
+                  onMouseEnter={playHoverSound}
+                  className="hover:text-white transition-colors"
+                >
+                  FAQ
                 </a>
               </li>
               <li>

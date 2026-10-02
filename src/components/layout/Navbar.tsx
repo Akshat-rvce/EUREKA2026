@@ -9,10 +9,11 @@ import { isSoundEnabled, setSoundEnabled, playClickSound, playHoverSound } from 
 import { useSmoothScroll } from "@/components/providers/SmoothScrollProvider";
 
 const NAV_LINKS = [
-  { label: "Events", href: "#events" },
-  { label: "Team",   href: "#team"   },
-  { label: "About",  href: "#about"  },
-  { label: "Contact",href: "#contact"},
+  { label: "Overview", href: "#hero" },
+  { label: "Prizes",   href: "#prizes" },
+  { label: "Tracks",   href: "#tracks" },
+  { label: "FAQ",      href: "#faq" },
+  { label: "Contact",  href: "#contact" },
 ];
 
 /* ── thin decorative separator ── */

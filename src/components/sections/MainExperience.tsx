@@ -5,6 +5,7 @@ import Link from "next/link";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { ArrowDown, ArrowUpRight, ArrowRight, ChevronDown } from "lucide-react";
 import { SplineScene } from "@/components/ui/splite";
+import { CountdownTimer } from "@/components/ui/CountdownTimer";
 import { TRACKS, SITE_CONFIG, UNSTOP_EVENT_URL } from "@/config/site";
 import { useSmoothScroll } from "@/components/providers/SmoothScrollProvider";
 import { playClickSound, playHoverSound } from "@/utils/audio";
@@ -32,7 +33,7 @@ export function MainExperience() {
   });
 
   // Robot subtle parallax — drifts gently as user scrolls through slides
-  const robotY = useTransform(scrollYProgress, [0, 0.2, 0.5, 0.8, 1], [0, -20, 10, -15, 5]);
+  const robotY = useTransform(scrollYProgress, [0, 0.25, 0.5, 0.75, 1], [0, -15, 10, -10, 0]);
   const robotScale = useTransform(scrollYProgress, [0, 0.1, 0.5, 1], [1, 1.02, 0.98, 1.01]);
 
   return (
@@ -43,30 +44,21 @@ export function MainExperience() {
           ║  unmounts. Sits behind all slide text layers.    ║
           ╚══════════════════════════════════════════════════╝ */}
       <div className="sticky top-0 h-screen w-full z-10 overflow-hidden pointer-events-none">
-        {/* Full-viewport deep ambient glow — centers the spotlight on robot chest */}
+        {/* Full-viewport deep ambient spotlight — covers whole page without shrinking */}
         <div
           className="absolute inset-0 pointer-events-none"
           style={{
             background:
-              "radial-gradient(ellipse 60% 60% at 68% 55%, rgba(255,255,255,0.06) 0%, transparent 65%)",
-          }}
-        />
-        {/* Subtle floor glow beneath robot */}
-        <div
-          className="absolute bottom-0 right-0 w-[55%] h-[30%] pointer-events-none"
-          style={{
-            background:
-              "radial-gradient(ellipse at 60% 100%, rgba(255,255,255,0.04) 0%, transparent 70%)",
+              "radial-gradient(ellipse 85% 75% at 75% 50%, rgba(255,255,255,0.08) 0%, transparent 65%), radial-gradient(ellipse 70% 60% at 20% 40%, rgba(255,209,102,0.06) 0%, transparent 70%), radial-gradient(ellipse 100% 45% at 50% 100%, rgba(255,255,255,0.03) 0%, transparent 75%)",
           }}
         />
 
-        {/* 3D Spline Robot — fills right ⅔, vertically centered */}
+        {/* 3D Spline Robot — positioned nicely on the right */}
         <motion.div
           style={{ y: robotY, scale: robotScale }}
           className="absolute inset-0 flex items-center justify-end pointer-events-auto"
         >
-          {/* Robot scene: right-biased, large, premium */}
-          <div className="relative w-[75%] sm:w-[65%] lg:w-[58%] h-full">
+          <div className="relative w-full sm:w-[68%] lg:w-[58%] h-full">
             <SplineScene
               scene="https://prod.spline.design/kZDDjO5HuC9GJUM2/scene.splinecode"
               className="w-full h-full"
@@ -76,132 +68,139 @@ export function MainExperience() {
       </div>
 
       {/* ╔══════════════════════════════════════════════════════╗
-          ║  5 SLIDE CONTENT LAYER — stacks over robot layer  ║
-          ║  Uses -mt-[500vh] to overlay the 5×100vh stickies ║
+          ║  SLIDE CONTENT LAYER — stacks over robot layer     ║
           ╚══════════════════════════════════════════════════╝ */}
       <div className="relative -mt-[100vh] z-20 pointer-events-none">
 
-        {/* ══════════ SLIDE 1 — HERO ══════════
-            Wireframe: RVCE PRESENTS · EUREKA '26 · Robot · slide ↓
-            Text: CENTER of the screen, above/beside robot
-        ════════════════════════════════════ */}
+        {/* ══════════ SLIDE 1 — HERO & EXPO SHOWCASE ══════════
+            Left: RVCE PRESENTS · EUREKA '26 · NATIONAL PROJECT EXPO
+                  28 NOV 2026 · Countdown Timer · Buttons
+            Right: Interactive 3D Robot
+        ═════════════════════════════════════════════════════ */}
         <section
           id="hero"
-          className="relative min-h-screen w-full flex flex-col items-center justify-center pointer-events-auto"
+          className="relative min-h-screen w-full flex items-center pointer-events-auto px-6 sm:px-12 lg:px-20"
         >
-          {/* CENTER text — sits in the left-center of viewport, spotlight hits it */}
-          <div className="relative z-10 flex flex-col items-center text-center px-6 sm:px-10">
+          <div className="relative z-10 max-w-2xl lg:max-w-3xl flex flex-col items-start text-left pt-20 pb-16">
             {/* Eyebrow */}
             <motion.div
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, delay: 0.2 }}
-              className="text-[11px] sm:text-xs font-mono tracking-[0.35em] uppercase text-slate-400 mb-5 font-semibold"
+              transition={{ duration: 0.7, delay: 0.15 }}
+              className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/[0.04] border border-white/10 text-[11px] sm:text-xs font-mono tracking-[0.25em] uppercase text-amber-400 font-semibold mb-4 backdrop-blur-sm"
             >
-              RVCE PRESENTS
+              <span>RVCE PRESENTS</span>
+              <span className="w-1 h-1 rounded-full bg-amber-400" />
+              <span className="text-slate-400">DEPT. OF EEE</span>
             </motion.div>
 
-            {/* Headline: EUREKA '26 — huge, centered */}
+            {/* Headline: EUREKA '26 */}
             <motion.h1
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.9, delay: 0.35, ease: [0.16, 1, 0.3, 1] }}
-              className="font-display text-[clamp(4rem,12vw,9rem)] font-black tracking-[-0.02em] leading-[0.88] text-white"
+              transition={{ duration: 0.85, delay: 0.25, ease: [0.16, 1, 0.3, 1] }}
+              className="font-display text-[clamp(3.8rem,9.5vw,7.8rem)] font-black tracking-[-0.03em] leading-[0.88] text-white mb-2"
             >
               EUREKA{" "}
-              <span className="text-transparent bg-clip-text bg-gradient-to-br from-white via-slate-300 to-slate-500">
+              <span className="text-transparent bg-clip-text bg-gradient-to-br from-white via-amber-200 to-amber-400">
                 &apos;26
               </span>
             </motion.h1>
+
+            {/* Sub-headline: NATIONAL PROJECT EXPO (Big & Commanding) */}
+            <motion.div
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, delay: 0.35 }}
+              className="font-display text-[clamp(1.8rem,4.5vw,3.6rem)] font-black uppercase tracking-tight text-white leading-[1.02] mb-3"
+            >
+              NATIONAL PROJECT EXPO
+            </motion.div>
+
+            {/* Date Tag */}
+            <motion.div
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.42 }}
+              className="font-mono text-xs sm:text-sm tracking-[0.25em] text-slate-400 uppercase font-semibold mb-6 flex items-center gap-2"
+            >
+              <span className="text-amber-300 font-bold">28 NOV 2026</span>
+              <span className="text-slate-600">•</span>
+              <span>RVCE BENGALURU</span>
+            </motion.div>
+
+            {/* Live Countdown Timer */}
+            <motion.div
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, delay: 0.5 }}
+              className="mb-8"
+            >
+              <CountdownTimer />
+            </motion.div>
+
+            {/* CTA Buttons */}
+            <motion.div
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.58 }}
+              className="flex flex-wrap items-center gap-3.5"
+            >
+              <a
+                href={UNSTOP_EVENT_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => playClickSound()}
+                onMouseEnter={playHoverSound}
+                className="px-7 py-3.5 rounded-full bg-white hover:bg-slate-100 text-black font-display font-bold text-sm shadow-[0_0_30px_rgba(255,255,255,0.25)] hover:shadow-[0_0_45px_rgba(255,255,255,0.4)] transition-all duration-300 flex items-center gap-2"
+              >
+                <span>Register on Unstop</span>
+                <ArrowUpRight className="w-4 h-4" />
+              </a>
+
+              <button
+                onClick={() => {
+                  playClickSound();
+                  scrollTo("#prizes", { offset: -60 });
+                }}
+                onMouseEnter={playHoverSound}
+                className="px-6 py-3.5 rounded-full border border-white/20 hover:border-white/50 bg-white/[0.03] hover:bg-white/[0.08] text-white font-display font-medium text-sm transition-all duration-300 flex items-center gap-2 backdrop-blur-sm"
+              >
+                <span>Explore Expo</span>
+                <ChevronDown className="w-4 h-4 text-slate-400" />
+              </button>
+            </motion.div>
           </div>
 
-          {/* Scroll cue — pinned at bottom center */}
+          {/* Scroll cue */}
           <motion.button
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 1.2 }}
             onClick={() => {
               playClickSound();
-              scrollTo("#events", { offset: -60 });
+              scrollTo("#prizes", { offset: -60 });
             }}
             onMouseEnter={playHoverSound}
-            className="absolute bottom-10 left-1/2 -translate-x-1/2 group flex flex-col items-center gap-1.5 text-[10px] font-mono tracking-[0.3em] text-slate-500 hover:text-white transition-colors duration-300"
+            className="absolute bottom-8 left-6 sm:left-12 lg:left-20 group flex items-center gap-2 text-[10px] font-mono tracking-[0.3em] text-slate-500 hover:text-white transition-colors duration-300"
           >
-            <span>slide</span>
+            <span>slide to explore</span>
             <ArrowDown className="w-3.5 h-3.5 animate-bounce" />
           </motion.button>
         </section>
 
-        {/* ══════════ SLIDE 2 — EVENT INTRO ══════════
-            Center: "NATIONAL PROJECT EXPO" + "28 NOV '26"
-            Two buttons
+        {/* ══════════ SLIDE 2 — PRIZE POOL ══════════
+            Center: Prize headline + details
         ══════════════════════════════════════════ */}
-        <SlideContent id="events">
-          <motion.h2
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-100px" }}
-            transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
-            className="font-display text-[clamp(2.2rem,7vw,5.5rem)] font-black tracking-[-0.02em] leading-[0.95] text-white mb-5"
-          >
-            NATIONAL<br />PROJECT EXPO
-          </motion.h2>
-
-          <motion.p
-            initial={{ opacity: 0, y: 16 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-100px" }}
-            transition={{ duration: 0.7, delay: 0.15 }}
-            className="font-mono text-base sm:text-xl tracking-[0.25em] text-slate-400 uppercase font-semibold mb-12"
-          >
-            28 NOV &apos;26
-          </motion.p>
-
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-100px" }}
-            transition={{ duration: 0.6, delay: 0.28 }}
-            className="flex flex-col sm:flex-row items-center justify-center gap-4"
-          >
-            <button
-              onClick={() => {
-                playClickSound();
-                scrollTo("#tracks", { offset: -60 });
-              }}
-              onMouseEnter={playHoverSound}
-              className="px-8 py-3.5 rounded-full border border-white/20 hover:border-white/50 bg-white/[0.03] hover:bg-white/[0.07] text-white font-display font-medium text-sm transition-all duration-300 flex items-center gap-2"
-            >
-              <span>More Details</span>
-              <ChevronDown className="w-4 h-4 text-slate-400" />
-            </button>
-
-            <a
-              href={UNSTOP_EVENT_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={() => playClickSound()}
-              onMouseEnter={playHoverSound}
-              className="px-8 py-3.5 rounded-full bg-white hover:bg-slate-100 text-black font-display font-bold text-sm shadow-[0_0_30px_rgba(255,255,255,0.2)] hover:shadow-[0_0_45px_rgba(255,255,255,0.35)] transition-all duration-300 flex items-center gap-2"
-            >
-              <span>Register</span>
-              <ArrowRight className="w-4 h-4" />
-            </a>
-          </motion.div>
-        </SlideContent>
-
-        {/* ══════════ SLIDE 3 — PRIZE POOL ══════════
-            Center: Prize headline + one line below
-        ══════════════════════════════════════════ */}
-        <SlideContent id="about">
+        <SlideContent id="prizes">
           <motion.p
             initial={{ opacity: 0, y: 8 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-120px" }}
             transition={{ duration: 0.5 }}
-            className="font-mono text-xs tracking-[0.3em] text-amber-400/70 uppercase mb-5"
+            className="font-mono text-xs tracking-[0.3em] text-amber-400 uppercase mb-4"
           >
-            PRIZE POOL
+            PRIZE POOL &amp; INCENTIVES
           </motion.p>
 
           <motion.h2
@@ -209,13 +208,13 @@ export function MainExperience() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-120px" }}
             transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
-            className="font-display text-[clamp(3rem,9vw,7rem)] font-black tracking-[-0.02em] leading-[0.9] mb-8"
+            className="font-display text-[clamp(3rem,9vw,6.5rem)] font-black tracking-[-0.02em] leading-[0.92] mb-6"
           >
             <span className="text-transparent bg-clip-text bg-gradient-to-br from-amber-200 via-amber-400 to-yellow-500">
               ₹15,000
             </span>
             <br />
-            <span className="text-white text-[0.65em] tracking-tight">PER TRACK</span>
+            <span className="text-white text-[0.6em] tracking-tight">PER TRACK</span>
           </motion.h2>
 
           <motion.p
@@ -223,13 +222,29 @@ export function MainExperience() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-120px" }}
             transition={{ duration: 0.6, delay: 0.2 }}
-            className="font-mono text-sm sm:text-base text-slate-400 tracking-widest"
+            className="font-mono text-sm sm:text-base text-slate-300 tracking-wider mb-8"
           >
-            + Industry Connect &nbsp;·&nbsp; Mentorship &nbsp;·&nbsp; Goodies
+            ₹1,00,000+ TOTAL REWARDS · INDUSTRY JURY · INCUBATION &amp; MENTORSHIP
           </motion.p>
+
+          <motion.button
+            initial={{ opacity: 0, y: 12 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-120px" }}
+            transition={{ duration: 0.5, delay: 0.3 }}
+            onClick={() => {
+              playClickSound();
+              scrollTo("#tracks", { offset: -60 });
+            }}
+            onMouseEnter={playHoverSound}
+            className="px-7 py-3 rounded-full border border-white/20 hover:border-white/50 bg-white/[0.04] text-white text-xs font-mono tracking-wider flex items-center gap-2"
+          >
+            <span>VIEW 5 COMPETITION TRACKS</span>
+            <ChevronDown className="w-3.5 h-3.5 text-amber-400" />
+          </motion.button>
         </SlideContent>
 
-        {/* ══════════ SLIDE 4 — TRACKS ══════════
+        {/* ══════════ SLIDE 3 — TRACKS ══════════
             Center: "TRACKS" + 5 clean rows
         ══════════════════════════════════════ */}
         <section
@@ -287,7 +302,7 @@ export function MainExperience() {
           </div>
         </section>
 
-        {/* ══════════ SLIDE 5 — REGISTER CTA ══════════
+        {/* ══════════ SLIDE 4 — REGISTER CTA ══════════
             Center: Claim headline + 3 data points + button
         ═════════════════════════════════════════════ */}
         <section
