@@ -48,12 +48,12 @@ export function MainExperience() {
             <span className="text-slate-400">DEPT. OF EEE</span>
           </motion.div>
 
-          {/* EUREKA '26 headline — one line, massive */}
+          {/* EUREKA '26 headline — one line, slightly bigger */}
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.85, delay: 0.25, ease: [0.16, 1, 0.3, 1] }}
-            style={{ fontSize: "clamp(2.5rem, 5.5vw, 5.5rem)" }}
+            style={{ fontSize: "clamp(3.2rem, 6.5vw, 6.5rem)" }}
             className="font-display font-black tracking-[-0.03em] leading-none text-white whitespace-nowrap"
           >
             EUREKA{" "}
@@ -62,24 +62,14 @@ export function MainExperience() {
             </span>
           </motion.h1>
 
-          {/* Sub-line */}
-          <motion.p
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.4 }}
-            className="font-mono text-xs sm:text-sm tracking-[0.2em] text-slate-400 uppercase mt-4"
-          >
-            National Project Expo · 28 Nov 2026
-          </motion.p>
-
           {/* Scroll cue */}
           <motion.button
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ delay: 0.8 }}
+            transition={{ delay: 0.9 }}
             onClick={() => { playClickSound(); scrollTo("#expo-intro", { offset: 0 }); }}
             onMouseEnter={playHoverSound}
-            className="mt-10 group flex items-center gap-2.5 text-[11px] font-mono tracking-[0.3em] text-slate-500 hover:text-white transition-colors duration-300"
+            className="mt-12 group flex items-center gap-2.5 text-[11px] font-mono tracking-[0.3em] text-slate-500 hover:text-white transition-colors duration-300"
           >
             <span>scroll</span>
             <ArrowDown className="w-3.5 h-3.5 animate-bounce text-amber-400" />
@@ -162,7 +152,7 @@ export function MainExperience() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-80px" }}
             transition={{ duration: 0.6, delay: 0.34 }}
-            className="flex flex-col sm:flex-row items-center justify-center gap-4"
+            className="flex flex-col sm:flex-row items-center justify-center gap-5"
           >
             <a
               href={UNSTOP_EVENT_URL}
@@ -170,7 +160,12 @@ export function MainExperience() {
               rel="noopener noreferrer"
               onClick={() => playClickSound()}
               onMouseEnter={playHoverSound}
-              className="px-8 py-3.5 rounded-full bg-white hover:bg-slate-100 text-black font-display font-bold text-sm shadow-[0_0_30px_rgba(255,255,255,0.25)] hover:shadow-[0_0_45px_rgba(255,255,255,0.4)] transition-all duration-300 flex items-center gap-2"
+              className="px-10 py-4 rounded-full font-display font-bold text-base flex items-center gap-2.5 transition-all duration-300"
+              style={{
+                background: "linear-gradient(135deg, #f59e0b 0%, #fbbf24 40%, #f97316 100%)",
+                color: "#000",
+                boxShadow: "0 0 35px rgba(245,158,11,0.45), 0 4px 20px rgba(0,0,0,0.4)",
+              }}
             >
               <span>Register on Unstop</span>
               <ArrowUpRight className="w-4 h-4" />
@@ -178,7 +173,7 @@ export function MainExperience() {
             <button
               onClick={() => { playClickSound(); scrollTo("#prizes", { offset: 0 }); }}
               onMouseEnter={playHoverSound}
-              className="px-7 py-3.5 rounded-full border border-white/20 hover:border-white/50 bg-white/[0.03] hover:bg-white/[0.08] text-white font-display font-medium text-sm transition-all duration-300 flex items-center gap-2 backdrop-blur-sm"
+              className="px-8 py-4 rounded-full border border-white/25 hover:border-white/50 bg-white/[0.05] hover:bg-white/[0.10] text-white font-display font-medium text-base transition-all duration-300 flex items-center gap-2 backdrop-blur-sm"
             >
               <span>More Details</span>
               <ChevronDown className="w-4 h-4 text-slate-400" />
@@ -354,10 +349,15 @@ export function MainExperience() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-120px" }}
             transition={{ duration: 0.6, delay: 0.3 }}
-            className="inline-flex items-center gap-2.5 px-10 py-4 rounded-full bg-white hover:bg-slate-100 text-black font-display font-bold text-base shadow-[0_0_35px_rgba(255,255,255,0.25)] hover:shadow-[0_0_55px_rgba(255,255,255,0.45)] transition-all duration-300"
+            className="inline-flex items-center gap-3 px-12 py-5 rounded-full font-display font-bold text-lg transition-all duration-300"
+            style={{
+              background: "linear-gradient(135deg, #f59e0b 0%, #fbbf24 40%, #f97316 100%)",
+              color: "#000",
+              boxShadow: "0 0 45px rgba(245,158,11,0.5), 0 6px 30px rgba(0,0,0,0.5)",
+            }}
           >
             <span>Register Now</span>
-            <ArrowUpRight className="w-4 h-4" />
+            <ArrowUpRight className="w-5 h-5" />
           </motion.a>
         </div>
       </section>

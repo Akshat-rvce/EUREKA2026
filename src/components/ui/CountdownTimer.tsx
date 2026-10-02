@@ -49,43 +49,59 @@ export function CountdownTimer() {
   ];
 
   return (
-    <div className="flex flex-col items-center select-none w-full max-w-xl mx-auto">
-      {/* High-tech status indicator */}
-      <div className="flex items-center gap-2 mb-3">
+    <div className="flex flex-col items-center select-none w-full max-w-2xl mx-auto">
+      {/* Status indicator */}
+      <div className="flex items-center gap-2 mb-4">
         <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-ping" />
-        <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />
-        <span className="text-[10px] font-mono tracking-[0.3em] uppercase text-amber-400/90 font-semibold">
+        <span className="w-1.5 h-1.5 rounded-full bg-amber-400 absolute" />
+        <span className="text-[10px] font-mono tracking-[0.3em] uppercase text-amber-400/90 font-semibold ml-1">
           SYSTEM T-MINUS TO EXPO LAUNCH
         </span>
       </div>
 
-      {/* Cyber HUD Terminal Box */}
-      <div className="relative p-4 sm:p-6 rounded-2xl bg-black/60 border border-white/15 backdrop-blur-xl shadow-[0_0_40px_rgba(0,0,0,0.8),inset_0_0_20px_rgba(255,209,102,0.03)] w-full">
-        {/* Corner HUD crosshair brackets */}
-        <span className="absolute -top-[1px] -left-[1px] w-3 h-3 border-t-2 border-l-2 border-amber-400/80 rounded-tl-[4px]" />
-        <span className="absolute -top-[1px] -right-[1px] w-3 h-3 border-t-2 border-r-2 border-amber-400/80 rounded-tr-[4px]" />
-        <span className="absolute -bottom-[1px] -left-[1px] w-3 h-3 border-b-2 border-l-2 border-amber-400/80 rounded-bl-[4px]" />
-        <span className="absolute -bottom-[1px] -right-[1px] w-3 h-3 border-b-2 border-r-2 border-amber-400/80 rounded-br-[4px]" />
+      {/* Cyber HUD box */}
+      <div
+        className="relative w-full rounded-2xl backdrop-blur-xl"
+        style={{
+          background: "rgba(0,0,0,0.65)",
+          border: "1px solid rgba(255,255,255,0.12)",
+          boxShadow: "0 0 40px rgba(0,0,0,0.8), inset 0 0 20px rgba(255,209,102,0.03)",
+          padding: "1.5rem 2rem",
+        }}
+      >
+        {/* Corner brackets */}
+        <span className="absolute -top-px -left-px w-3 h-3 border-t-2 border-l-2 border-amber-400/80 rounded-tl-[4px]" />
+        <span className="absolute -top-px -right-px w-3 h-3 border-t-2 border-r-2 border-amber-400/80 rounded-tr-[4px]" />
+        <span className="absolute -bottom-px -left-px w-3 h-3 border-b-2 border-l-2 border-amber-400/80 rounded-bl-[4px]" />
+        <span className="absolute -bottom-px -right-px w-3 h-3 border-b-2 border-r-2 border-amber-400/80 rounded-br-[4px]" />
 
-        {/* Digits Grid */}
-        <div className="grid grid-cols-4 gap-2 sm:gap-4 items-center justify-center">
+        {/* Single flex row: digit block · colon · digit block · colon … */}
+        <div className="flex items-center justify-center gap-0">
           {timeUnits.map((unit, idx) => (
-            <div key={unit.label} className="relative flex flex-col items-center">
-              <div className="font-mono text-3xl sm:text-5xl md:text-6xl font-black tracking-tight text-white drop-shadow-[0_0_20px_rgba(255,255,255,0.2)]">
-                <span className="text-transparent bg-clip-text bg-gradient-to-b from-white via-slate-100 to-amber-200">
+            <React.Fragment key={unit.label}>
+              {/* Digit block */}
+              <div className="flex flex-col items-center min-w-[4rem] sm:min-w-[5.5rem]">
+                <span
+                  className="font-mono font-black leading-none text-transparent bg-clip-text bg-gradient-to-b from-white via-slate-100 to-amber-200"
+                  style={{ fontSize: "clamp(2.4rem, 6vw, 4.5rem)" }}
+                >
                   {unit.value}
                 </span>
+                <span className="text-[9px] sm:text-[11px] font-mono tracking-[0.25em] text-slate-400 mt-1.5 uppercase font-semibold">
+                  {unit.label}
+                </span>
               </div>
-              <span className="text-[9px] sm:text-[11px] font-mono tracking-[0.25em] text-slate-400 mt-1 uppercase font-semibold">
-                {unit.label}
-              </span>
-              {/* Divider for intermediate columns */}
+
+              {/* Colon separator — only between blocks, not after the last */}
               {idx < timeUnits.length - 1 && (
-                <div className="hidden sm:block absolute -right-2 sm:-right-2.5 top-1/2 -translate-y-1/2 text-slate-600 font-mono text-xl font-light">
+                <span
+                  className="font-mono font-light text-slate-500 self-start pt-1"
+                  style={{ fontSize: "clamp(1.8rem, 4vw, 3rem)", lineHeight: 1 }}
+                >
                   :
-                </div>
+                </span>
               )}
-            </div>
+            </React.Fragment>
           ))}
         </div>
       </div>
