@@ -34,8 +34,7 @@ export const SITE_CONFIG = {
     deadline: "November 26, 2026",
   },
   prizes: {
-    perTrack: "₹15,000 / Track",
-    totalPool: "₹15,000 / Track",
+    totalPool: "₹15,000 Total Prize Pool",
     summary: "+ Industry Connect · Mentorship · Goodies",
   },
 };

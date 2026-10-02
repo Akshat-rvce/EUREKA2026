@@ -1,8 +1,16 @@
 'use client'
 
-import React, { Suspense, lazy } from 'react'
+import React from 'react'
+import dynamic from 'next/dynamic'
 
-const Spline = lazy(() => import('@splinetool/react-spline'))
+const Spline = dynamic(() => import('@splinetool/react-spline'), {
+  ssr: false,
+  loading: () => (
+    <div className="w-full h-full flex items-center justify-center">
+      <div className="w-10 h-10 rounded-full border-2 border-white/20 border-t-amber-300 animate-spin" />
+    </div>
+  ),
+})
 
 interface SplineSceneProps {
   scene: string
@@ -11,17 +19,8 @@ interface SplineSceneProps {
 
 export function SplineScene({ scene, className }: SplineSceneProps) {
   return (
-    <Suspense 
-      fallback={
-        <div className="w-full h-full flex items-center justify-center">
-          <div className="w-12 h-12 rounded-full border-2 border-white/20 border-t-white animate-spin" />
-        </div>
-      }
-    >
-      <Spline
-        scene={scene}
-        className={className}
-      />
-    </Suspense>
+    <div className={`relative ${className || 'w-full h-full'}`}>
+      <Spline scene={scene} className="w-full h-full" />
+    </div>
   )
 }
