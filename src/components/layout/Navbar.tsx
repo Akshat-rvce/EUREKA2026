@@ -97,7 +97,7 @@ export function Navbar() {
               </span>
             </Link>
 
-            {/* Desktop nav — clean, evenly spaced, no dots */}
+            {/* Desktop nav ï¿½ clean, evenly spaced, no dots */}
             <nav className="hidden md:flex items-center gap-0.5">
               {NAV_LINKS.map((link) => (
                 <a
@@ -125,7 +125,7 @@ export function Navbar() {
                   : <VolumeX  className="w-3.5 h-3.5" />}
               </button>
 
-              {/* Admin — barely visible */}
+              {/* Admin ï¿½ barely visible */}
               <Link
                 href="/admin"
                 onClick={() => playClickSound()}
@@ -135,7 +135,7 @@ export function Navbar() {
                 Admin
               </Link>
 
-              {/* Register — amber gradient CTA */}
+              {/* Register ï¿½ amber gradient CTA */}
               <a
                 href={UNSTOP_EVENT_URL}
                 target="_blank"
