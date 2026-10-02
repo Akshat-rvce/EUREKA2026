@@ -3,23 +3,27 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { Volume2, VolumeX, Menu, X, ArrowUpRight, ShieldCheck, Sparkles } from "lucide-react";
-import { UNSTOP_EVENT_URL, SITE_CONFIG } from "@/config/site";
+import { Menu, X, ArrowUpRight, ShieldCheck, Volume2, VolumeX } from "lucide-react";
+import { UNSTOP_EVENT_URL } from "@/config/site";
 import { isSoundEnabled, setSoundEnabled, playClickSound, playHoverSound } from "@/utils/audio";
 import { useSmoothScroll } from "@/components/providers/SmoothScrollProvider";
 
 const NAV_LINKS = [
-  { label: "About", href: "#about" },
-  { label: "5 Tracks", href: "#tracks" },
-  { label: "Timeline", href: "#timeline" },
-  { label: "Prizes (₹1L+)", href: "#prizes" },
-  { label: "Sponsors", href: "#sponsors" },
-  { label: "FAQ", href: "#faq" },
+  { label: "Events", href: "#events" },
+  { label: "Team",   href: "#team"   },
+  { label: "About",  href: "#about"  },
+  { label: "Contact",href: "#contact"},
 ];
 
+/* ── thin decorative separator ── */
+function Dot() {
+  return <span className="w-0.5 h-0.5 rounded-full bg-white/20 mx-1" />;
+}
+
 export function Navbar() {
-  const [isScrolled, setIsScrolled] = useState(false);
-  const [soundActive, setSoundActive] = useState(true);
+  const [isVisible, setIsVisible]         = useState(false);
+  const [isScrolled, setIsScrolled]       = useState(false);
+  const [soundActive, setSoundActive]     = useState(true);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { scrollTo } = useSmoothScroll();
 
@@ -27,198 +31,165 @@ export function Navbar() {
     setSoundActive(isSoundEnabled());
 
     const handleScroll = () => {
-      if (window.scrollY > 20) {
-        setIsScrolled(true);
-      } else {
-        setIsScrolled(false);
-      }
+      const threshold = window.innerHeight * 0.45;
+      setIsVisible(window.scrollY > threshold);
+      setIsScrolled(window.scrollY > threshold + 20);
+      if (window.scrollY <= threshold) setMobileMenuOpen(false);
     };
 
     window.addEventListener("scroll", handleScroll, { passive: true });
+    handleScroll();
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   const toggleSound = () => {
-    const nextState = !soundActive;
-    setSoundActive(nextState);
-    setSoundEnabled(nextState);
-    if (nextState) playClickSound();
+    const next = !soundActive;
+    setSoundActive(next);
+    setSoundEnabled(next);
+    if (next) playClickSound();
   };
 
   const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     if (href.startsWith("#")) {
       e.preventDefault();
       playClickSound();
-      scrollTo(href, { offset: -80 });
+      scrollTo(href, { offset: -70 });
       setMobileMenuOpen(false);
     }
   };
 
   return (
-    <>
-      <header
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+    <header
+      className={`fixed top-0 left-0 right-0 z-50 pointer-events-none transition-all duration-500 ${
+        isVisible ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-6"
+      }`}
+    >
+      {/* Glass bar - appears once scrolled */}
+      <div
+        className={`pointer-events-auto transition-all duration-500 ${
           isScrolled
-            ? "py-3 bg-black/80 backdrop-blur-xl border-b border-white/10 shadow-2xl"
-            : "py-5 bg-transparent"
+            ? "mx-4 sm:mx-8 mt-3 rounded-2xl bg-black/70 backdrop-blur-2xl border border-white/[0.08] shadow-[0_8px_32px_rgba(0,0,0,0.6)]"
+            : "bg-transparent"
         }`}
       >
-        <div className="max-w-7xl mx-auto px-6 md:px-12 flex items-center justify-between">
-          {/* Brand Logo */}
+        <div className="max-w-7xl mx-auto px-6 sm:px-10 py-3.5 flex items-center justify-between">
+
+          {/* ── Brand ── */}
           <Link
             href="/"
-            onClick={() => playClickSound()}
-            className="group flex items-center gap-3 relative z-50"
+            onClick={() => { playClickSound(); scrollTo(0); }}
+            className="font-display font-black text-base tracking-tight text-white hover:text-amber-300 transition-colors"
           >
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-amber-400 to-yellow-500 p-[1px] shadow-sm transition-transform duration-300 group-hover:scale-105">
-              <div className="w-full h-full bg-black rounded-[11px] flex items-center justify-center font-display font-black text-amber-400 text-base">
-                E
-              </div>
-            </div>
-            <div className="flex flex-col">
-              <span className="font-display font-bold text-lg tracking-tight text-white group-hover:text-amber-300 transition-colors">
-                EUREKA <span className="text-amber-400">&apos;26</span>
-              </span>
-              <span className="text-[9px] tracking-wider uppercase text-slate-400 font-mono -mt-1">
-                RVCE • DEPT OF EEE
-              </span>
-            </div>
+            E<span className="text-amber-400">&apos;</span>26
           </Link>
 
-          {/* Desktop Nav Links */}
-          <nav className="hidden lg:flex items-center gap-1 bg-white/[0.03] backdrop-blur-md px-4 py-1.5 rounded-full border border-white/10">
-            {NAV_LINKS.map((link) => (
-              <a
-                key={link.label}
-                href={link.href}
-                onClick={(e) => handleNavClick(e, link.href)}
-                onMouseEnter={playHoverSound}
-                className="px-4 py-1.5 text-xs font-mono text-slate-300 hover:text-white hover:bg-white/10 rounded-full transition-all"
-              >
-                {link.label}
-              </a>
+          {/* ── Desktop Nav pill ── */}
+          <nav className="hidden md:flex items-center">
+            {NAV_LINKS.map((link, i) => (
+              <React.Fragment key={link.label}>
+                {i > 0 && <Dot />}
+                <a
+                  href={link.href}
+                  onClick={(e) => handleNavClick(e, link.href)}
+                  onMouseEnter={playHoverSound}
+                  className="px-5 py-1.5 text-xs font-mono tracking-wider text-slate-400 hover:text-white rounded-full hover:bg-white/[0.06] transition-all duration-200"
+                >
+                  {link.label}
+                </a>
+              </React.Fragment>
             ))}
           </nav>
 
-          {/* Right Actions & Unstop CTA */}
-          <div className="hidden lg:flex items-center gap-3">
-            {/* Audio Toggle */}
+          {/* ── Right actions ── */}
+          <div className="hidden md:flex items-center gap-4">
+            {/* Sound toggle */}
             <button
               onClick={toggleSound}
-              className="p-2 rounded-xl bg-white/5 border border-white/10 hover:border-white/20 text-slate-300 hover:text-white transition-colors"
-              title={soundActive ? "Mute audio" : "Enable audio"}
+              className="p-1.5 text-slate-500 hover:text-white transition-colors"
               aria-label="Toggle sound"
             >
-              {soundActive ? <Volume2 className="w-4 h-4 text-amber-400" /> : <VolumeX className="w-4 h-4 text-slate-500" />}
+              {soundActive
+                ? <Volume2 className="w-3.5 h-3.5 text-amber-400/70" />
+                : <VolumeX  className="w-3.5 h-3.5" />}
             </button>
 
-            {/* Admin Link */}
+            {/* Admin — very small, subordinate weight */}
             <Link
               href="/admin"
               onClick={() => playClickSound()}
-              className="flex items-center gap-1.5 px-3 py-2 text-xs font-mono text-slate-300 hover:text-white bg-white/5 hover:bg-white/10 rounded-xl border border-white/10 transition-all"
-              title="Staff & Judge Portal"
+              className="flex items-center gap-1 text-[10px] font-mono text-slate-600 hover:text-slate-400 transition-colors"
             >
-              <ShieldCheck className="w-3.5 h-3.5 text-cyan-400" />
-              <span>Admin</span>
+              <ShieldCheck className="w-2.5 h-2.5" />
+              Admin
             </Link>
 
-            {/* Unstop Register CTA */}
+            {/* Register — distinctly primary */}
             <a
               href={UNSTOP_EVENT_URL}
               target="_blank"
               rel="noopener noreferrer"
               onClick={() => playClickSound()}
               onMouseEnter={playHoverSound}
-              className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-amber-400 to-yellow-500 hover:from-amber-300 hover:to-yellow-400 text-black font-display font-bold text-xs shadow-md transition-all duration-300"
+              className="group flex items-center gap-1.5 px-5 py-2 rounded-full bg-white hover:bg-slate-100 text-black font-display font-bold text-xs shadow-[0_0_16px_rgba(255,255,255,0.18)] hover:shadow-[0_0_28px_rgba(255,255,255,0.32)] transition-all duration-300"
             >
-              <Sparkles className="w-3.5 h-3.5 text-black" />
-              <span>Register on Unstop</span>
-              <ArrowUpRight className="w-3.5 h-3.5 text-black" />
+              Register
+              <ArrowUpRight className="w-3 h-3 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
             </a>
           </div>
 
-          {/* Mobile Buttons */}
-          <div className="flex items-center gap-2.5 lg:hidden">
-            <button
-              onClick={toggleSound}
-              className="p-2 rounded-xl bg-white/5 border border-white/10 text-amber-400"
-              aria-label="Toggle sound"
+          {/* ── Mobile toggle ── */}
+          <div className="flex items-center gap-2 md:hidden">
+            <a
+              href={UNSTOP_EVENT_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="px-4 py-1.5 rounded-full bg-white text-black font-display font-bold text-xs"
             >
-              {soundActive ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4 text-slate-500" />}
-            </button>
-
+              Register
+            </a>
             <button
-              onClick={() => {
-                playClickSound();
-                setMobileMenuOpen(!mobileMenuOpen);
-              }}
-              className="p-2 rounded-xl bg-white/5 border border-white/10 text-white"
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="p-2 rounded-full bg-white/8 text-white"
               aria-label="Toggle menu"
             >
-              {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+              {mobileMenuOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
             </button>
           </div>
-        </div>
-      </header>
 
-      {/* Mobile Menu Overlay */}
+        </div>
+      </div>
+
+      {/* ── Mobile drawer ── */}
       <AnimatePresence>
         {mobileMenuOpen && (
           <motion.div
-            initial={{ opacity: 0, y: -20 }}
+            initial={{ opacity: 0, y: -8 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.2 }}
-            className="fixed inset-0 z-40 bg-black/95 backdrop-blur-2xl flex flex-col justify-between px-8 pt-28 pb-10 lg:hidden"
+            exit={{ opacity: 0, y: -8 }}
+            className="md:hidden pointer-events-auto mx-4 mt-2 rounded-2xl bg-black/90 backdrop-blur-2xl border border-white/[0.08] px-6 py-6 space-y-3"
           >
-            <div className="flex flex-col gap-4">
-              <span className="text-xs uppercase tracking-[0.2em] text-slate-400 font-mono">
-                NAVIGATION
-              </span>
-              {NAV_LINKS.map((link, idx) => (
-                <a
-                  key={link.label}
-                  href={link.href}
-                  onClick={(e) => handleNavClick(e, link.href)}
-                  className="font-display text-2xl font-bold text-white hover:text-amber-400 transition-colors flex items-center justify-between py-2 border-b border-white/10"
-                >
-                  <span>{link.label}</span>
-                  <span className="text-xs font-mono text-slate-500">0{idx + 1}</span>
-                </a>
-              ))}
-
-              <Link
-                href="/admin"
-                onClick={() => {
-                  playClickSound();
-                  setMobileMenuOpen(false);
-                }}
-                className="flex items-center gap-2 text-sm font-mono text-cyan-400 py-3"
-              >
-                <ShieldCheck className="w-4 h-4" />
-                <span>Admin &amp; Judge Portal</span>
-              </Link>
-            </div>
-
-            <div className="flex flex-col gap-3">
-              <div className="text-xs text-slate-400 font-mono">
-                DATE: {SITE_CONFIG.date} • RVCE BANGALORE
-              </div>
+            {NAV_LINKS.map((link) => (
               <a
-                href={UNSTOP_EVENT_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={() => playClickSound()}
-                className="w-full py-3.5 rounded-xl bg-gradient-to-r from-amber-400 to-yellow-500 text-black font-display font-bold text-center text-base flex items-center justify-center gap-2"
+                key={link.label}
+                href={link.href}
+                onClick={(e) => handleNavClick(e, link.href)}
+                className="block text-sm font-mono text-slate-300 hover:text-white py-1.5 transition-colors"
               >
-                <span>Register on Unstop</span>
-                <ArrowUpRight className="w-4 h-4" />
+                {link.label}
               </a>
+            ))}
+            <div className="pt-4 border-t border-white/10 flex items-center justify-between">
+              <Link href="/admin" onClick={() => setMobileMenuOpen(false)} className="text-xs font-mono text-slate-600 flex items-center gap-1">
+                <ShieldCheck className="w-3 h-3" /> Admin
+              </Link>
+              <button onClick={toggleSound} className="text-xs font-mono text-slate-400 flex items-center gap-1.5">
+                {soundActive ? <Volume2 className="w-3.5 h-3.5 text-amber-400/70" /> : <VolumeX className="w-3.5 h-3.5" />}
+                {soundActive ? "Sound ON" : "Muted"}
+              </button>
             </div>
           </motion.div>
         )}
       </AnimatePresence>
-    </>
+    </header>
   );
 }

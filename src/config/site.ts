@@ -30,15 +30,13 @@ export const SITE_CONFIG = {
   registration: {
     teamSize: "2 - 4 Members",
     eligibility: "Open to UG/PG Engineering Students from all AICTE/UGC recognized colleges across India",
-    fee: "₹400 per team (Inclusive of food, kits & merchandise)",
-    deadline: "November 20, 2026 (11:59 PM IST)",
+    fee: "₹400 / Team",
+    deadline: "November 26, 2026",
   },
   prizes: {
-    totalPool: "₹1,00,000+",
-    firstPrize: "₹40,000 + Trophy + Incubation Opportunity",
-    secondPrize: "₹25,000 + Trophy",
-    thirdPrize: "₹15,000 + Trophy",
-    trackWinners: "₹5,000 × 4 Special Track Awards",
+    perTrack: "₹15,000 / Track",
+    totalPool: "₹15,000 / Track",
+    summary: "+ Industry Connect · Mentorship · Goodies",
   },
 };
 
@@ -360,3 +358,17 @@ export const STATS = [
   { value: 5, suffix: "", label: "Engineering Tracks", subtext: "Covering future tech" },
   { value: 100, prefix: "₹", suffix: "k+", label: "Prize & Grant Pool", subtext: "Cash & incubation" },
 ];
+
+export interface TeamMember {
+  name: string;
+  role: string;
+  department: string;
+}
+
+export const TEAM: TeamMember[] = [
+  { name: "Dr. K. S. Geetha", role: "Vice Principal & Patron", department: "RVCE Bangalore" },
+  { name: "Dr. Pradeep Kumar", role: "Head of Department", department: "Dept. of EEE, RVCE" },
+  { name: "Prof. S. R. Ramesh", role: "Faculty Convener", department: "Dept. of EEE, RVCE" },
+  { name: "Student Committee", role: "Organizing Leads", department: "Dept. of EEE, RVCE" },
+];
+

@@ -1,34 +1,24 @@
 "use client";
 
-import React, { useState } from "react";
-import { IntroLoader } from "@/components/ui/IntroLoader";
+import React from "react";
 import { Navbar } from "@/components/layout/Navbar";
-import { HeroSection } from "@/components/sections/HeroSection";
-import { AboutNarrativeSection } from "@/components/sections/AboutNarrativeSection";
-import { TracksSection } from "@/components/sections/TracksSection";
-import { TimelineSection } from "@/components/sections/TimelineSection";
-import { PrizesSection } from "@/components/sections/PrizesSection";
-import { RegisterSection } from "@/components/sections/RegisterSection";
+import { MainExperience } from "@/components/sections/MainExperience";
+import { TeamSection } from "@/components/sections/TeamSection";
 import { SponsorsSection } from "@/components/sections/SponsorsSection";
 import { FaqSection } from "@/components/sections/FaqSection";
 import { Footer } from "@/components/layout/Footer";
 
 export default function Home() {
-  const [introFinished, setIntroFinished] = useState(false);
-
   return (
-    <main className="relative min-h-screen bg-black text-white selection:bg-amber-400 selection:text-black overflow-hidden">
-      {/* Cinematic Intro Loader */}
-      <IntroLoader onComplete={() => setIntroFinished(true)} />
-
-      {/* Main Experience */}
+    <main className="relative min-h-screen bg-black text-white selection:bg-amber-400 selection:text-black">
+      {/* Sticky/Fixed Minimalist Navigation */}
       <Navbar />
-      <HeroSection />
-      <AboutNarrativeSection />
-      <TracksSection />
-      <TimelineSection />
-      <PrizesSection />
-      <RegisterSection />
+
+      {/* 5-Slide Experience with Single Persistent Sticky Robot */}
+      <MainExperience />
+
+      {/* Secondary Clean Sections (Strict 1 Headline + 1 Supporting Line Rule) */}
+      <TeamSection />
       <SponsorsSection />
       <FaqSection />
       <Footer />
