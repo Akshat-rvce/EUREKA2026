@@ -1,18 +1,20 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { playClickSound } from "@/utils/audio";
 
 export function IntroLoader({ onComplete }: { onComplete?: () => void }) {
   const [progress, setProgress] = useState(0);
   const [isDone, setIsDone] = useState(false);
+  const onCompleteRef = useRef(onComplete);
+  onCompleteRef.current = onComplete;
 
   useEffect(() => {
     const hasSeenIntro = sessionStorage.getItem("eureka_intro_seen");
     if (hasSeenIntro) {
       setIsDone(true);
-      onComplete?.();
+      onCompleteRef.current?.();
       return;
     }
 
@@ -23,7 +25,7 @@ export function IntroLoader({ onComplete }: { onComplete?: () => void }) {
           setTimeout(() => {
             setIsDone(true);
             sessionStorage.setItem("eureka_intro_seen", "true");
-            onComplete?.();
+            onCompleteRef.current?.();
           }, 300);
           return 100;
         }
@@ -44,7 +46,8 @@ export function IntroLoader({ onComplete }: { onComplete?: () => void }) {
       clearInterval(interval);
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [onComplete]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const skipIntro = () => {
     playClickSound();
@@ -107,7 +110,8 @@ export function IntroLoader({ onComplete }: { onComplete?: () => void }) {
               <div className="h-1 w-full bg-white/10 rounded-full overflow-hidden">
                 <motion.div
                   className="h-full bg-gradient-to-r from-cyan-400 to-amber-400"
-                  style={{ width: `${progress}%` }}
+                  animate={{ width: `${progress}%` }}
+                  transition={{ ease: "easeOut", duration: 0.1 }}
                 />
               </div>
             </div>

@@ -12,9 +12,9 @@ import { playClickSound, playHoverSound } from "@/utils/audio";
 /* ───────────────────────────────────────────────────────────
    Each slide's content block — center-aligned over robot
 ─────────────────────────────────────────────────────────── */
-function SlideContent({ children }: { children: React.ReactNode }) {
+function SlideContent({ children, id }: { children: React.ReactNode; id?: string }) {
   return (
-    <section className="relative min-h-screen w-full flex items-center justify-center pointer-events-auto z-20">
+    <section id={id} className="relative min-h-screen w-full flex items-center justify-center pointer-events-auto z-20">
       <div className="w-full max-w-3xl mx-auto px-6 sm:px-10 flex flex-col items-center text-center">
         {children}
       </div>
@@ -136,7 +136,7 @@ export function MainExperience() {
             Center: "NATIONAL PROJECT EXPO" + "28 NOV '26"
             Two buttons
         ══════════════════════════════════════════ */}
-        <SlideContent>
+        <SlideContent id="events">
           <motion.h2
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -193,7 +193,7 @@ export function MainExperience() {
         {/* ══════════ SLIDE 3 — PRIZE POOL ══════════
             Center: Prize headline + one line below
         ══════════════════════════════════════════ */}
-        <SlideContent>
+        <SlideContent id="about">
           <motion.p
             initial={{ opacity: 0, y: 8 }}
             whileInView={{ opacity: 1, y: 0 }}

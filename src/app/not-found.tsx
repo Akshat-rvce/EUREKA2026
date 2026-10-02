@@ -2,7 +2,7 @@
 
 import React from "react";
 import Link from "next/link";
-import { ArrowLeft, Sparkles, Zap, AlertTriangle } from "lucide-react";
+import { ArrowLeft, AlertTriangle } from "lucide-react";
 import { playClickSound, playHoverSound } from "@/utils/audio";
 
 export default function NotFound() {

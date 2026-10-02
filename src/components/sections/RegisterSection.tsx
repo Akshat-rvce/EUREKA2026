@@ -81,7 +81,7 @@ export function RegisterSection() {
               </div>
               <div>
                 <div className="text-[11px] font-mono text-slate-400">REGISTRATION FEE</div>
-                <div className="text-sm font-bold text-white mt-0.5">{SITE_CONFIG.registration.fee.split("(")[0]}</div>
+                <div className="text-sm font-bold text-white mt-0.5">{SITE_CONFIG.registration.fee}</div>
               </div>
             </div>
 

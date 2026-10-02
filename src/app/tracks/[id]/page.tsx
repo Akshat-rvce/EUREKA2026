@@ -1,7 +1,8 @@
 import React from "react";
+import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, ArrowUpRight, Trophy, Cpu, HelpCircle, CheckCircle2 } from "lucide-react";
+import { ArrowLeft, ArrowUpRight, Trophy, Cpu, HelpCircle } from "lucide-react";
 import { TRACKS, UNSTOP_EVENT_URL } from "@/config/site";
 
 interface TrackPageProps {
@@ -10,6 +11,21 @@ interface TrackPageProps {
 
 export async function generateStaticParams() {
   return TRACKS.map((t) => ({ id: t.id }));
+}
+
+export async function generateMetadata({ params }: TrackPageProps): Promise<Metadata> {
+  const { id } = await params;
+  const track = TRACKS.find((t) => t.id === id);
+  if (!track) return { title: "Track Not Found | EUREKA '26" };
+
+  return {
+    title: `${track.title} — EUREKA '26 RVCE`,
+    description: track.tagline,
+    openGraph: {
+      title: `${track.title} — EUREKA '26 RVCE`,
+      description: track.tagline,
+    },
+  };
 }
 
 export default async function TrackDetailPage({ params }: TrackPageProps) {

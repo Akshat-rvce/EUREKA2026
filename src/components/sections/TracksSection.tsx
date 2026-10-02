@@ -140,8 +140,8 @@ export function TracksSection() {
               exit={{ scale: 0.95, opacity: 0, y: 20 }}
               transition={{ duration: 0.25 }}
               onClick={(e) => e.stopPropagation()}
-              className="relative max-w-3xl w-full rounded-3xl bg-[#0a0a0f] p-6 sm:p-10 border border-white/15 shadow-[0_25px_60px_rgba(0,0,0,0.9)] overflow-hidden my-8"
-              style={{ borderTop: `3px solid ${selectedTrack.accentColor}` }}
+              className="relative max-w-3xl w-full rounded-3xl bg-[#0a0a0f] p-6 sm:p-10 border border-white/15 border-t-[3px] shadow-[0_25px_60px_rgba(0,0,0,0.9)] overflow-hidden my-8"
+              style={{ borderTopColor: selectedTrack.accentColor } as React.CSSProperties}
             >
               {/* Close Button */}
               <button
