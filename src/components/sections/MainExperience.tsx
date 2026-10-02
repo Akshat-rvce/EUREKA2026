@@ -70,7 +70,7 @@ export function MainExperience() {
       {/* ╔══════════════════════════════════════════════════════╗
           ║  SLIDE CONTENT LAYER — stacks over robot layer     ║
           ╚══════════════════════════════════════════════════╝ */}
-      <div className="relative -mt-[100vh] z-20 pointer-events-none">
+      <div className="relative z-20 pointer-events-none" style={{ marginTop: "-100vh" }}>
 
         {/* ══════════ SLIDE 1 — HERO / INITIAL LANDING ══════════
             First landing page: Directly alongside the robot on the left
