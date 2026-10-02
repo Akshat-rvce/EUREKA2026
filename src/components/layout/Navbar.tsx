@@ -10,6 +10,7 @@ import { useSmoothScroll } from "@/components/providers/SmoothScrollProvider";
 
 const NAV_LINKS = [
   { label: "Overview", href: "#hero" },
+  { label: "Expo",     href: "#expo-intro" },
   { label: "Prizes",   href: "#prizes" },
   { label: "Tracks",   href: "#tracks" },
   { label: "FAQ",      href: "#faq" },
