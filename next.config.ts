@@ -1,8 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  // Transpile ESM-only packages so webpack can bundle them correctly
-  transpilePackages: ['@splinetool/react-spline', '@splinetool/runtime'],
+  // Transpile ESM-only Spline runtime for webpack compatibility
+  transpilePackages: ['@splinetool/runtime'],
   reactStrictMode: false,
   eslint: {
     ignoreDuringBuilds: true,
