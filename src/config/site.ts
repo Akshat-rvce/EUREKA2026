@@ -66,17 +66,12 @@ export const TRACKS: TrackItem[] = [
     tagline: "Robotics · IoT · Embedded Systems · Autonomous Systems · Drones · Industrial Automation",
     prizePool: "₹15,000 Track Winner + Swag & Mentorship",
     description:
-      "Build the machines of tomorrow. From autonomous drones and industrial robots to smart embedded systems and edge AI — this track covers the full spectrum of physical intelligence. Projects span robotics, IoT sensor networks, autonomous systems, control engineering, and smart device integration.",
+      "This track invites innovative prototypes at the intersection of mechanical actuation, embedded electronics, and sensor intelligence. Whether you are engineering autonomous ground or aerial navigation systems, industrial automation testbeds, smart IoT sensor networks, or edge-computing controllers, this domain is open to your unique problem-solving approach. Teams are encouraged to present working hardware prototypes addressing real-world challenges in logistics, manufacturing, defense, and intelligent systems.",
     iconName: "Cpu",
     tags: ["Robotics", "IoT", "Embedded Systems", "Autonomous Systems", "Drones", "Edge AI", "Sensors", "Control Systems"],
     gradient: "from-cyan-500/15 via-black to-black",
     accentColor: "#00F0FF",
-    problemStatements: [
-      "Autonomous ground robot with real-time obstacle avoidance and path planning for warehouse logistics.",
-      "IoT-based smart factory sensor mesh for predictive machine maintenance using edge AI anomaly detection.",
-      "Multi-rotor drone with precision payload delivery and GPS-denied indoor navigation.",
-      "Embedded industrial automation controller with adaptive PID and remote monitoring dashboard."
-    ],
+    problemStatements: [],
     hardwareStack: ["STM32 / ESP32 MCU", "ROS / ROS2 Framework", "LoRa / Zigbee / BLE", "IMU & LIDAR Sensors", "Servo & Stepper Drivers"],
     evaluationCriteria: [
       { criteria: "Autonomy & Intelligence Level", weight: "35%" },
@@ -92,17 +87,12 @@ export const TRACKS: TrackItem[] = [
     tagline: "Renewable Energy · Smart Grid · Energy Storage · EVs & Charging · Power Electronics · Microgrids",
     prizePool: "₹15,000 Track Winner + Swag & Mentorship",
     description:
-      "Power a greener future. This track brings together renewable energy systems, smart grid technologies, EV charging infrastructure, energy storage, power electronics, and sustainable smart buildings. Projects should address real-world challenges in energy efficiency, resource management, and decarbonization.",
+      "Powering a cleaner, greener tomorrow. This track focuses on renewable energy systems, intelligent power grids, next-generation energy storage, electric vehicle infrastructure, and sustainable smart buildings. Projects should address real-world challenges in energy efficiency, power quality, resource conservation, and decarbonization. Prototypes demonstrating working hardware, real-time sensing, and measurable efficiency gains are strongly encouraged.",
     iconName: "SunMedium",
-    tags: ["Renewable Energy", "Smart Grid", "Energy Storage", "EVs & Charging", "Microgrids", "Smart Buildings", "Water & Resource Mgmt"],
+    tags: ["Renewable Energy", "Smart Grid", "Energy Storage", "EVs & Charging", "Microgrids", "Power Electronics", "Smart Buildings", "Resource Management"],
     gradient: "from-emerald-500/15 via-black to-black",
     accentColor: "#10B981",
-    problemStatements: [
-      "Solar-wind hybrid microgrid with intelligent energy dispatch and demand-response forecasting.",
-      "Bidirectional EV smart charging station with V2G capability and grid stability support.",
-      "IoT-based smart building energy management system with occupancy-aware HVAC optimization.",
-      "Decentralized water quality monitoring and automated purification control for rural communities."
-    ],
+    problemStatements: [],
     hardwareStack: ["ESP32-S3 / Raspberry Pi", "IGBT / GaN Power Modules", "CT / Voltage Sensors", "MPPT Solar Controllers", "MQTT / Modbus Protocols"],
     evaluationCriteria: [
       { criteria: "Energy Efficiency & Sustainability Impact", weight: "35%" },
@@ -118,17 +108,12 @@ export const TRACKS: TrackItem[] = [
     tagline: "AI/ML · Computer Vision · Cybersecurity · Software Platforms · Data Science · Cloud/Edge Computing",
     prizePool: "₹15,000 Track Winner + Swag & Mentorship",
     description:
-      "Shape the digital future. This track covers AI and machine learning applications, computer vision systems, cybersecurity tools, software platforms, cloud and edge computing architectures, digital twins, VLSI/FPGA design, and intelligent computing solutions across all engineering domains.",
+      "Shape the computational frontier. This track brings together cutting-edge work in artificial intelligence, machine learning, computer vision, data platforms, and secure computing architectures. Whether deploying low-latency vision algorithms for industrial inspection, designing edge-AI accelerators, building digital twins for complex machinery, or engineering robust cybersecurity frameworks, this domain rewards technical depth, architectural elegance, and practical real-world utility.",
     iconName: "Zap",
     tags: ["AI/ML", "Computer Vision", "Cybersecurity", "Data Science", "Cloud/Edge Computing", "Digital Twins", "VLSI/FPGA"],
     gradient: "from-amber-500/15 via-black to-black",
     accentColor: "#FFD166",
-    problemStatements: [
-      "Real-time computer vision system for automated defect inspection in PCB manufacturing.",
-      "AI-powered cybersecurity intrusion detection system with explainable threat classification.",
-      "Digital twin platform for industrial equipment simulation and predictive maintenance analytics.",
-      "FPGA-accelerated inference engine for low-latency edge AI deployment in resource-constrained devices."
-    ],
+    problemStatements: [],
     hardwareStack: ["NVIDIA Jetson / Coral TPU", "Xilinx / Intel FPGA", "Cloud: AWS / GCP / Azure", "OpenCV / TensorFlow Lite", "Docker / Kubernetes"],
     evaluationCriteria: [
       { criteria: "Model Accuracy & Algorithm Innovation", weight: "35%" },
@@ -144,17 +129,12 @@ export const TRACKS: TrackItem[] = [
     tagline: "Healthcare · MedTech · Assistive Devices · Agriculture · Rural Technology · Safety · Education",
     prizePool: "₹15,000 Track Winner + Swag & Mentorship",
     description:
-      "Engineer solutions that matter. This track focuses on medical technology, assistive devices for people with disabilities, accessibility tools, agritech for farmers, rural and community technology, safety systems, educational technology, disaster management, and social impact innovations.",
+      "Engineer solutions that save lives and uplift communities. This track welcomes high-impact engineering innovations in medical devices, diagnostic tools, assistive technologies for persons with disabilities, smart agriculture, rural tech infrastructure, and disaster management. Solutions should prioritize human-centered design, affordability, field reliability, and measurable positive impact on society.",
     iconName: "Activity",
-    tags: ["Healthcare", "MedTech", "Assistive Devices", "Agriculture", "Rural Technology", "Safety", "Disaster Mgmt", "Community Solutions"],
+    tags: ["Healthcare", "MedTech", "Assistive Devices", "Agriculture", "Rural Technology", "Safety", "Disaster Management", "Social Impact"],
     gradient: "from-rose-500/15 via-black to-black",
     accentColor: "#F43F5E",
-    problemStatements: [
-      "Wearable non-invasive multi-parameter health monitor with AI-based early disease detection and telemedicine integration.",
-      "Affordable assistive communication device for individuals with speech and motor disabilities.",
-      "AI-driven precision agriculture advisory system with soil sensing for smallholder farmers.",
-      "IoT-based disaster early warning and community alert system for flood-prone rural areas."
-    ],
+    problemStatements: [],
     hardwareStack: ["ADS1299 / MAX30102 Bio-Sensors", "Raspberry Pi / Arduino", "GSM / LoRa Modules", "Soil & Environmental Sensors", "TFT / E-Paper Display"],
     evaluationCriteria: [
       { criteria: "Real-world Social Impact & Need", weight: "35%" },
@@ -170,17 +150,12 @@ export const TRACKS: TrackItem[] = [
     tagline: "Interdisciplinary Projects · Emerging Technologies · Novel Prototypes · Aerospace · Advanced Materials",
     prizePool: "₹15,000 Track Winner + Swag & Mentorship",
     description:
-      "Where rules don't apply — only ideas do. Open Innovation is for bold, interdisciplinary projects that cross boundaries and defy categorization. Aerospace systems, advanced materials, manufacturing breakthroughs, creative engineering solutions, and any project that doesn't fit Tracks 1–4 is welcome here.",
+      "Where boundary-pushing engineering knows no constraints. Open Innovation welcomes cross-disciplinary, moonshot, and unconventional hardware-software projects that break traditional silos. From aerospace subsystems, CubeSats, and advanced materials to bio-inspired mechatronics and novel consumer tech, any innovative prototype that demonstrates technical ambition, creativity, and rigorous engineering belongs in this track.",
     iconName: "Sparkles",
     tags: ["Interdisciplinary", "Emerging Technologies", "Novel Prototypes", "Aerospace", "Advanced Materials", "Manufacturing", "Creative Engineering"],
     gradient: "from-purple-500/15 via-black to-black",
     accentColor: "#A855F7",
-    problemStatements: [
-      "CubeSat attitude determination and control system testbed with hardware-in-the-loop simulation.",
-      "3D-printed adaptive metamaterial structure with tunable vibration damping for aerospace applications.",
-      "Autonomous micro-UAV swarm for collaborative indoor mapping and search-and-rescue.",
-      "Novel bio-inspired manufacturing process for lightweight composite structures with embedded sensing."
-    ],
+    problemStatements: [],
     hardwareStack: ["Pixhawk / Ardupilot", "3D Printer & CNC Mill", "HackRF / RTL-SDR", "NVIDIA Jetson Nano", "Custom PCB & Mechatronics"],
     evaluationCriteria: [
       { criteria: "Novelty, Ambition & Technical Complexity", weight: "40%" },

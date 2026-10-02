@@ -90,7 +90,7 @@ export function MainExperience() {
       ══════════════════════════════════════════════════════════ */}
       <section
         id="expo-intro"
-        className="relative min-h-screen w-full flex items-center justify-center px-6 sm:px-10"
+        className="relative w-full flex items-center justify-center px-6 sm:px-10 py-12 sm:py-16"
         style={{ background: "rgba(0,0,0,0.94)" }}
       >
         {/* Ambient glow */}
@@ -99,7 +99,7 @@ export function MainExperience() {
           style={{ background: "radial-gradient(ellipse 70% 60% at 50% 50%, rgba(255,209,102,0.04) 0%, transparent 70%)" }}
         />
 
-        <div className="relative z-10 w-full max-w-3xl mx-auto flex flex-col items-center text-center py-20">
+        <div className="relative z-10 w-full max-w-3xl mx-auto flex flex-col items-center text-center">
           {/* NATIONAL PROJECT EXPO — BIG, centered */}
           <motion.h2
             initial={{ opacity: 0, y: 40 }}
@@ -118,7 +118,7 @@ export function MainExperience() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-80px" }}
             transition={{ duration: 0.7, delay: 0.12 }}
-            className="flex flex-wrap items-center justify-center gap-4 mb-10"
+            className="flex flex-wrap items-center justify-center gap-4 mb-8"
           >
             <span
               style={{ fontSize: "clamp(1.2rem, 3vw, 2.2rem)" }}
@@ -141,7 +141,7 @@ export function MainExperience() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-80px" }}
             transition={{ duration: 0.7, delay: 0.22 }}
-            className="w-full mb-12"
+            className="w-full mb-8"
           >
             <CountdownTimer />
           </motion.div>
@@ -187,7 +187,7 @@ export function MainExperience() {
       ══════════════════════════════════════════════════════════ */}
       <section
         id="prizes"
-        className="relative min-h-screen w-full flex items-center justify-center px-6 sm:px-10"
+        className="relative w-full flex items-center justify-center px-6 sm:px-10 py-10 sm:py-12"
         style={{ background: "rgba(0,0,0,0.95)" }}
       >
         <div className="w-full max-w-4xl mx-auto flex flex-col items-center text-center">
@@ -196,7 +196,7 @@ export function MainExperience() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-120px" }}
             transition={{ duration: 0.5 }}
-            className="font-mono text-xs tracking-[0.3em] text-amber-400 uppercase mb-4 font-semibold"
+            className="font-mono text-xs tracking-[0.3em] text-amber-400 uppercase mb-3 font-semibold"
           >
             PRIZE POOL &amp; INCENTIVES
           </motion.p>
@@ -206,7 +206,7 @@ export function MainExperience() {
             viewport={{ once: true, margin: "-120px" }}
             transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
             style={{ fontSize: "clamp(3.5rem, 10vw, 7.5rem)" }}
-            className="font-display font-black tracking-[-0.02em] leading-[0.92] mb-6"
+            className="font-display font-black tracking-[-0.02em] leading-[0.92] mb-4"
           >
             <span className="text-transparent bg-clip-text bg-gradient-to-br from-amber-200 via-amber-400 to-yellow-500">
               ₹15,000
@@ -219,7 +219,7 @@ export function MainExperience() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-120px" }}
             transition={{ duration: 0.6, delay: 0.2 }}
-            className="font-mono text-xs sm:text-base text-slate-300 tracking-wider mb-8"
+            className="font-mono text-xs sm:text-base text-slate-300 tracking-wider mb-6"
           >
             INDUSTRY JURY CONNECT · INCUBATION &amp; MENTORSHIP · CERTIFICATES &amp; GOODIES
           </motion.p>
@@ -228,7 +228,7 @@ export function MainExperience() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-120px" }}
             transition={{ duration: 0.5, delay: 0.3 }}
-            onClick={() => { playClickSound(); scrollTo("#tracks", { offset: -60 }); }}
+            onClick={() => { playClickSound(); scrollTo("#tracks", { offset: -30 }); }}
             onMouseEnter={playHoverSound}
             className="px-7 py-3 rounded-full border border-white/20 hover:border-white/50 bg-white/[0.04] text-white text-xs font-mono tracking-wider flex items-center gap-2 transition-all duration-300"
           >
@@ -243,7 +243,7 @@ export function MainExperience() {
       ══════════════════════════════════════════════════════════ */}
       <section
         id="tracks"
-        className="relative min-h-screen w-full flex items-center justify-center px-6 sm:px-10"
+        className="relative w-full flex items-center justify-center px-6 sm:px-10 py-10 sm:py-12"
         style={{ background: "rgba(0,0,0,0.95)" }}
       >
         <div className="w-full max-w-2xl mx-auto flex flex-col items-center text-center">
@@ -252,8 +252,8 @@ export function MainExperience() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-120px" }}
             transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
-            style={{ fontSize: "clamp(3rem, 9vw, 6.5rem)" }}
-            className="font-display font-black tracking-[-0.02em] text-white mb-10"
+            style={{ fontSize: "clamp(2.5rem, 8vw, 5.5rem)" }}
+            className="font-display font-black tracking-[-0.02em] text-white mb-6"
           >
             TRACKS
           </motion.h2>
@@ -300,7 +300,7 @@ export function MainExperience() {
       ══════════════════════════════════════════════════════════ */}
       <section
         id="register"
-        className="relative min-h-screen w-full flex items-center justify-center px-6 sm:px-10"
+        className="relative w-full flex items-center justify-center px-6 sm:px-10 py-10 sm:py-14"
         style={{ background: "rgba(0,0,0,0.97)" }}
       >
         <div className="w-full max-w-2xl mx-auto flex flex-col items-center text-center">
@@ -310,7 +310,7 @@ export function MainExperience() {
             viewport={{ once: true, margin: "-120px" }}
             transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
             style={{ fontSize: "clamp(2.2rem, 6.5vw, 4.5rem)" }}
-            className="font-display font-black tracking-[-0.02em] leading-[1.05] text-white mb-10"
+            className="font-display font-black tracking-[-0.02em] leading-[1.05] text-white mb-6"
           >
             Claim Your Spot<br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-300 to-yellow-500">
@@ -322,7 +322,7 @@ export function MainExperience() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-120px" }}
             transition={{ duration: 0.7, delay: 0.15 }}
-            className="flex flex-col sm:flex-row items-center justify-center gap-8 sm:gap-16 mb-12 py-6 border-y border-white/10 w-full"
+            className="flex flex-col sm:flex-row items-center justify-center gap-8 sm:gap-16 mb-8 py-5 border-y border-white/10 w-full"
           >
             <div className="flex flex-col items-center gap-1">
               <span className="text-[10px] font-mono text-slate-500 uppercase tracking-[0.2em]">TEAM SIZE</span>

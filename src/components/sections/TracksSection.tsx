@@ -183,24 +183,19 @@ export function TracksSection() {
                 </p>
               </div>
 
-              {/* Problem Statements / Challenges */}
+              {/* Domain Key Focus Tags */}
               <div className="mb-6">
                 <h4 className="text-xs uppercase tracking-wider text-amber-300 font-mono mb-3">
-                  SAMPLE PROBLEM STATEMENTS &amp; CHALLENGES:
+                  KEY DOMAIN FOCUS AREAS:
                 </h4>
-                <div className="space-y-2.5">
-                  {selectedTrack.problemStatements.map((statement, sIdx) => (
-                    <div
-                      key={sIdx}
-                      className="p-3.5 rounded-xl bg-white/[0.03] border border-white/10 flex items-start gap-3"
+                <div className="flex flex-wrap gap-2">
+                  {selectedTrack.tags.map((tag) => (
+                    <span
+                      key={tag}
+                      className="px-3 py-1.5 rounded-xl text-xs font-mono bg-white/[0.04] border border-white/10 text-slate-300"
                     >
-                      <span className="flex-shrink-0 w-5 h-5 rounded-full bg-amber-400/20 text-amber-300 font-mono font-bold text-[10px] flex items-center justify-center mt-0.5">
-                        {sIdx + 1}
-                      </span>
-                      <span className="text-xs sm:text-sm text-slate-200 leading-relaxed font-normal">
-                        {statement}
-                      </span>
-                    </div>
+                      {tag}
+                    </span>
                   ))}
                 </div>
               </div>

@@ -16,7 +16,7 @@ export function Footer() {
   };
 
   return (
-    <footer id="contact" className="relative w-full bg-black text-white border-t border-white/10 py-20 px-6 sm:px-12 md:px-20 lg:px-28">
+    <footer id="contact" className="relative w-full bg-black text-white border-t border-white/10 py-12 sm:py-16 px-6 sm:px-12 md:px-20 lg:px-28">
       <div className="max-w-7xl mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-12 pb-14 border-b border-white/10">
           {/* Brand info */}
