@@ -90,7 +90,7 @@ export function MainExperience() {
       ══════════════════════════════════════════════════════════ */}
       <section
         id="expo-intro"
-        className="relative w-full flex items-center justify-center px-6 sm:px-10 py-12 sm:py-16"
+        className="relative min-h-screen w-full flex items-center justify-center px-6 sm:px-10 py-16 sm:py-20"
         style={{ background: "rgba(0,0,0,0.94)" }}
       >
         {/* Ambient glow */}
@@ -187,7 +187,7 @@ export function MainExperience() {
       ══════════════════════════════════════════════════════════ */}
       <section
         id="prizes"
-        className="relative w-full flex items-center justify-center px-6 sm:px-10 py-10 sm:py-12"
+        className="relative min-h-screen w-full flex items-center justify-center px-6 sm:px-10 py-16 sm:py-20"
         style={{ background: "rgba(0,0,0,0.95)" }}
       >
         <div className="w-full max-w-4xl mx-auto flex flex-col items-center text-center">
@@ -228,7 +228,7 @@ export function MainExperience() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-120px" }}
             transition={{ duration: 0.5, delay: 0.3 }}
-            onClick={() => { playClickSound(); scrollTo("#tracks", { offset: -30 }); }}
+            onClick={() => { playClickSound(); scrollTo("#tracks", { offset: 0 }); }}
             onMouseEnter={playHoverSound}
             className="px-7 py-3 rounded-full border border-white/20 hover:border-white/50 bg-white/[0.04] text-white text-xs font-mono tracking-wider flex items-center gap-2 transition-all duration-300"
           >
@@ -243,7 +243,7 @@ export function MainExperience() {
       ══════════════════════════════════════════════════════════ */}
       <section
         id="tracks"
-        className="relative w-full flex items-center justify-center px-6 sm:px-10 py-10 sm:py-12"
+        className="relative min-h-screen w-full flex items-center justify-center px-6 sm:px-10 py-16 sm:py-20"
         style={{ background: "rgba(0,0,0,0.95)" }}
       >
         <div className="w-full max-w-2xl mx-auto flex flex-col items-center text-center">
@@ -300,7 +300,7 @@ export function MainExperience() {
       ══════════════════════════════════════════════════════════ */}
       <section
         id="register"
-        className="relative w-full flex items-center justify-center px-6 sm:px-10 py-10 sm:py-14"
+        className="relative min-h-screen w-full flex items-center justify-center px-6 sm:px-10 py-16 sm:py-20"
         style={{ background: "rgba(0,0,0,0.97)" }}
       >
         <div className="w-full max-w-2xl mx-auto flex flex-col items-center text-center">
