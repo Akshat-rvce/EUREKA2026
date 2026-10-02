@@ -22,7 +22,7 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://eureka26.rvce.edu.in"),
   title: "EUREKA '26 | National Project Expo-cum-Hackathon | RVCE Bangalore",
   description:
-    "Official website for EUREKA '26 — The flagship National Project Expo-cum-Hackathon by the Dept. of Electronics & Electrical Engineering, RV College of Engineering (RVCE), Bangalore on Nov 28, 2026. ₹1,00,000+ Prize Pool across 5 futuristic tracks.",
+    "Official website for EUREKA '26 — The flagship National Project Expo-cum-Hackathon by the Dept. of Electronics & Electrical Engineering, RV College of Engineering (RVCE), Bangalore on Nov 28, 2026. ₹15,000 Total Prize Pool across 5 futuristic tracks.",
   keywords: [
     "EUREKA 26",
     "EUREKA RVCE",
@@ -46,7 +46,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "EUREKA '26 — National Project Expo-cum-Hackathon | RVCE",
     description:
-      "Join India's premier engineering showcase on Nov 28, 2026 at RVCE Bangalore. 5 Tracks, 500+ Innovators, ₹1 Lakh+ Prizes, Industry Jury.",
+      "Join India's premier engineering showcase on Nov 28, 2026 at RVCE Bangalore. 5 Tracks, 500+ Innovators, ₹15,000 Total Prizes, Industry Jury.",
     url: "https://eureka26.rvce.edu.in",
     siteName: "EUREKA '26 RVCE",
     locale: "en_IN",
