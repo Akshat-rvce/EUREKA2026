@@ -25,7 +25,7 @@ export function TimelineSection() {
               <span>EVENT DAY SCHEDULE • 28 NOV 2026</span>
             </div>
             <h2 className="font-display text-4xl sm:text-5xl md:text-6xl font-black tracking-tight text-white">
-              Expo &amp; Hackathon{" "}
+              National Project Expo{" "}
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-teal-300">
                 Timeline
               </span>

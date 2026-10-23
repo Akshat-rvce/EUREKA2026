@@ -4,11 +4,11 @@ const nextConfig: NextConfig = {
   // Transpile ESM-only Spline runtime for webpack compatibility
   transpilePackages: ['@splinetool/runtime'],
   reactStrictMode: false,
+  experimental: {
+    cpus: 1,
+  },
   eslint: {
     ignoreDuringBuilds: true,
-  },
-  typescript: {
-    ignoreBuildErrors: true,
   },
   // Optimize images from external domains (Spline CDN etc.)
   images: {

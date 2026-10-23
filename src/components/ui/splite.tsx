@@ -52,7 +52,7 @@ export function SplineScene({ scene, className }: SplineSceneProps) {
       )}
       <canvas
         ref={canvasRef}
-        className="w-full h-full"
+        className="w-full h-full touch-pan-y"
         style={{ display: loading ? 'none' : 'block' }}
       />
     </div>

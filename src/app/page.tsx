@@ -8,7 +8,7 @@ import { Footer } from "@/components/layout/Footer";
 
 export default function Home() {
   return (
-    <main className="relative min-h-screen bg-black text-white selection:bg-amber-400 selection:text-black">
+    <main className="relative min-h-screen bg-[var(--paper)] text-[var(--ink)] selection:bg-[#d8bd87] selection:text-[#171b1c]">
       {/* Sticky/Fixed Minimalist Navigation */}
       <Navbar />
 

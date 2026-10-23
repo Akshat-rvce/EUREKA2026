@@ -13,7 +13,7 @@ export const UNSTOP_EVENT_URL = "https://unstop.com/p/eureka-26-national-expo-cu
 // ============================================================================
 export const SITE_CONFIG = {
   name: "EUREKA '26",
-  tagline: "National Project Expo-cum-Hackathon",
+  tagline: "National Project Expo",
   organizer: "Dept. of Electronics & Electrical Engineering",
   institution: "RV College of Engineering (RVCE), Bangalore",
   date: "November 28, 2026",
@@ -64,7 +64,7 @@ export const TRACKS: TrackItem[] = [
     number: "01",
     title: "Robotics, IoT & Intelligent Automation",
     tagline: "Robotics · IoT · Embedded Systems · Autonomous Systems · Drones · Industrial Automation",
-    prizePool: "₹15,000 Track Winner + Swag & Mentorship",
+    prizePool: "Part of the ₹15,000 total prize pool",
     description:
       "This track invites innovative prototypes at the intersection of mechanical actuation, embedded electronics, and sensor intelligence. Whether you are engineering autonomous ground or aerial navigation systems, industrial automation testbeds, smart IoT sensor networks, or edge-computing controllers, this domain is open to your unique problem-solving approach. Teams are encouraged to present working hardware prototypes addressing real-world challenges in logistics, manufacturing, defense, and intelligent systems.",
     iconName: "Cpu",
@@ -85,7 +85,7 @@ export const TRACKS: TrackItem[] = [
     number: "02",
     title: "Sustainable Energy, Smart Systems & Infrastructure",
     tagline: "Renewable Energy · Smart Grid · Energy Storage · EVs & Charging · Power Electronics · Microgrids",
-    prizePool: "₹15,000 Track Winner + Swag & Mentorship",
+    prizePool: "Part of the ₹15,000 total prize pool",
     description:
       "Powering a cleaner, greener tomorrow. This track focuses on renewable energy systems, intelligent power grids, next-generation energy storage, electric vehicle infrastructure, and sustainable smart buildings. Projects should address real-world challenges in energy efficiency, power quality, resource conservation, and decarbonization. Prototypes demonstrating working hardware, real-time sensing, and measurable efficiency gains are strongly encouraged.",
     iconName: "SunMedium",
@@ -106,7 +106,7 @@ export const TRACKS: TrackItem[] = [
     number: "03",
     title: "AI, Computing & Digital Technologies",
     tagline: "AI/ML · Computer Vision · Cybersecurity · Software Platforms · Data Science · Cloud/Edge Computing",
-    prizePool: "₹15,000 Track Winner + Swag & Mentorship",
+    prizePool: "Part of the ₹15,000 total prize pool",
     description:
       "Shape the computational frontier. This track brings together cutting-edge work in artificial intelligence, machine learning, computer vision, data platforms, and secure computing architectures. Whether deploying low-latency vision algorithms for industrial inspection, designing edge-AI accelerators, building digital twins for complex machinery, or engineering robust cybersecurity frameworks, this domain rewards technical depth, architectural elegance, and practical real-world utility.",
     iconName: "Zap",
@@ -127,7 +127,7 @@ export const TRACKS: TrackItem[] = [
     number: "04",
     title: "Healthcare, Assistive Technology & Social Impact",
     tagline: "Healthcare · MedTech · Assistive Devices · Agriculture · Rural Technology · Safety · Education",
-    prizePool: "₹15,000 Track Winner + Swag & Mentorship",
+    prizePool: "Part of the ₹15,000 total prize pool",
     description:
       "Engineer solutions that save lives and uplift communities. This track welcomes high-impact engineering innovations in medical devices, diagnostic tools, assistive technologies for persons with disabilities, smart agriculture, rural tech infrastructure, and disaster management. Solutions should prioritize human-centered design, affordability, field reliability, and measurable positive impact on society.",
     iconName: "Activity",
@@ -148,7 +148,7 @@ export const TRACKS: TrackItem[] = [
     number: "05",
     title: "Open Innovation",
     tagline: "Interdisciplinary Projects · Emerging Technologies · Novel Prototypes · Aerospace · Advanced Materials",
-    prizePool: "₹15,000 Track Winner + Swag & Mentorship",
+    prizePool: "Part of the ₹15,000 total prize pool",
     description:
       "Where boundary-pushing engineering knows no constraints. Open Innovation welcomes cross-disciplinary, moonshot, and unconventional hardware-software projects that break traditional silos. From aerospace subsystems, CubeSats, and advanced materials to bio-inspired mechatronics and novel consumer tech, any innovative prototype that demonstrates technical ambition, creativity, and rigorous engineering belongs in this track.",
     iconName: "Sparkles",
@@ -195,7 +195,7 @@ export const TIMELINE: TimelineMilestone[] = [
     badge: "All 5 Tracks",
     description:
       "All teams showcase physical hardware prototypes & software simulators to academic and research panels. Continuous evaluation on innovation, execution, and viability.",
-    highlights: ["100+ Booth Showcases", "Peer & Academic Review", "Shortlist of Top 24 Finalists"],
+    highlights: ["Student Project Showcases", "Peer & Academic Review", "Finalist Presentations"],
   },
   {
     time: "01:30 PM — 02:30 PM",
@@ -221,8 +221,8 @@ export const TIMELINE: TimelineMilestone[] = [
     title: "Award Ceremony & Prize Distribution",
     badge: "Main Auditorium",
     description:
-      "Felicitation of winners, distribution of ₹1,00,000+ cash prizes, special track awards, certificates, and keynote addresses.",
-    highlights: ["₹1 Lakh+ Cash Awards", "Trophy Handover", "Incubation Fast-track"],
+      "Felicitation of winners, distribution of the event prize pool, certificates, and keynote addresses.",
+    highlights: ["Prize Pool Awards", "Trophy Handover", "Certificates"],
   },
 ];
 
@@ -330,7 +330,7 @@ export const STATS = [
   { value: 500, suffix: "+", label: "Innovators & Delegates", subtext: "From across India" },
   { value: 100, suffix: "+", label: "Working Prototypes", subtext: "Live hardware demos" },
   { value: 5, suffix: "", label: "Engineering Tracks", subtext: "Covering future tech" },
-  { value: 100, prefix: "₹", suffix: "k+", label: "Prize & Grant Pool", subtext: "Cash & incubation" },
+  { value: 15, prefix: "₹", suffix: "k", label: "Total Prize Pool", subtext: "Event prizes" },
 ];
 
 export interface TeamMember {

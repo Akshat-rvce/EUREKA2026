@@ -2,9 +2,9 @@
 
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Sparkles, Calendar, MapPin, Trophy, ArrowDown, ExternalLink, ShieldCheck, Zap, ArrowUpRight, Gift, Briefcase, Award } from "lucide-react";
 import { SplineScene } from "@/components/ui/splite";
 import { Spotlight } from "@/components/ui/spotlight";
+import { Sparkles, Calendar, MapPin, Trophy, ArrowDown, ArrowUpRight, Gift, Briefcase, Award, Zap } from "lucide-react";
 import { SITE_CONFIG, UNSTOP_EVENT_URL } from "@/config/site";
 import { useSmoothScroll } from "@/components/providers/SmoothScrollProvider";
 import { playHoverSound, playClickSound } from "@/utils/audio";
@@ -88,7 +88,7 @@ export function HeroSection() {
 
           {/* Tagline / Subtitle */}
           <div className="text-xs sm:text-sm font-mono tracking-[0.2em] text-slate-400 uppercase mb-3 font-semibold">
-            NATIONAL PROJECT EXPO-CUM-HACKATHON • 28 NOV 2026
+            NATIONAL PROJECT EXPO • 28 NOV 2026
           </div>
 
           <p className="text-sm sm:text-base text-slate-300 font-normal leading-relaxed mb-8 max-w-xl">
@@ -145,7 +145,7 @@ export function HeroSection() {
             <span className="text-white/20">•</span>
             <div className="flex items-center gap-1.5">
               <Trophy className="w-4 h-4 text-white" />
-              <span>₹1,00,000+ Prize Pool</span>
+              <span>₹15,000 Total Prize Pool</span>
             </div>
           </div>
 
@@ -171,7 +171,7 @@ export function HeroSection() {
             </div>
             <div>
               <div className="text-[11px] font-mono text-slate-400">PRIZE POOL</div>
-              <div className="font-display font-bold text-sm text-white">₹15,000 / Track</div>
+              <div className="font-display font-bold text-sm text-white">₹15,000 total</div>
             </div>
           </div>
 
@@ -181,7 +181,7 @@ export function HeroSection() {
             </div>
             <div>
               <div className="text-[11px] font-mono text-slate-400">CAREER IMPACT</div>
-              <div className="font-display font-bold text-sm text-white">Internships &amp; Connect</div>
+              <div className="font-display font-bold text-sm text-white">Mentorship &amp; Connect</div>
             </div>
           </div>
 
@@ -191,7 +191,7 @@ export function HeroSection() {
             </div>
             <div>
               <div className="text-[11px] font-mono text-slate-400">INCUBATION</div>
-              <div className="font-display font-bold text-sm text-white">RVCE Seed Mentorship</div>
+              <div className="font-display font-bold text-sm text-white">Project Mentorship</div>
             </div>
           </div>
 
@@ -201,7 +201,7 @@ export function HeroSection() {
             </div>
             <div>
               <div className="text-[11px] font-mono text-slate-400">PERKS &amp; SWAG</div>
-              <div className="font-display font-bold text-sm text-white">Kits + ₹50k Credits</div>
+              <div className="font-display font-bold text-sm text-white">Certificates &amp; Goodies</div>
             </div>
           </div>
 

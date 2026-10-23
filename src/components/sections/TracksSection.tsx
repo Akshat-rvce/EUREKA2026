@@ -49,8 +49,7 @@ export function TracksSection() {
           </div>
           <div className="max-w-md">
             <p className="text-sm sm:text-base text-slate-400 font-normal leading-relaxed">
-              Select your domain of impact. Each track features a dedicated{" "}
-              <span className="text-emerald-400 font-bold">₹15,000 Track Winner Prize</span> + overall championship qualification!
+              Explore projects across five domains within the event’s ₹15,000 total prize pool.
             </p>
           </div>
         </div>
@@ -79,10 +78,10 @@ export function TracksSection() {
                       <Icon className="w-5 h-5" />
                     </div>
                     
-                    {/* ₹15K Prize Badge */}
+                    {/* Shared event prize pool */}
                     <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-mono font-bold">
                       <Trophy className="w-3.5 h-3.5" />
-                      <span>₹15,000 Prize</span>
+                      <span>Event prize pool</span>
                     </div>
 
                     <span className="font-mono text-2xl font-black text-white/20 group-hover:text-white/40 transition-colors">
@@ -244,7 +243,7 @@ export function TracksSection() {
               {/* Action Buttons */}
               <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-6 border-t border-white/10">
                 <div className="text-xs font-mono text-slate-400">
-                  Prize: <span className="text-emerald-400 font-bold">₹15,000</span> + Merit Certificate
+                  <span className="text-emerald-400 font-bold">Part of ₹15,000 total prize pool</span>
                 </div>
                 <div className="flex items-center gap-3 w-full sm:w-auto">
                   <button

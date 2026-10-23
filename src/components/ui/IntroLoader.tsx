@@ -98,7 +98,7 @@ export function IntroLoader({ onComplete }: { onComplete?: () => void }) {
               transition={{ delay: 0.15 }}
               className="text-xs sm:text-sm text-slate-400 font-normal mb-10 tracking-wide"
             >
-              National Project Expo-cum-Hackathon
+              National Project Expo
             </motion.p>
 
             {/* Progress Bar & Percentage */}

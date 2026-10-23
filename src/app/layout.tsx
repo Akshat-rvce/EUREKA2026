@@ -1,39 +1,24 @@
 import type { Metadata, Viewport } from "next";
-import { Space_Grotesk, Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import { SmoothScrollProvider } from "@/components/providers/SmoothScrollProvider";
 import { CustomCursor } from "@/components/ui/CustomCursor";
 
-const spaceGrotesk = Space_Grotesk({
-  subsets: ["latin"],
-  variable: "--font-space",
-  weight: ["500", "600", "700"],
-  display: "swap",
-});
-
-const plusJakarta = Plus_Jakarta_Sans({
-  subsets: ["latin"],
-  variable: "--font-jakarta",
-  weight: ["400", "500", "600", "700", "800"],
-  display: "swap",
-});
-
 export const metadata: Metadata = {
-  metadataBase: new URL("https://eureka26.rvce.edu.in"),
-  title: "EUREKA '26 | National Project Expo-cum-Hackathon | RVCE Bangalore",
+  metadataBase: new URL("https://eureka-2026.vercel.app/"),
+  title: "EUREKA ’26 | National Project Expo | RVCE Bengaluru",
   description:
-    "Official website for EUREKA '26 — The flagship National Project Expo-cum-Hackathon by the Dept. of Electronics & Electrical Engineering, RV College of Engineering (RVCE), Bangalore on Nov 28, 2026. ₹15,000 Total Prize Pool across 5 futuristic tracks.",
+    "EUREKA ’26 is the National Project Expo organised by the Department of Electrical & Electronics Engineering at RV College of Engineering, Bengaluru, on 28 November 2026.",
   keywords: [
     "EUREKA 26",
     "EUREKA RVCE",
-    "RV College of Engineering Hackathon",
+    "RV College of Engineering National Project Expo",
     "National Project Expo Bangalore",
     "EEE RVCE Expo 2026",
-    "Hardware Hackathon Bangalore",
-    "Clean Energy Hackathon",
+    "Student Engineering Projects Bengaluru",
+    "Clean Energy Engineering Projects",
     "Smart Mobility EV Competition",
-    "AIoT Edge Hackathon",
-    "Unstop Hackathon 2026",
+    "AIoT Edge Engineering Expo",
+    "Unstop EUREKA 2026",
   ],
   authors: [{ name: "Dept. of Electronics & Electrical Engineering, RVCE" }],
   creator: "RVCE EEE Department",
@@ -44,27 +29,27 @@ export const metadata: Metadata = {
     telephone: false,
   },
   openGraph: {
-    title: "EUREKA '26 — National Project Expo-cum-Hackathon | RVCE",
+    title: "EUREKA ’26 — National Project Expo | RVCE",
     description:
-      "Join India's premier engineering showcase on Nov 28, 2026 at RVCE Bangalore. 5 Tracks, 500+ Innovators, ₹15,000 Total Prizes, Industry Jury.",
-    url: "https://eureka26.rvce.edu.in",
+      "Explore five engineering tracks at EUREKA ’26, the National Project Expo at RV College of Engineering, Bengaluru, on 28 November 2026.",
+    url: "https://eureka-2026.vercel.app/",
     siteName: "EUREKA '26 RVCE",
     locale: "en_IN",
     type: "website",
     images: [
       {
-        url: "/og-image.png",
-        width: 1200,
-        height: 630,
-        alt: "EUREKA '26 National Project Expo-cum-Hackathon RVCE Bangalore",
+        url: "/images/eureka-logo.png",
+        width: 1024,
+        height: 1024,
+        alt: "EUREKA ’26 logo, RVCE National Project Expo",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "EUREKA '26 | National Project Expo-cum-Hackathon | RVCE",
-    description: "Flagship National Engineering Expo & Hackathon at RVCE Bangalore on Nov 28, 2026.",
-    images: ["/og-image.png"],
+    title: "EUREKA ’26 | National Project Expo | RVCE",
+    description: "National Project Expo at RV College of Engineering, Bengaluru, on 28 November 2026.",
+    images: ["/images/eureka-logo.png"],
     creator: "@rvce_eureka",
   },
   robots: {
@@ -91,8 +76,8 @@ export default function RootLayout({
   // Structured JSON-LD Event Data for search engines
   const jsonLd = {
     "@context": "https://schema.org",
-    "@type": "Hackathon",
-    "name": "EUREKA '26 — National Project Expo-cum-Hackathon",
+    "@type": "Event",
+    "name": "EUREKA ’26 — National Project Expo",
     "startDate": "2026-11-28T09:00:00+05:30",
     "endDate": "2026-11-28T19:00:00+05:30",
     "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode",
@@ -115,7 +100,7 @@ export default function RootLayout({
       "url": "https://rvce.edu.in",
     },
     "description":
-      "A premier national level project exhibition and hackathon bringing 500+ innovators across India together.",
+      "National Project Expo organised by the Department of Electrical & Electronics Engineering at RV College of Engineering, Bengaluru.",
     "offers": {
       "@type": "Offer",
       "price": "400",
@@ -127,7 +112,7 @@ export default function RootLayout({
   };
 
   return (
-    <html lang="en" className={`${spaceGrotesk.variable} ${plusJakarta.variable} dark scroll-smooth`}>
+    <html lang="en" className="scroll-smooth">
       <head>
         <script
           type="application/ld+json"
