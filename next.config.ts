@@ -7,9 +7,6 @@ const nextConfig: NextConfig = {
   experimental: {
     cpus: 1,
   },
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
   // Optimize images from external domains (Spline CDN etc.)
   images: {
     remotePatterns: [

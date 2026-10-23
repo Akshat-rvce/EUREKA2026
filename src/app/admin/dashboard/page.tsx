@@ -1,950 +1,120 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
-import {
-  Users,
-  QrCode,
-  Award,
-  Trophy,
-  UserPlus,
-  LogOut,
-  Search,
-  CheckCircle2,
-  XCircle,
-  Download,
-  Upload,
-  Sparkles,
-  Sliders,
-  Tv,
-  Camera,
-  Trash2,
-  RefreshCw,
-  Zap,
-} from "lucide-react";
-import confetti from "canvas-confetti";
-import { AdminDataService, Team, JudgeScore, JudgeAccount } from "@/services/adminData";
+import { collection, onSnapshot, query as firestoreQuery, where } from "firebase/firestore";
+import { signOut, updatePassword } from "firebase/auth";
+import { Activity, ArrowDownToLine, ArrowLeft, Check, CircleAlert, LockKeyhole, LogOut, Plus, Radio, Search, Shield, Users, X } from "lucide-react";
+import { auth, db, isFirebaseConfigured } from "@/config/firebase";
 import { TRACKS } from "@/config/site";
-import { playClickSound, playSuccessChime, playHoverSound } from "@/utils/audio";
+import type { AdminProfile, AdminRole, PermissionSet } from "@/lib/adminAccess";
+
+type RecordRow = Record<string, any> & { id: string };
+type AccountRow = AdminProfile & { uid: string };
+const fieldClass = "w-full rounded-lg border border-[#ded8c9] bg-white px-3 py-2.5 text-sm text-[#24231f] outline-none focus:border-[#8c7649]";
+const roles: AdminRole[] = ["administrator", "organizer", "judge", "checkin", "viewer", "custom"];
 
 export default function AdminDashboard() {
   const router = useRouter();
-  const [currentUser, setCurrentUser] = useState<any>(null);
-  const [activeTab, setActiveTab] = useState<"teams" | "checkin" | "judging" | "leaderboard" | "judges">("teams");
-
-  // State Stores
-  const [teams, setTeams] = useState<Team[]>([]);
-  const [scores, setScores] = useState<JudgeScore[]>([]);
-  const [judges, setJudges] = useState<JudgeAccount[]>([]);
-
-  // Filters & Search
-  const [searchQuery, setSearchQuery] = useState("");
+  const [user, setUser] = useState<AccountRow | null>(null);
+  const [teams, setTeams] = useState<RecordRow[]>([]);
+  const [scores, setScores] = useState<RecordRow[]>([]);
+  const [accounts, setAccounts] = useState<AccountRow[]>([]);
+  const [auditEvents, setAuditEvents] = useState<RecordRow[]>([]);
+  const [tab, setTab] = useState("overview");
+  const [query, setQuery] = useState("");
   const [selectedTrack, setSelectedTrack] = useState("all");
-  const [leaderboardRound, setLeaderboardRound] = useState<"round1" | "round2">("round1");
-  const [isProjectorMode, setIsProjectorMode] = useState(false);
-
-  // Check-in Scanner State
-  const [scanInput, setScanInput] = useState("");
-  const [lastScannedTeam, setLastScannedTeam] = useState<Team | null>(null);
-
-  // Judging Form State
-  const [selectedTeamForJudging, setSelectedTeamForJudging] = useState<string>("");
-  const [judgingRound, setJudgingRound] = useState<"round1" | "round2">("round1");
-  const [criteria, setCriteria] = useState({
-    innovation: 8,
-    technicalDepth: 8,
-    hardwareExecution: 8,
-    marketViability: 8,
-    presentation: 8,
-    comments: "",
-  });
-  const [judgingSuccess, setJudgingSuccess] = useState(false);
-
-  // New Judge Form State
-  const [newJudgeName, setNewJudgeName] = useState("");
-  const [newJudgeEmail, setNewJudgeEmail] = useState("");
-  const [newJudgeTrack, setNewJudgeTrack] = useState("all");
+  const [notice, setNotice] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [teamForm, setTeamForm] = useState(false);
+  const [accountForm, setAccountForm] = useState(false);
+  const [editingUid, setEditingUid] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [passwordError, setPasswordError] = useState("");
 
   useEffect(() => {
-    // 1. Session verification
-    const sessionStr = localStorage.getItem("eureka_auth_session");
-    if (!sessionStr) {
-      router.push("/admin");
-      return;
-    }
-    try {
-      const parsed = JSON.parse(sessionStr);
-      setCurrentUser(parsed.user);
-      if (parsed.user.role === "judge") {
-        setActiveTab("judging");
-      }
-    } catch {
-      router.push("/admin");
-      return;
-    }
-
-    // 2. Load data
-    refreshData();
+    fetch("/api/admin/me").then(async r => { if (!r.ok) throw new Error(); const d = await r.json(); setUser(d.user); }).catch(() => router.replace("/admin"));
   }, [router]);
 
-  const refreshData = () => {
-    setTeams(AdminDataService.getTeams());
-    setScores(AdminDataService.getScores());
-    setJudges(AdminDataService.getJudges());
-  };
+  useEffect(() => {
+    const firestore = db;
+    if (!user || !firestore || !isFirebaseConfigured) return;
+    const stops: Array<() => void> = [];
+    const canTeams = user.role === "owner" || user.permissions?.registrationsRead || user.permissions?.checkinRead;
+    const canScores = user.role === "owner" || user.permissions?.judgingRead;
+    const hasTrackAccess = user.role === "owner" || Boolean(user.trackIds?.length);
+    const scoped = (rows: RecordRow[]) => user.role === "owner" ? rows : rows.filter(row => user.trackIds?.includes(row.trackId));
+    const scopedCollection = (name: "teams" | "scores") => user.role !== "owner"
+      ? firestoreQuery(collection(firestore, name), where("trackId", "in", user.trackIds))
+      : collection(firestore, name);
+    if (canTeams && hasTrackAccess) stops.push(onSnapshot(scopedCollection("teams"), snap => { setTeams(scoped(snap.docs.map(d => ({ id: d.id, ...d.data() })))); setLoading(false); }, () => setNotice("Live database is not ready. Configure Firestore and its security rules.")));
+    if (canScores && hasTrackAccess) stops.push(onSnapshot(scopedCollection("scores"), snap => setScores(scoped(snap.docs.map(d => ({ id: d.id, ...d.data() })))), () => setNotice("Judging data could not be loaded.")));
+    if (user.role === "owner" && user.permissions?.accountsManage) fetch("/api/admin/accounts").then(r=>r.json()).then(d=>setAccounts(d.users || [])).catch(()=>{});
+    if (!canTeams || !hasTrackAccess) setLoading(false);
+    return () => stops.forEach(stop => stop());
+  }, [user]);
 
-  const handleLogout = () => {
-    playClickSound();
-    localStorage.removeItem("eureka_auth_session");
-    document.cookie = "eureka_auth_token=; path=/; max-age=0";
-    router.push("/admin");
-  };
+  useEffect(() => {
+    if (tab === "activity" && user?.role === "owner") fetch("/api/admin/audit").then(r=>r.json()).then(d=>setAuditEvents(d.events || [])).catch(()=>setNotice("Audit history could not be loaded."));
+  }, [tab, user]);
 
-  // --- Check-in Logic ---
-  const handleScanSubmit = (e?: React.FormEvent) => {
-    if (e) e.preventDefault();
-    if (!scanInput.trim()) return;
+  async function mutate(collectionName: string, data: Record<string, unknown>, id?: string) {
+    const response = await fetch("/api/admin/data", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ collection: collectionName, data: { ...data, ...(id ? { id } : {}) } }) });
+    const result = await response.json();
+    if (!response.ok) throw new Error(result.error || "Could not save.");
+    return result;
+  }
 
-    const query = scanInput.trim();
-    const found = teams.find(
-      (t) =>
-        t.teamCode.toLowerCase() === query.toLowerCase() ||
-        t.id.toLowerCase() === query.toLowerCase() ||
-        t.teamName.toLowerCase().includes(query.toLowerCase())
-    );
+  async function logout() {
+    await fetch("/api/auth/session", { method: "DELETE" });
+    if (auth) await signOut(auth).catch(()=>{});
+    router.replace("/admin");
+  }
 
-    if (found) {
-      const updated = AdminDataService.toggleCheckIn(found.id);
-      setTeams(updated);
-      const freshlyUpdated = updated.find((t) => t.id === found.id) || null;
-      setLastScannedTeam(freshlyUpdated);
-      playSuccessChime();
-      setScanInput("");
-    } else {
-      playClickSound();
-      alert(`No team matching "${query}" was found.`);
-    }
-  };
+  const visibleTeams = useMemo(() => teams.filter(team => (selectedTrack === "all" || team.trackId === selectedTrack) && `${team.teamName || ""} ${team.projectTitle || ""} ${team.teamCode || ""}`.toLowerCase().includes(query.toLowerCase())), [teams, selectedTrack, query]);
+  const can = (permission: keyof PermissionSet) => user?.role === "owner" || user?.permissions?.[permission] === true;
+  const navItems = ["overview", ...(can("registrationsRead") || can("checkinRead") ? ["teams"] : []), ...(can("checkinRead") ? ["check-in"] : []), ...(can("judgingRead") || can("judgingWrite") ? ["judging"] : []), ...(can("leaderboardRead") ? ["leaderboard"] : []), ...(user?.role === "owner" ? ["people", "activity"] : [])];
+  const trackName = (id: string) => TRACKS.find(t=>t.id===id)?.title || "Unassigned";
 
-  // --- Judging Submission ---
-  const handleScoreSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!selectedTeamForJudging) {
-      alert("Please select a team to score.");
-      return;
-    }
-
-    const total =
-      criteria.innovation +
-      criteria.technicalDepth +
-      criteria.hardwareExecution +
-      criteria.marketViability +
-      criteria.presentation;
-
-    const newScore: JudgeScore = {
-      teamId: selectedTeamForJudging,
-      judgeId: currentUser?.id || "judge-default",
-      judgeName: currentUser?.name || "Evaluating Judge",
-      round: judgingRound,
-      innovation: criteria.innovation,
-      technicalDepth: criteria.technicalDepth,
-      hardwareExecution: criteria.hardwareExecution,
-      marketViability: criteria.marketViability,
-      presentation: criteria.presentation,
-      totalScore: total,
-      comments: criteria.comments,
-      timestamp: new Date().toISOString(),
-    };
-
-    const updatedScores = AdminDataService.submitScore(newScore);
-    setScores(updatedScores);
-    playSuccessChime();
-    setJudgingSuccess(true);
-    setTimeout(() => setJudgingSuccess(false), 3000);
-  };
-
-  // --- CSV Export & Import ---
-  const handleExportCSV = () => {
-    playClickSound();
-    const headers = "Team ID,Team Code,Team Name,Project Title,Track,College,Checked In,Round 1 Qualified,Round 2 Finalist\n";
-    const rows = teams
-      .map(
-        (t) =>
-          `"${t.id}","${t.teamCode}","${t.teamName}","${t.projectTitle}","${t.trackName}","${t.college}","${t.checkedIn}","${t.round1Qualified}","${t.round2Finalist}"`
-      )
-      .join("\n");
-
-    const blob = new Blob([headers + rows], { type: "text/csv;charset=utf-8;" });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.setAttribute("href", url);
-    link.setAttribute("download", `EUREKA26_Teams_Export_${new Date().toISOString().slice(0, 10)}.csv`);
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  };
-
-  // --- Add Judge ---
-  const handleAddJudge = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!newJudgeName || !newJudgeEmail) return;
-
-    const newJudge: JudgeAccount = {
-      id: "judge-" + Date.now(),
-      name: newJudgeName,
-      email: newJudgeEmail,
-      role: "judge",
-      assignedTrack: newJudgeTrack,
-    };
-
-    const updated = AdminDataService.addJudge(newJudge);
-    setJudges(updated);
-    setNewJudgeName("");
-    setNewJudgeEmail("");
-    playSuccessChime();
-  };
-
-  // Calculate Leaderboard rankings
-  const rankedTeams = teams
-    .map((team) => {
-      const teamScores = scores.filter((s) => s.teamId === team.id && s.round === leaderboardRound);
-      const avgScore =
-        teamScores.length > 0
-          ? teamScores.reduce((acc, s) => acc + s.totalScore, 0) / teamScores.length
-          : 0;
-      return {
-        ...team,
-        avgScore: Number(avgScore.toFixed(1)),
-        scoreCount: teamScores.length,
-      };
-    })
-    .sort((a, b) => b.avgScore - a.avgScore);
-
-  const filteredTeams = teams.filter((t) => {
-    const matchesSearch =
-      t.teamName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      t.teamCode.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      t.projectTitle.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      t.college.toLowerCase().includes(searchQuery.toLowerCase());
-
-    const matchesTrack = selectedTrack === "all" || t.trackId === selectedTrack;
-    return matchesSearch && matchesTrack;
-  });
-
-  return (
-    <div className={`min-h-screen bg-[#070412] text-white ${isProjectorMode ? "p-8" : "p-6 md:p-10"} font-body select-none`}>
-      {/* Top Header Bar */}
-      <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-start md:items-center justify-between pb-8 mb-8 border-b border-white/10 gap-4">
-        <div className="flex items-center gap-4">
-          <Link href="/" className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-400 via-rose-500 to-purple-600 p-[1px] flex-shrink-0">
-            <div className="w-full h-full bg-[#0e0824] rounded-[11px] flex items-center justify-center font-display font-black text-amber-300">
-              E
-            </div>
-          </Link>
-          <div>
-            <div className="flex items-center gap-2">
-              <h1 className="font-display font-extrabold text-2xl text-white">
-                EUREKA '26 Operations
-              </h1>
-              <span className="text-xs px-2.5 py-0.5 rounded-full bg-amber-400/10 text-amber-300 font-mono border border-amber-400/20">
-                {currentUser?.role === "core_team" ? "CORE ADMIN" : "JUDGE PORTAL"}
-              </span>
-            </div>
-            <p className="text-xs font-mono text-purple-300/60 mt-0.5">
-              Logged in as <span className="text-purple-100">{currentUser?.name}</span> ({currentUser?.email})
-            </p>
-          </div>
-        </div>
-
-        {/* Action Tabs & Logout */}
-        <div className="flex flex-wrap items-center gap-2 w-full md:w-auto">
-          {currentUser?.role === "core_team" && (
-            <>
-              <button
-                onClick={() => { playClickSound(); setActiveTab("teams"); }}
-                className={`px-3.5 py-2 rounded-xl text-xs font-mono flex items-center gap-1.5 transition-all ${
-                  activeTab === "teams" ? "bg-purple-800/80 text-amber-300 border border-amber-300/30" : "bg-white/5 text-purple-200 hover:bg-white/10"
-                }`}
-              >
-                <Users className="w-3.5 h-3.5" />
-                <span>Teams ({teams.length})</span>
-              </button>
-
-              <button
-                onClick={() => { playClickSound(); setActiveTab("checkin"); }}
-                className={`px-3.5 py-2 rounded-xl text-xs font-mono flex items-center gap-1.5 transition-all ${
-                  activeTab === "checkin" ? "bg-purple-800/80 text-amber-300 border border-amber-300/30" : "bg-white/5 text-purple-200 hover:bg-white/10"
-                }`}
-              >
-                <QrCode className="w-3.5 h-3.5" />
-                <span>Check-in Desk</span>
-              </button>
-            </>
-          )}
-
-          <button
-            onClick={() => { playClickSound(); setActiveTab("judging"); }}
-            className={`px-3.5 py-2 rounded-xl text-xs font-mono flex items-center gap-1.5 transition-all ${
-              activeTab === "judging" ? "bg-purple-800/80 text-amber-300 border border-amber-300/30" : "bg-white/5 text-purple-200 hover:bg-white/10"
-            }`}
-          >
-            <Sliders className="w-3.5 h-3.5" />
-            <span>Scorecard</span>
-          </button>
-
-          <button
-            onClick={() => { playClickSound(); setActiveTab("leaderboard"); }}
-            className={`px-3.5 py-2 rounded-xl text-xs font-mono flex items-center gap-1.5 transition-all ${
-              activeTab === "leaderboard" ? "bg-purple-800/80 text-amber-300 border border-amber-300/30" : "bg-white/5 text-purple-200 hover:bg-white/10"
-            }`}
-          >
-            <Trophy className="w-3.5 h-3.5" />
-            <span>Leaderboard</span>
-          </button>
-
-          {currentUser?.role === "core_team" && (
-            <button
-              onClick={() => { playClickSound(); setActiveTab("judges"); }}
-              className={`px-3.5 py-2 rounded-xl text-xs font-mono flex items-center gap-1.5 transition-all ${
-                activeTab === "judges" ? "bg-purple-800/80 text-amber-300 border border-amber-300/30" : "bg-white/5 text-purple-200 hover:bg-white/10"
-              }`}
-            >
-              <UserPlus className="w-3.5 h-3.5" />
-              <span>Judges</span>
-            </button>
-          )}
-
-          <button
-            onClick={handleLogout}
-            className="p-2 rounded-xl bg-rose-500/10 hover:bg-rose-500/20 text-rose-300 border border-rose-500/20 transition-colors ml-auto md:ml-2"
-            title="Log Out"
-          >
-            <LogOut className="w-4 h-4" />
-          </button>
-        </div>
-      </div>
-
-      <div className="max-w-7xl mx-auto">
-        {/* ========================================================================= */}
-        {/* TAB 1: TEAMS DIRECTORY & CSV EXPORT */}
-        {/* ========================================================================= */}
-        {activeTab === "teams" && (
-          <div className="space-y-6">
-            <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-              <div className="flex flex-wrap items-center gap-3 w-full sm:w-auto">
-                <div className="relative w-full sm:w-72">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-purple-400" />
-                  <input
-                    type="text"
-                    placeholder="Search by team, code or project..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full pl-9 pr-4 py-2 bg-purple-950/40 border border-white/10 rounded-xl text-xs font-mono text-white placeholder-purple-400/40 focus:outline-none focus:border-amber-300/60"
-                  />
-                </div>
-
-                <select
-                  value={selectedTrack}
-                  onChange={(e) => setSelectedTrack(e.target.value)}
-                  className="px-3 py-2 bg-purple-950/40 border border-white/10 rounded-xl text-xs font-mono text-purple-200 focus:outline-none focus:border-amber-300/60"
-                >
-                  <option value="all">All 5 Tracks</option>
-                  {TRACKS.map((t) => (
-                    <option key={t.id} value={t.id}>
-                      Track {t.number}: {t.title}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <div className="flex items-center gap-2 w-full sm:w-auto justify-end">
-                <button
-                  onClick={handleExportCSV}
-                  className="px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-xs font-mono text-amber-300 flex items-center gap-2 transition-colors"
-                >
-                  <Download className="w-3.5 h-3.5" />
-                  <span>Export CSV</span>
-                </button>
-              </div>
-            </div>
-
-            {/* Teams Table */}
-            <div className="rounded-3xl glass-panel border border-white/10 overflow-hidden shadow-[0_15px_40px_rgba(0,0,0,0.5)]">
-              <div className="overflow-x-auto">
-                <table className="w-full text-left border-collapse text-xs font-mono">
-                  <thead>
-                    <tr className="bg-purple-950/60 text-purple-300/80 border-b border-white/10 uppercase tracking-wider">
-                      <th className="py-4 px-6">Code & Team</th>
-                      <th className="py-4 px-6">Project Title & Track</th>
-                      <th className="py-4 px-6">College / Inst.</th>
-                      <th className="py-4 px-6 text-center">Booth</th>
-                      <th className="py-4 px-6 text-center">Check-in</th>
-                      <th className="py-4 px-6 text-center">Round 1</th>
-                      <th className="py-4 px-6 text-center">Round 2</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-white/5 text-purple-100">
-                    {filteredTeams.map((team) => (
-                      <tr key={team.id} className="hover:bg-white/[0.02] transition-colors">
-                        <td className="py-4 px-6">
-                          <div className="font-bold text-amber-300">{team.teamCode}</div>
-                          <div className="font-display font-semibold text-white text-sm">{team.teamName}</div>
-                        </td>
-                        <td className="py-4 px-6 max-w-xs">
-                          <div className="text-white line-clamp-1">{team.projectTitle}</div>
-                          <div className="text-teal-300 text-[11px] mt-0.5">{team.trackName}</div>
-                        </td>
-                        <td className="py-4 px-6 text-purple-200/80 max-w-xs truncate">
-                          {team.college}
-                        </td>
-                        <td className="py-4 px-6 text-center">
-                          <span className="px-2 py-1 rounded bg-purple-900/40 text-amber-300 border border-purple-400/20">
-                            {team.boothNumber}
-                          </span>
-                        </td>
-                        <td className="py-4 px-6 text-center">
-                          <button
-                            onClick={() => {
-                              playClickSound();
-                              const updated = AdminDataService.toggleCheckIn(team.id);
-                              setTeams(updated);
-                            }}
-                            className={`px-2.5 py-1 rounded-full text-[11px] font-bold transition-all ${
-                              team.checkedIn
-                                ? "bg-emerald-500/20 text-emerald-300 border border-emerald-500/30"
-                                : "bg-white/5 text-white/40 border border-white/10 hover:border-white/30"
-                            }`}
-                          >
-                            {team.checkedIn ? `✓ In (${team.checkInTime})` : "Pending"}
-                          </button>
-                        </td>
-                        <td className="py-4 px-6 text-center">
-                          <button
-                            onClick={() => {
-                              playClickSound();
-                              const updated = AdminDataService.toggleRoundStatus(team.id, "round1");
-                              setTeams(updated);
-                            }}
-                            className={`p-1.5 rounded-lg transition-colors ${
-                              team.round1Qualified ? "bg-teal-500/20 text-teal-300" : "bg-white/5 text-white/30"
-                            }`}
-                            title="Toggle Round 1 Qualification"
-                          >
-                            {team.round1Qualified ? <CheckCircle2 className="w-4 h-4" /> : <XCircle className="w-4 h-4" />}
-                          </button>
-                        </td>
-                        <td className="py-4 px-6 text-center">
-                          <button
-                            onClick={() => {
-                              playClickSound();
-                              const updated = AdminDataService.toggleRoundStatus(team.id, "round2");
-                              setTeams(updated);
-                            }}
-                            className={`p-1.5 rounded-lg transition-colors ${
-                              team.round2Finalist ? "bg-amber-500/20 text-amber-300" : "bg-white/5 text-white/30"
-                            }`}
-                            title="Toggle Top 24 Finalist Status"
-                          >
-                            {team.round2Finalist ? <CheckCircle2 className="w-4 h-4" /> : <XCircle className="w-4 h-4" />}
-                          </button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* ========================================================================= */}
-        {/* TAB 2: LIVE CHECK-IN DESK & QR SCANNER */}
-        {/* ========================================================================= */}
-        {activeTab === "checkin" && (
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-            <div className="lg:col-span-6 space-y-6">
-              <div className="rounded-3xl glass-panel p-8 border border-white/10">
-                <div className="flex items-center gap-3 mb-6">
-                  <div className="p-3 rounded-2xl bg-amber-400/10 text-amber-300 border border-amber-400/20">
-                    <QrCode className="w-6 h-6" />
-                  </div>
-                  <div>
-                    <h2 className="font-display text-xl font-bold text-white">
-                      Wristband & Badge Scanner
-                    </h2>
-                    <p className="text-xs font-mono text-purple-300/60">
-                      Scan team badge QR or type Team Code (e.g. EUR-01, EUR-02)
-                    </p>
-                  </div>
-                </div>
-
-                <form onSubmit={handleScanSubmit} className="space-y-4">
-                  <div className="relative">
-                    <Camera className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-amber-300 animate-pulse" />
-                    <input
-                      type="text"
-                      autoFocus
-                      placeholder="Scan or enter code (e.g. EUR-01)..."
-                      value={scanInput}
-                      onChange={(e) => setScanInput(e.target.value)}
-                      className="w-full pl-12 pr-4 py-4 bg-purple-950/50 border-2 border-amber-300/40 rounded-2xl text-base font-mono text-white placeholder-purple-400/40 focus:outline-none focus:border-amber-300 shadow-[0_0_25px_rgba(255,209,102,0.2)]"
-                    />
-                  </div>
-
-                  <button
-                    type="submit"
-                    className="w-full py-4 rounded-2xl bg-gradient-to-r from-amber-400 to-amber-300 text-black font-display font-bold text-sm shadow-[0_0_20px_rgba(255,209,102,0.4)]"
-                  >
-                    Confirm Check-In
-                  </button>
-                </form>
-              </div>
-
-              {/* Quick Simulator Buttons */}
-              <div className="p-6 rounded-2xl glass-panel border border-white/10">
-                <div className="text-xs font-mono text-purple-300/70 uppercase mb-3">
-                  QUICK SIMULATOR (TAP TO SCAN DELEGATE)
-                </div>
-                <div className="flex flex-wrap gap-2">
-                  {teams.map((t) => (
-                    <button
-                      key={t.id}
-                      onClick={() => {
-                        setScanInput(t.teamCode);
-                        const updated = AdminDataService.toggleCheckIn(t.id);
-                        setTeams(updated);
-                        const freshlyUpdated = updated.find((item) => item.id === t.id) || null;
-                        setLastScannedTeam(freshlyUpdated);
-                        playSuccessChime();
-                      }}
-                      className={`px-3 py-1.5 rounded-lg text-xs font-mono border transition-all ${
-                        t.checkedIn
-                          ? "bg-emerald-500/10 text-emerald-300 border-emerald-500/30"
-                          : "bg-white/5 text-purple-200 border-white/10 hover:border-amber-300/40"
-                      }`}
-                    >
-                      {t.teamCode}: {t.teamName} {t.checkedIn ? "✓" : ""}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </div>
-
-            {/* Right: Last Scanned Confirmation Card */}
-            <div className="lg:col-span-6">
-              {lastScannedTeam ? (
-                <div className="rounded-3xl glass-panel-gold p-8 border-2 border-amber-300/50 shadow-[0_0_40px_rgba(255,209,102,0.2)]">
-                  <div className="flex items-center justify-between mb-6">
-                    <span className="px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 text-xs font-mono">
-                      {lastScannedTeam.checkedIn ? "VERIFIED & CHECKED IN" : "CHECK-IN CANCELLED"}
-                    </span>
-                    <span className="font-mono text-xs text-purple-300/70">
-                      TIME: {lastScannedTeam.checkInTime || "N/A"}
-                    </span>
-                  </div>
-
-                  <div className="font-mono text-sm text-amber-300 font-bold mb-1">
-                    {lastScannedTeam.teamCode} • BOOTH {lastScannedTeam.boothNumber}
-                  </div>
-                  <h3 className="font-display text-2xl font-bold text-white mb-2">
-                    {lastScannedTeam.teamName}
-                  </h3>
-                  <p className="text-xs font-mono text-teal-300 mb-4">
-                    {lastScannedTeam.trackName}
-                  </p>
-                  <p className="text-sm text-purple-100 font-body mb-6">
-                    {lastScannedTeam.projectTitle}
-                  </p>
-
-                  <div className="p-4 rounded-xl bg-purple-950/60 border border-white/10 space-y-2 mb-6">
-                    <div className="text-xs font-mono text-purple-300/80 uppercase">
-                      REGISTERED MEMBERS
-                    </div>
-                    {lastScannedTeam.members.map((m) => (
-                      <div key={m.email} className="flex items-center justify-between text-xs font-mono">
-                        <span className="text-white font-medium">{m.name}</span>
-                        <span className="text-purple-300/60">{m.college}</span>
-                      </div>
-                    ))}
-                  </div>
-
-                  <div className="text-xs font-mono text-purple-300/60 text-center">
-                    Kit allocated • Wristbands distributed
-                  </div>
-                </div>
-              ) : (
-                <div className="rounded-3xl glass-panel p-12 border border-white/10 text-center flex flex-col items-center justify-center min-h-[300px]">
-                  <QrCode className="w-12 h-12 text-purple-400/40 mb-4 animate-bounce" />
-                  <div className="font-display text-lg text-white font-semibold">
-                    Awaiting Scan
-                  </div>
-                  <p className="text-xs font-mono text-purple-300/50 mt-1 max-w-xs">
-                    Scan delegate QR code to verify team and allot booth stall.
-                  </p>
-                </div>
-              )}
-            </div>
-          </div>
-        )}
-
-        {/* ========================================================================= */}
-        {/* TAB 3: JUDGING SCORECARD */}
-        {/* ========================================================================= */}
-        {activeTab === "judging" && (
-          <div className="max-w-3xl mx-auto">
-            <div className="rounded-3xl glass-panel p-8 md:p-10 border border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.6)]">
-              <div className="flex items-center justify-between mb-8">
-                <div>
-                  <h2 className="font-display text-2xl font-bold text-white">
-                    Judge Evaluation Matrix
-                  </h2>
-                  <p className="text-xs font-mono text-purple-300/60 mt-0.5">
-                    Calibrated evaluation rubrics (1-10 Scale each)
-                  </p>
-                </div>
-                <div className="flex items-center gap-1 bg-white/5 p-1 rounded-xl border border-white/10">
-                  <button
-                    type="button"
-                    onClick={() => setJudgingRound("round1")}
-                    className={`px-3 py-1 rounded-lg text-xs font-mono transition-colors ${
-                      judgingRound === "round1" ? "bg-amber-400 text-black font-bold" : "text-purple-300"
-                    }`}
-                  >
-                    Round 1 (Expo)
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setJudgingRound("round2")}
-                    className={`px-3 py-1 rounded-lg text-xs font-mono transition-colors ${
-                      judgingRound === "round2" ? "bg-amber-400 text-black font-bold" : "text-purple-300"
-                    }`}
-                  >
-                    Round 2 (Finals)
-                  </button>
-                </div>
-              </div>
-
-              {judgingSuccess && (
-                <div className="mb-6 p-4 rounded-xl bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 text-xs font-mono flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 flex-shrink-0" />
-                  <span>Score submitted successfully to live database!</span>
-                </div>
-              )}
-
-              <form onSubmit={handleScoreSubmit} className="space-y-6">
-                {/* Team Selection */}
-                <div>
-                  <label className="block text-xs font-mono text-purple-300/80 uppercase mb-2">
-                    SELECT PROJECT TO EVALUATE
-                  </label>
-                  <select
-                    required
-                    value={selectedTeamForJudging}
-                    onChange={(e) => setSelectedTeamForJudging(e.target.value)}
-                    className="w-full px-4 py-3 bg-purple-950/60 border border-white/15 rounded-xl text-sm font-mono text-white focus:outline-none focus:border-amber-300/60"
-                  >
-                    <option value="">-- Choose Team / Booth --</option>
-                    {teams.map((t) => (
-                      <option key={t.id} value={t.id}>
-                        {t.teamCode}: {t.teamName} — {t.projectTitle} (Booth {t.boothNumber})
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                {/* Rubrics Sliders */}
-                <div className="space-y-5 pt-4 border-t border-white/10">
-                  {[
-                    { key: "innovation", label: "1. Innovation & Novelty (25%)", desc: "Uniqueness of solution, patentability, creative approach" },
-                    { key: "technicalDepth", label: "2. Technical Depth & Complexity (25%)", desc: "Hardware-software integration, algorithm rigour, circuit design" },
-                    { key: "hardwareExecution", label: "3. Hardware Execution & Stability (20%)", desc: "Live physical prototype demo, robustness, component selection" },
-                    { key: "marketViability", label: "4. Practical Viability & Scalability (15%)", desc: "Cost-effectiveness, industrial adoption potential, environmental impact" },
-                    { key: "presentation", label: "5. Presentation & Technical Defense (15%)", desc: "Clarity of pitch, handling of questions, team coordination" },
-                  ].map((rubric) => (
-                    <div key={rubric.key} className="space-y-2">
-                      <div className="flex items-center justify-between text-xs font-mono">
-                        <span className="text-white font-bold">{rubric.label}</span>
-                        <span className="text-amber-300 font-bold text-sm">
-                          {(criteria as any)[rubric.key]} / 10
-                        </span>
-                      </div>
-                      <p className="text-[11px] text-purple-300/60">{rubric.desc}</p>
-                      <input
-                        type="range"
-                        min={1}
-                        max={10}
-                        step={1}
-                        value={(criteria as any)[rubric.key]}
-                        onChange={(e) =>
-                          setCriteria({ ...criteria, [rubric.key]: Number(e.target.value) })
-                        }
-                        className="w-full accent-[#FFD166] cursor-pointer"
-                      />
-                    </div>
-                  ))}
-                </div>
-
-                {/* Qualitative Feedback */}
-                <div className="pt-4 border-t border-white/10">
-                  <label className="block text-xs font-mono text-purple-300/80 uppercase mb-2">
-                    JUDGE'S QUALITATIVE REMARKS & STRENGTHS
-                  </label>
-                  <textarea
-                    rows={3}
-                    placeholder="Enter confidential feedback on hardware execution, suggestions for patenting or incubation..."
-                    value={criteria.comments}
-                    onChange={(e) => setCriteria({ ...criteria, comments: e.target.value })}
-                    className="w-full p-4 bg-purple-950/40 border border-white/10 rounded-xl text-xs font-mono text-white placeholder-purple-400/40 focus:outline-none focus:border-amber-300/60"
-                  />
-                </div>
-
-                {/* Total Score & Submit */}
-                <div className="p-4 rounded-2xl bg-purple-900/30 border border-amber-300/30 flex items-center justify-between">
-                  <div>
-                    <div className="text-xs font-mono text-purple-300/70">AGGREGATE SCORE</div>
-                    <div className="font-display text-3xl font-black text-amber-300 font-mono">
-                      {criteria.innovation +
-                        criteria.technicalDepth +
-                        criteria.hardwareExecution +
-                        criteria.marketViability +
-                        criteria.presentation}{" "}
-                      <span className="text-xs text-purple-300/60 font-normal">/ 50</span>
-                    </div>
-                  </div>
-
-                  <button
-                    type="submit"
-                    className="px-8 py-3.5 rounded-xl bg-gradient-to-r from-amber-400 to-amber-300 text-black font-display font-bold text-sm shadow-[0_0_20px_rgba(255,209,102,0.4)] hover:shadow-[0_0_30px_rgba(255,209,102,0.6)] transition-all"
-                  >
-                    Submit Score
-                  </button>
-                </div>
-              </form>
-            </div>
-          </div>
-        )}
-
-        {/* ========================================================================= */}
-        {/* TAB 4: LIVE LEADERBOARD & VENUE PROJECTOR MODE */}
-        {/* ========================================================================= */}
-        {activeTab === "leaderboard" && (
-          <div className="space-y-6">
-            <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-              <div className="flex items-center gap-3">
-                <div className="inline-flex bg-white/5 p-1 rounded-xl border border-white/10">
-                  <button
-                    onClick={() => { playClickSound(); setLeaderboardRound("round1"); }}
-                    className={`px-4 py-1.5 rounded-lg text-xs font-mono transition-colors ${
-                      leaderboardRound === "round1" ? "bg-amber-400 text-black font-bold" : "text-purple-300"
-                    }`}
-                  >
-                    Round 1 (Expo Top 24)
-                  </button>
-                  <button
-                    onClick={() => { playClickSound(); setLeaderboardRound("round2"); }}
-                    className={`px-4 py-1.5 rounded-lg text-xs font-mono transition-colors ${
-                      leaderboardRound === "round2" ? "bg-amber-400 text-black font-bold" : "text-purple-300"
-                    }`}
-                  >
-                    Round 2 (Grand Finalists)
-                  </button>
-                </div>
-              </div>
-
-              <div className="flex items-center gap-3">
-                <button
-                  onClick={() => {
-                    playSuccessChime();
-                    confetti({ particleCount: 100, spread: 80, origin: { y: 0.5 } });
-                  }}
-                  className="px-4 py-2 rounded-xl bg-amber-400/20 hover:bg-amber-400/30 text-amber-300 border border-amber-400/40 text-xs font-mono flex items-center gap-2"
-                >
-                  <Sparkles className="w-3.5 h-3.5" />
-                  <span>Confetti Burst</span>
-                </button>
-
-                <button
-                  onClick={() => setIsProjectorMode(!isProjectorMode)}
-                  className={`px-4 py-2 rounded-xl text-xs font-mono flex items-center gap-2 border transition-all ${
-                    isProjectorMode ? "bg-teal-500 text-black font-bold border-teal-400" : "bg-white/5 text-purple-200 border-white/10"
-                  }`}
-                >
-                  <Tv className="w-3.5 h-3.5" />
-                  <span>{isProjectorMode ? "Exit Projector Mode" : "Projector Mode"}</span>
-                </button>
-              </div>
-            </div>
-
-            {/* Leaderboard Table */}
-            <div className="rounded-3xl glass-panel border border-white/10 overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.6)]">
-              <div className="overflow-x-auto">
-                <table className="w-full text-left border-collapse font-mono text-xs">
-                  <thead>
-                    <tr className="bg-purple-950/80 text-purple-300 border-b border-white/10 uppercase tracking-wider">
-                      <th className="py-4 px-6 text-center">Rank</th>
-                      <th className="py-4 px-6">Team & Code</th>
-                      <th className="py-4 px-6">Project Title & Track</th>
-                      <th className="py-4 px-6">Institution</th>
-                      <th className="py-4 px-6 text-center">Evaluations</th>
-                      <th className="py-4 px-6 text-right">Avg Score (/50)</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-white/5">
-                    {rankedTeams.map((team, idx) => (
-                      <tr
-                        key={team.id}
-                        className={`transition-colors ${
-                          idx === 0
-                            ? "bg-amber-500/10 hover:bg-amber-500/15"
-                            : idx === 1
-                            ? "bg-slate-400/10 hover:bg-slate-400/15"
-                            : idx === 2
-                            ? "bg-amber-800/10 hover:bg-amber-800/15"
-                            : "hover:bg-white/[0.02]"
-                        }`}
-                      >
-                        <td className="py-4 px-6 text-center">
-                          <div className="inline-flex items-center justify-center w-8 h-8 rounded-full font-bold text-sm bg-white/5 border border-white/10">
-                            {idx === 0 ? "🥇" : idx === 1 ? "🥈" : idx === 2 ? "🥉" : idx + 1}
-                          </div>
-                        </td>
-                        <td className="py-4 px-6">
-                          <div className="font-bold text-amber-300">{team.teamCode}</div>
-                          <div className="font-display font-semibold text-white text-base">{team.teamName}</div>
-                        </td>
-                        <td className="py-4 px-6 max-w-sm">
-                          <div className="text-white line-clamp-1">{team.projectTitle}</div>
-                          <div className="text-teal-300 text-[11px] mt-0.5">{team.trackName}</div>
-                        </td>
-                        <td className="py-4 px-6 text-purple-200/80">{team.college}</td>
-                        <td className="py-4 px-6 text-center text-purple-300">
-                          {team.scoreCount} panels
-                        </td>
-                        <td className="py-4 px-6 text-right font-display text-2xl font-bold text-amber-300 font-mono">
-                          {team.avgScore > 0 ? team.avgScore : "—"}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* ========================================================================= */}
-        {/* TAB 5: JUDGES ROSTER MANAGEMENT */}
-        {/* ========================================================================= */}
-        {activeTab === "judges" && (
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-            <div className="lg:col-span-5">
-              <div className="rounded-3xl glass-panel p-8 border border-white/10">
-                <h3 className="font-display text-xl font-bold text-white mb-2">
-                  Add New Judge Profile
-                </h3>
-                <p className="text-xs font-mono text-purple-300/60 mb-6">
-                  Create pre-authorized panel login for track evaluations
-                </p>
-
-                <form onSubmit={handleAddJudge} className="space-y-4">
-                  <div>
-                    <label className="block text-xs font-mono text-purple-300/80 mb-1">
-                      JUDGE NAME & TITLE
-                    </label>
-                    <input
-                      type="text"
-                      required
-                      placeholder="e.g. Dr. Ramesh Kumar (IISc)"
-                      value={newJudgeName}
-                      onChange={(e) => setNewJudgeName(e.target.value)}
-                      className="w-full px-4 py-2.5 bg-purple-950/40 border border-white/10 rounded-xl text-xs font-mono text-white focus:outline-none focus:border-amber-300/60"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-mono text-purple-300/80 mb-1">
-                      EMAIL ADDRESS
-                    </label>
-                    <input
-                      type="email"
-                      required
-                      placeholder="ramesh@institution.edu.in"
-                      value={newJudgeEmail}
-                      onChange={(e) => setNewJudgeEmail(e.target.value)}
-                      className="w-full px-4 py-2.5 bg-purple-950/40 border border-white/10 rounded-xl text-xs font-mono text-white focus:outline-none focus:border-amber-300/60"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-mono text-purple-300/80 mb-1">
-                      ASSIGNED TRACK
-                    </label>
-                    <select
-                      value={newJudgeTrack}
-                      onChange={(e) => setNewJudgeTrack(e.target.value)}
-                      className="w-full px-4 py-2.5 bg-purple-950/40 border border-white/10 rounded-xl text-xs font-mono text-white focus:outline-none focus:border-amber-300/60"
-                    >
-                      <option value="all">All Tracks Panel</option>
-                      {TRACKS.map((t) => (
-                        <option key={t.id} value={t.id}>
-                          Track {t.number}: {t.title}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-
-                  <button
-                    type="submit"
-                    className="w-full py-3 rounded-xl bg-amber-400 text-black font-display font-bold text-xs shadow-[0_0_20px_rgba(255,209,102,0.3)]"
-                  >
-                    Add Judge Login
-                  </button>
-                </form>
-              </div>
-            </div>
-
-            <div className="lg:col-span-7">
-              <div className="rounded-3xl glass-panel p-8 border border-white/10 space-y-4">
-                <h3 className="font-display text-xl font-bold text-white mb-4">
-                  Active Judge Accounts ({judges.length})
-                </h3>
-
-                <div className="space-y-3">
-                  {judges.map((j) => (
-                    <div
-                      key={j.id}
-                      className="p-4 rounded-2xl bg-purple-950/40 border border-white/5 flex items-center justify-between"
-                    >
-                      <div>
-                        <div className="font-display font-bold text-white text-sm">{j.name}</div>
-                        <div className="text-xs font-mono text-purple-300/60">{j.email}</div>
-                        <div className="text-[11px] font-mono text-teal-300 mt-1">
-                          Role: {j.role} • Track: {j.assignedTrack}
-                        </div>
-                      </div>
-
-                      {j.id !== "core-01" && (
-                        <button
-                          onClick={() => {
-                            playClickSound();
-                            const updated = AdminDataService.removeJudge(j.id);
-                            setJudges(updated);
-                          }}
-                          className="p-2 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 text-rose-300 transition-colors"
-                          title="Remove Account"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </button>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-      </div>
+  return <main className="min-h-screen bg-[#f5f2ea] text-[#24231f]">
+    {user?.mustChangePassword&&<div className="fixed inset-0 z-50 grid place-items-center bg-black/60 p-5"><form className="w-full max-w-md rounded-2xl bg-[#f5f2ea] p-7" onSubmit={async e=>{e.preventDefault();setPasswordError("");try{if(!auth?.currentUser)throw new Error("Please sign in again to change your password.");await updatePassword(auth.currentUser,newPassword);const response=await fetch("/api/admin/password",{method:"PATCH",headers:{"Content-Type":"application/json"},body:JSON.stringify({changed:true})});if(!response.ok)throw new Error("Could not save password status. Please retry.");setUser({...user,mustChangePassword:false});setNewPassword("");setNotice("Password changed successfully.")}catch(err){setPasswordError(err instanceof Error?err.message:"Password update failed.")}}}><LockKeyhole size={21} className="text-[#8a7448]"/><h2 className="mt-4 text-2xl font-light">Set your own password</h2><p className="mt-2 text-sm text-[#777165]">Your owner provided a temporary password. Choose a unique password with at least 12 characters to continue.</p><input required minLength={12} type="password" value={newPassword} onChange={e=>setNewPassword(e.target.value)} className={`${fieldClass} mt-5`} placeholder="New password"/>{passwordError&&<p role="alert" className="mt-3 text-xs text-rose-700">{passwordError}</p>}<button className="mt-3 w-full rounded-lg bg-[#24231f] px-4 py-3 text-sm text-white">Update password</button></form></div>}
+    <header className="sticky top-0 z-20 border-b border-[#ded8c9] bg-[#f5f2ea]/95 backdrop-blur"><div className="mx-auto flex max-w-[1440px] items-center justify-between px-5 py-4 sm:px-8"><div className="flex items-center gap-4"><div className="grid h-10 w-10 place-items-center rounded-full border border-[#b49b68] text-[#826b3d]"><Activity size={18}/></div><div><p className="text-[10px] uppercase tracking-[.28em] text-[#8a7448]">EUREKA ’26 · RVCE</p><p className="text-sm font-medium">Operations workspace</p></div></div><div className="flex items-center gap-4"><span className="hidden text-right sm:block"><b className="block text-xs">{user?.name || "Loading account…"}</b><small className="text-[#807b6e]">{user?.role || ""}</small></span><button onClick={logout} className="flex items-center gap-2 rounded-full border border-[#d5cdbb] px-3 py-2 text-xs hover:bg-white"><LogOut size={14}/> Sign out</button></div></div></header>
+    <div className="mx-auto grid max-w-[1440px] gap-8 px-5 py-8 sm:px-8 lg:grid-cols-[220px_1fr]">
+      <aside><p className="mb-3 text-[10px] uppercase tracking-[.22em] text-[#8b8577]">Workspace</p><nav className="flex gap-2 overflow-x-auto lg:flex-col">{navItems.map(item=><button key={item} onClick={()=>setTab(item)} className={`whitespace-nowrap rounded-xl px-4 py-3 text-left text-sm capitalize ${tab===item?"bg-[#24231f] text-[#f6f0df]":"text-[#676359] hover:bg-white"}`}>{item}</button>)}</nav><div className="mt-8 hidden rounded-2xl border border-[#ded8c9] bg-white/60 p-4 lg:block"><Radio size={16} className="text-emerald-700"/><p className="mt-3 text-sm font-medium">Live workspace</p><p className="mt-1 text-xs leading-5 text-[#777165]">Changes sync with the shared Firestore database.</p></div></aside>
+      <section className="min-w-0">
+        <div className="mb-7 flex flex-wrap items-end justify-between gap-4"><div><p className="text-[10px] uppercase tracking-[.24em] text-[#8a7448]">EUREKA / {tab}</p><h1 className="mt-2 text-3xl font-light capitalize sm:text-4xl">{tab === "overview" ? "Event control" : tab}</h1></div><span className="flex items-center gap-2 text-xs text-[#7a756a]"><span className="h-2 w-2 rounded-full bg-emerald-600"/> Live updates enabled</span></div>
+        {notice && <div className="mb-5 flex items-center gap-2 rounded-xl border border-amber-300 bg-amber-50 p-4 text-sm text-amber-900"><CircleAlert size={17}/>{notice}<button className="ml-auto" onClick={()=>setNotice("")}><X size={15}/></button></div>}
+        {tab === "overview" && <><div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">{[["Registered teams", teams.length, "Current shared records"],["Checked in", teams.filter(t=>t.checkedIn).length, "Event arrivals"],["Scores submitted", scores.length, "Across all rounds"],["Tracks", TRACKS.length, "Competition streams"]].map(([label,value,sub])=><article key={String(label)} className="rounded-2xl border border-[#ded8c9] bg-white p-5"><p className="text-xs text-[#777165]">{label}</p><p className="mt-5 text-4xl font-light">{loading?"—":value}</p><p className="mt-2 text-xs text-[#9a9487]">{sub}</p></article>)}</div><div className="mt-5 grid gap-5 xl:grid-cols-[1.25fr_.75fr]"><article className="rounded-2xl border border-[#ded8c9] bg-white p-5"><h2 className="font-medium">Track activity</h2><div className="mt-4 divide-y divide-[#eeeae1]">{TRACKS.map(track=><div key={track.id} className="flex justify-between gap-4 py-3 text-sm"><span>{track.number} · {track.title}</span><span className="tabular-nums text-[#8a7448]">{teams.filter(t=>t.trackId===track.id).length}</span></div>)}</div></article><article className="rounded-2xl bg-[#24231f] p-6 text-[#f5f2ea]"><Shield size={18} className="text-[#d9c89f]"/><h2 className="mt-5 text-xl font-light">Access at a glance</h2><p className="mt-2 text-sm leading-6 text-white/60">You are signed in as <b className="text-white">{user?.role}</b>. Available tools and records follow your owner-assigned permissions and track access.</p><p className="mt-6 text-xs uppercase tracking-[.18em] text-[#d9c89f]">{user?.trackIds?.length ? user.trackIds.map(trackName).join(" · ") : user?.role === "owner" ? "All tracks" : "No tracks assigned"}</p></article></div></>}
+        {tab === "teams" && <div className="rounded-2xl border border-[#ded8c9] bg-white"><div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#eeeae1] p-4"><div className="flex flex-wrap gap-2"><label className="flex items-center gap-2 rounded-lg border border-[#ded8c9] px-3"><Search size={15} className="text-[#8b8577]"/><input value={query} onChange={e=>setQuery(e.target.value)} placeholder="Search teams" className="w-44 py-2 text-sm outline-none"/></label><select value={selectedTrack} onChange={e=>setSelectedTrack(e.target.value)} className="rounded-lg border border-[#ded8c9] px-3 text-sm"><option value="all">All tracks</option>{TRACKS.map(t=><option key={t.id} value={t.id}>{t.number} · {t.title}</option>)}</select></div><div className="flex gap-2">{can("registrationsWrite")&&<button onClick={()=>setTeamForm(true)} className="flex items-center gap-2 rounded-lg bg-[#24231f] px-4 py-2.5 text-xs text-white"><Plus size={15}/> Add team</button>}<button onClick={()=>{const blob=new Blob([JSON.stringify(visibleTeams,null,2)],{type:"application/json"});const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="eureka-teams.json";a.click();URL.revokeObjectURL(a.href)}} className="flex items-center gap-2 rounded-lg border border-[#ded8c9] px-3 py-2 text-xs"><ArrowDownToLine size={14}/> Export</button></div></div>
+          {teamForm&&<TeamForm onClose={()=>setTeamForm(false)} onSave={async data=>{await mutate("teams",data);setTeamForm(false)}}/>}
+          {visibleTeams.length===0?<div className="px-6 py-20 text-center"><Users size={25} className="mx-auto text-[#aa9a78]"/><h3 className="mt-4 font-medium">No team records yet</h3><p className="mt-2 text-sm text-[#827c70]">Imported registrations or teams added by an authorized organizer will appear here.</p></div>:<div className="overflow-x-auto"><table className="w-full min-w-[760px] text-left text-sm"><thead className="bg-[#f8f6f0] text-[10px] uppercase tracking-[.16em] text-[#858072]"><tr><th className="px-5 py-3">Team</th><th className="px-5 py-3">Project</th><th className="px-5 py-3">Track</th><th className="px-5 py-3">Check-in</th><th className="px-5 py-3">Code</th></tr></thead><tbody className="divide-y divide-[#eeeae1]">{visibleTeams.map(team=><tr key={team.id}><td className="px-5 py-4 font-medium">{team.teamName}</td><td className="px-5 py-4 text-[#716c61]">{team.projectTitle || "—"}</td><td className="px-5 py-4 text-xs">{trackName(team.trackId)}</td><td className="px-5 py-4">{team.checkedIn?<span className="text-emerald-700">Checked in</span>:<span className="text-[#827c70]">Waiting</span>}</td><td className="px-5 py-4 font-mono text-xs">{team.teamCode||"—"}</td></tr>)}</tbody></table></div>}</div>}
+        {tab === "check-in" && <div className="rounded-2xl border border-[#ded8c9] bg-white p-5"><h2 className="text-lg">Arrival desk</h2><p className="mt-1 text-sm text-[#777165]">Search a registered team and record arrival. The update appears live for other staff.</p><div className="mt-5 space-y-3">{visibleTeams.map(team=><div key={team.id} className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-[#eeeae1] p-4"><div><p className="font-medium">{team.teamName}</p><p className="mt-1 text-xs text-[#777165]">{team.teamCode} · {trackName(team.trackId)}</p></div>{can("checkinWrite")&&<button onClick={async()=>{try{await mutate("teams",{checkedIn:!team.checkedIn,checkInTime:!team.checkedIn?new Date().toISOString():null},team.id)}catch(e){setNotice(String(e))}}} className={`rounded-lg px-4 py-2 text-xs ${team.checkedIn?"border border-[#ded8c9]":"bg-[#24231f] text-white"}`}>{team.checkedIn?"Undo check-in":"Check in"}</button>}</div>)}</div></div>}
+        {tab === "judging" && <div className="grid gap-5 xl:grid-cols-[.75fr_1.25fr]"><ScoreForm teams={visibleTeams} canWrite={can("judgingWrite")} onSave={async data=>{await mutate("scores",data);setNotice("Score saved and synced.")}}/><div className="rounded-2xl border border-[#ded8c9] bg-white p-5"><h2 className="font-medium">Submitted scores</h2>{scores.length===0?<p className="py-14 text-center text-sm text-[#827c70]">No judging records yet.</p>:<div className="mt-4 space-y-2">{scores.map(s=><div key={s.id} className="flex justify-between gap-3 rounded-xl border border-[#eeeae1] p-4"><div><p className="font-medium">{teams.find(t=>t.id===s.teamId)?.teamName || s.teamName || "Team"}</p><p className="mt-1 text-xs text-[#777165]">{s.judgeName || user?.name} · {s.round || "Round 1"}</p></div><strong className="text-xl font-light">{s.totalScore ?? "—"}</strong></div>)}</div>}</div></div>}
+        {tab === "leaderboard" && <div className="rounded-2xl border border-[#ded8c9] bg-white p-5"><h2 className="font-medium">Live leaderboard</h2><p className="mt-1 text-sm text-[#777165]">Ranked by average submitted score.</p><div className="mt-5 space-y-2">{teams.map(team=>({team,points:scores.filter(s=>s.teamId===team.id).reduce((n,s)=>n+Number(s.totalScore||0),0),count:scores.filter(s=>s.teamId===team.id).length})).filter(x=>x.count).sort((a,b)=>b.points/b.count-a.points/a.count).map((x,i)=><div key={x.team.id} className="grid grid-cols-[40px_1fr_auto] items-center gap-3 rounded-xl border border-[#eeeae1] p-4"><span className="text-xs text-[#8b8577]">{String(i+1).padStart(2,"0")}</span><div><b className="text-sm">{x.team.teamName}</b><p className="mt-1 text-xs text-[#777165]">{trackName(x.team.trackId)} · {x.count} score(s)</p></div><b className="text-xl font-light">{(x.points/x.count).toFixed(1)}</b></div>)}</div></div>}
+        {tab === "people" && <div className="rounded-2xl border border-[#ded8c9] bg-white"><div className="flex items-center justify-between border-b border-[#eeeae1] p-5"><div><h2 className="font-medium">People &amp; access</h2><p className="mt-1 text-xs text-[#777165]">Create named accounts, assign roles and deactivate access.</p></div><button onClick={()=>setAccountForm(true)} className="flex items-center gap-2 rounded-lg bg-[#24231f] px-4 py-2.5 text-xs text-white"><Plus size={15}/> Add person</button></div>{accountForm&&<AccountForm onClose={()=>setAccountForm(false)} onSave={async data=>{const res=await fetch("/api/admin/accounts",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(data)});const result=await res.json();if(!res.ok)throw new Error(result.error);const latest=await fetch("/api/admin/accounts").then(r=>r.json());setAccounts(latest.users||[]);setAccountForm(false);setNotice("Account created. Share the temporary password with the staff member privately; they must change it after sign-in.")}}/>}<div className="divide-y divide-[#eeeae1]">{accounts.map(person=><div key={person.uid} className="p-5"><div className="flex flex-wrap items-center justify-between gap-3"><div><p className="font-medium">{person.name} {person.role==="owner"&&<span className="ml-2 rounded-full bg-[#f0eada] px-2 py-1 text-[10px] text-[#806a3b]">OWNER</span>}</p><p className="mt-1 text-xs text-[#777165]">{person.email} · {person.role} · {person.trackIds?.length?person.trackIds.map(trackName).join(", "):"All tracks"}</p><p className="mt-1 text-[11px] text-[#969083]">{person.active?"Active":"Disabled"}{person.lastSignInAt?` · Last sign-in ${new Date(person.lastSignInAt).toLocaleString()}`:" · Never signed in"}</p></div>{person.role!=="owner"&&<div className="flex gap-2"><button onClick={()=>setEditingUid(editingUid===person.uid?"":person.uid)} className="rounded-lg border border-[#ded8c9] px-3 py-2 text-xs">Edit access</button><button onClick={async()=>{const res=await fetch("/api/admin/accounts",{method:"PATCH",headers:{"Content-Type":"application/json"},body:JSON.stringify({uid:person.uid,active:!person.active})});if(res.ok)setAccounts(rows=>rows.map(row=>row.uid===person.uid?{...row,active:!person.active}:row))}} className="rounded-lg border border-[#ded8c9] px-3 py-2 text-xs">{person.active?"Deactivate":"Reactivate"}</button></div>}</div>{editingUid===person.uid&&<EditAccess person={person} onCancel={()=>setEditingUid("")} onSave={async data=>{const res=await fetch("/api/admin/accounts",{method:"PATCH",headers:{"Content-Type":"application/json"},body:JSON.stringify({uid:person.uid,...data})});const result=await res.json();if(!res.ok)throw new Error(result.error);const latest=await fetch("/api/admin/accounts").then(r=>r.json());setAccounts(latest.users||[]);setEditingUid("")}}/>}</div>)}</div></div>}
+        {tab === "activity" && <div className="rounded-2xl border border-[#ded8c9] bg-white"><div className="border-b border-[#eeeae1] p-5"><h2 className="font-medium">Security &amp; activity log</h2><p className="mt-1 text-xs text-[#777165]">Latest 100 sign-ins and privileged changes.</p></div>{auditEvents.length===0?<p className="p-10 text-center text-sm text-[#827c70]">No events recorded yet.</p>:<div className="divide-y divide-[#eeeae1]">{auditEvents.map(event=><div key={event.id} className="flex flex-wrap justify-between gap-2 px-5 py-4"><div><p className="text-sm font-medium">{String(event.action||"Event").replaceAll("-"," ")}</p><p className="mt-1 text-xs text-[#777165]">{event.actorEmail||event.actorUid||"System"}{event.email?` · ${event.email}`:""}{event.collection?` · ${event.collection}/${event.recordId||""}`:""}</p></div><time className="text-xs text-[#8a8478]">{event.at?new Date(event.at).toLocaleString():"—"}</time></div>)}</div>}</div>}
+      </section>
     </div>
-  );
+  </main>;
+}
+
+function TeamForm({onClose,onSave}:{onClose:()=>void;onSave:(d:Record<string,unknown>)=>Promise<void>}) {
+ const [busy,setBusy]=useState(false); const [error,setError]=useState("");
+ return <form className="grid gap-3 border-b border-[#eeeae1] bg-[#faf9f5] p-4 sm:grid-cols-2" onSubmit={async e=>{e.preventDefault();const f=new FormData(e.currentTarget);setBusy(true);try{await onSave({teamName:f.get("teamName"),teamCode:f.get("teamCode"),projectTitle:f.get("projectTitle"),trackId:f.get("trackId"),college:f.get("college"),checkedIn:false})}catch(err){setError(String(err));setBusy(false)}}}><input name="teamName" required className={fieldClass} placeholder="Team name"/><input name="teamCode" className={fieldClass} placeholder="Registration code"/><input name="projectTitle" className={fieldClass} placeholder="Project title"/><select name="trackId" required className={fieldClass}><option value="">Choose track</option>{TRACKS.map(t=><option key={t.id} value={t.id}>{t.number} · {t.title}</option>)}</select><input name="college" className={fieldClass} placeholder="College"/>{error&&<p className="text-sm text-rose-700">{error}</p>}<div className="flex gap-2"><button disabled={busy} className="rounded-lg bg-[#24231f] px-4 py-2 text-xs text-white">Save team</button><button type="button" onClick={onClose} className="rounded-lg border px-4 py-2 text-xs">Cancel</button></div></form>
+}
+function ScoreForm({teams,canWrite,onSave}:{teams:RecordRow[];canWrite:boolean;onSave:(d:Record<string,unknown>)=>Promise<void>}) {
+ const [busy,setBusy]=useState(false); const [error,setError]=useState("");
+ if(!canWrite)return <div className="rounded-2xl border border-[#ded8c9] bg-white p-5 text-sm text-[#777165]">Your role can view scores but cannot submit them.</div>;
+ return <form className="rounded-2xl border border-[#ded8c9] bg-white p-5" onSubmit={async e=>{e.preventDefault();const f=new FormData(e.currentTarget);const teamId=String(f.get("teamId"));const team=teams.find(t=>t.id===teamId);const vals=["innovation","technicalDepth","hardwareExecution","marketViability","presentation"].map(k=>Number(f.get(k)));setBusy(true);try{await onSave({teamId,teamName:team?.teamName,trackId:team?.trackId,judgeName:f.get("judgeName"),round:f.get("round"),innovation:vals[0],technicalDepth:vals[1],hardwareExecution:vals[2],marketViability:vals[3],presentation:vals[4],totalScore:vals.reduce((a,b)=>a+b,0),comments:f.get("comments"),timestamp:new Date().toISOString()});e.currentTarget.reset()}catch(err){setError(String(err))}finally{setBusy(false)}}}><h2 className="font-medium">Submit evaluation</h2><p className="mt-1 text-xs text-[#777165]">Score each criterion from 1 to 10.</p><div className="mt-4 space-y-3"><select name="teamId" required className={fieldClass}><option value="">Select a team</option>{teams.map(t=><option key={t.id} value={t.id}>{t.teamCode} · {t.teamName}</option>)}</select><input name="judgeName" className={fieldClass} placeholder="Judge name"/><select name="round" className={fieldClass}><option value="round1">Round 1</option><option value="round2">Final round</option></select>{[["innovation","Innovation"],["technicalDepth","Technical depth"],["hardwareExecution","Execution"],["marketViability","Impact & viability"],["presentation","Presentation"]].map(([key,label])=><label key={key} className="flex items-center justify-between text-xs text-[#716c61]">{label}<select name={key} className="rounded-lg border border-[#ded8c9] bg-white px-3 py-2 text-sm">{Array.from({length:10},(_,i)=><option key={i+1} value={i+1}>{i+1}</option>)}</select></label>)}<textarea name="comments" rows={3} className={fieldClass} placeholder="Feedback notes"/>{error&&<p className="text-sm text-rose-700">{error}</p>}<button disabled={busy} className="w-full rounded-lg bg-[#24231f] px-4 py-3 text-sm text-white">{busy?"Saving…":"Save evaluation"}</button></div></form>
+}
+function AccountForm({onClose,onSave}:{onClose:()=>void;onSave:(d:Record<string,unknown>)=>Promise<void>}) {
+ const [error,setError]=useState("");const [busy,setBusy]=useState(false);const [role,setRole]=useState<AdminRole>("organizer");const [permissions,setPermissions]=useState<Record<string,boolean>>({});
+ const permissionOptions: Array<[keyof PermissionSet,string]> = [["dashboard","Dashboard"],["registrationsRead","View registrations"],["registrationsWrite","Edit registrations"],["checkinRead","View check-in"],["checkinWrite","Record check-in"],["judgingRead","View judging"],["judgingWrite","Submit scores"],["leaderboardRead","View leaderboard"]];
+ return <form className="grid gap-3 border-b border-[#eeeae1] bg-[#faf9f5] p-5 sm:grid-cols-2" onSubmit={async e=>{e.preventDefault();const f=new FormData(e.currentTarget);setBusy(true);try{await onSave({name:f.get("name"),email:f.get("email"),password:f.get("password"),role,permissions,trackIds:f.getAll("trackIds")})}catch(err){setError(String(err));setBusy(false)}}}><input name="name" required className={fieldClass} placeholder="Full name"/><input name="email" required type="email" className={fieldClass} placeholder="Email address"/><input name="password" required minLength={12} type="password" className={fieldClass} placeholder="Temporary password (12+ characters)"/><select name="role" value={role} onChange={e=>setRole(e.target.value as AdminRole)} className={fieldClass}>{roles.map(item=><option key={item} value={item}>{item}</option>)}</select>{role==="custom"&&<fieldset className="rounded-xl border border-[#ded8c9] p-4 sm:col-span-2"><legend className="px-1 text-xs text-[#777165]">Custom permissions</legend><div className="grid gap-3 sm:grid-cols-2">{permissionOptions.map(([key,label])=><label key={key} className="flex items-center gap-2 text-xs"><input type="checkbox" checked={permissions[key]===true} onChange={e=>setPermissions(p=>({...p,[key]:e.target.checked}))}/>{label}</label>)}</div></fieldset>}<label className="text-xs text-[#777165] sm:col-span-2">Track access (select every track needed; none selected means no access)<div className="mt-2 flex flex-wrap gap-3">{TRACKS.map(track=><label key={track.id} className="flex items-center gap-1"><input type="checkbox" name="trackIds" value={track.id}/>{track.number}</label>)}</div></label>{error&&<p className="text-sm text-rose-700 sm:col-span-2">{error}</p>}<div className="flex gap-2"><button disabled={busy} className="rounded-lg bg-[#24231f] px-4 py-2 text-xs text-white">{busy?"Creating…":"Create account"}</button><button type="button" onClick={onClose} className="rounded-lg border px-4 py-2 text-xs">Cancel</button></div><p className="text-[11px] leading-5 text-[#777165] sm:col-span-2">Passwords are sent directly to Firebase Authentication and are not stored in the admin database. Require private delivery to the staff member.</p></form>
+}
+
+function EditAccess({person,onCancel,onSave}:{person:AccountRow;onCancel:()=>void;onSave:(d:Record<string,unknown>)=>Promise<void>}) {
+ const [role,setRole]=useState<AdminRole>(person.role);const [permissions,setPermissions]=useState<PermissionSet>(person.permissions);const [error,setError]=useState("");const [busy,setBusy]=useState(false);
+ const permissionOptions: Array<[keyof PermissionSet,string]> = [["dashboard","Dashboard"],["registrationsRead","View registrations"],["registrationsWrite","Edit registrations"],["checkinRead","View check-in"],["checkinWrite","Record check-in"],["judgingRead","View judging"],["judgingWrite","Submit scores"],["leaderboardRead","View leaderboard"]];
+ return <form className="mt-4 rounded-xl bg-[#faf9f5] p-4" onSubmit={async e=>{e.preventDefault();const data=new FormData(e.currentTarget);setBusy(true);try{await onSave({role,permissions,trackIds:data.getAll("trackIds")})}catch(err){setError(String(err));setBusy(false)}}}><label className="block text-xs text-[#777165]">Role<select value={role} onChange={e=>setRole(e.target.value as AdminRole)} className={`${fieldClass} mt-1`}>{roles.map(r=><option key={r} value={r}>{r}</option>)}</select></label>{role==="custom"&&<div className="mt-3 grid gap-3 sm:grid-cols-2">{permissionOptions.map(([key,label])=><label key={key} className="flex items-center gap-2 text-xs"><input type="checkbox" checked={permissions[key]===true} onChange={e=>setPermissions(p=>({...p,[key]:e.target.checked}))}/>{label}</label>)}</div>}<fieldset className="mt-4"><legend className="text-xs text-[#777165]">Track assignment (select every track needed; none means no track access)</legend><div className="mt-2 flex flex-wrap gap-3">{TRACKS.map(track=><label key={track.id} className="flex items-center gap-1 text-xs"><input type="checkbox" name="trackIds" value={track.id} defaultChecked={person.trackIds?.includes(track.id)}/>{track.number}</label>)}</div></fieldset>{error&&<p className="mt-3 text-sm text-rose-700">{error}</p>}<div className="mt-4 flex gap-2"><button disabled={busy} className="rounded-lg bg-[#24231f] px-4 py-2 text-xs text-white">{busy?"Saving…":"Save access"}</button><button type="button" onClick={onCancel} className="rounded-lg border px-4 py-2 text-xs">Cancel</button></div></form>
 }

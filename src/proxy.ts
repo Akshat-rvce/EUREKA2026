@@ -1,12 +1,12 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // Protect all /admin/dashboard routes
   if (pathname.startsWith("/admin/dashboard")) {
-    const authToken = request.cookies.get("eureka_auth_token")?.value;
+    const authToken = request.cookies.get("eureka_admin_session")?.value;
 
     if (!authToken) {
       const loginUrl = new URL("/admin", request.url);
@@ -21,3 +21,4 @@ export function middleware(request: NextRequest) {
 export const config = {
   matcher: ["/admin/dashboard/:path*"],
 };
+
