@@ -4,7 +4,6 @@ import Link from "next/link";
 import type { CSSProperties } from "react";
 import { motion, type Variants } from "framer-motion";
 import { Activity, ArrowDownRight, ArrowRight, ArrowUpRight, Cpu, Lightbulb, MapPin, MoveUpRight, SunMedium, Zap } from "lucide-react";
-import { EngineeringIllustration } from "@/components/sections/EngineeringIllustration";
 import { EurekaLogo } from "@/components/ui/EurekaLogo";
 import { CountdownTimer } from "@/components/ui/CountdownTimer";
 import { TRACKS, SITE_CONFIG, UNSTOP_EVENT_URL } from "@/config/site";
@@ -51,11 +50,8 @@ export function MainExperience() {
           </div>
 
           <motion.div initial={{ opacity: 0, scale: 0.97 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.8, delay: 0.08, ease: [0.16, 1, 0.3, 1] }} className="order-1 mx-auto w-full max-w-[min(76vw,38svh,390px)] lg:order-2 lg:max-w-[min(42vw,510px)]">
-            <div className="expo-art-frame relative aspect-square">
-              <EngineeringIllustration className="expo-engineering-art absolute -inset-[5%] h-[110%] w-[110%]" />
-              <div className="logo-plinth relative z-10 aspect-square overflow-hidden">
-                <EurekaLogo className="eureka-logo-art" />
-              </div>
+            <div className="logo-plinth relative aspect-square overflow-hidden">
+              <EurekaLogo className="eureka-logo-art" />
             </div>
           </motion.div>
         </div>
