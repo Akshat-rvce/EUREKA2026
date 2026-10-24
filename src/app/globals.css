@@ -77,6 +77,9 @@ button { cursor: pointer; }
   background: transparent;
 }
 .eureka-logo-art { mix-blend-mode: lighten; }
+.expo-art-frame { isolation: isolate; }
+.expo-engineering-art { z-index: 0; overflow: visible; opacity: .62; filter: drop-shadow(0 0 18px rgba(207,169,105,.08)); }
+.logo-plinth { z-index: 1; }
 .logo-caption { font: 600 8px/1 var(--font-body); letter-spacing: .2em; color: rgba(233,221,195,.62); }
 .paper-section { background: var(--paper); color: var(--ink); }
 .section-kicker { display: flex; align-items: center; gap: .65rem; font: 700 10px/1.3 var(--font-body); letter-spacing: .18em; text-transform: uppercase; color: #86704d; }
@@ -148,6 +151,7 @@ button { cursor: pointer; }
   .prize-amount-wrap { flex-wrap: wrap; gap: .45rem .75rem; }
   .registration-facts { gap: .55rem; }
   .registration-facts span { font-size: .75rem; }
+  .expo-engineering-art { opacity: .46; }
 }
 
 @media (prefers-reduced-motion: reduce) {
