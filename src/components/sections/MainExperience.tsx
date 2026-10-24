@@ -3,9 +3,8 @@
 import Link from "next/link";
 import type { CSSProperties } from "react";
 import { motion, type Variants } from "framer-motion";
-import { Activity, ArrowDownRight, ArrowRight, ArrowUpRight, Cpu, Lightbulb, MapPin, SunMedium, Zap, Award, Users, Trophy } from "lucide-react";
+import { Activity, ArrowDownRight, ArrowRight, ArrowUpRight, Cpu, Lightbulb, MapPin, MoveUpRight, SunMedium, Zap } from "lucide-react";
 import { EurekaLogo } from "@/components/ui/EurekaLogo";
-import { HeroWorkshopArt } from "@/components/sections/HeroWorkshopArt";
 import { CountdownTimer } from "@/components/ui/CountdownTimer";
 import { TRACKS, SITE_CONFIG, UNSTOP_EVENT_URL } from "@/config/site";
 import { useSmoothScroll } from "@/components/providers/SmoothScrollProvider";
@@ -24,37 +23,38 @@ export function MainExperience() {
 
   return (
     <div className="eureka-site overflow-hidden">
-      <section id="hero" className="hero-stage relative isolate flex min-h-[min(940px,100svh)] flex-col items-center overflow-hidden px-5 pb-64 pt-24 text-center text-white sm:px-8 sm:pb-72 sm:pt-28 lg:min-h-[900px] lg:pb-72 lg:pt-28">
+      <section id="hero" className="hero-stage relative isolate flex min-h-[min(900px,100svh)] items-center px-5 pb-12 pt-24 text-white sm:px-8 sm:pt-28 lg:min-h-[min(880px,100svh)] lg:px-12">
         <div className="hero-grid absolute inset-0 -z-10" aria-hidden="true" />
         <div className="hero-glow absolute inset-0 -z-10" aria-hidden="true" />
-        <div className="hero-orbit absolute left-1/2 top-[5.5rem] -z-10 h-[23rem] w-[23rem] -translate-x-1/2 rounded-full sm:top-24 sm:h-[34rem] sm:w-[34rem] lg:h-[39rem] lg:w-[39rem]" aria-hidden="true" />
-        <div className="relative z-10 mx-auto flex w-full max-w-3xl flex-col items-center">
-          <motion.div initial={{ opacity: 0, scale: .96 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: .8, delay: .08, ease: [.16, 1, .3, 1] }} className="w-full max-w-[min(61vw,34svh,330px)] sm:max-w-[min(40vw,410px)]">
-            <div className="logo-plinth relative aspect-square overflow-hidden">
-              <EurekaLogo className="eureka-logo-art" />
-            </div>
-          </motion.div>
-          <motion.p initial="hidden" animate="visible" variants={reveal} className="section-kicker mt-1 justify-center text-[#e9c98e]">
-            RV College of Engineering · Department of EEE
-          </motion.p>
-          <motion.h1 initial="hidden" animate="visible" variants={reveal} transition={{ delay: 0.08 }} className="mt-3 max-w-[12ch] font-display text-[clamp(2.4rem,6vw,4.5rem)] font-semibold leading-[0.94] tracking-[-0.055em] text-[#f7f3ea]">
-            National Project Expo
-          </motion.h1>
-          <motion.div initial="hidden" animate="visible" variants={reveal} transition={{ delay: 0.16 }} className="mt-4 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-sm text-[#c8c3b7]">
-            <span className="inline-flex items-center gap-2 font-medium text-[#edcf98]"><span className="hero-meta-icon">28</span>28 November 2026</span>
-            <span className="hidden h-1 w-1 rounded-full bg-[#9a835d] sm:block" aria-hidden="true" />
-            <span className="inline-flex items-center gap-1.5"><MapPin size={14} aria-hidden="true" /> RVCE, Bengaluru</span>
-          </motion.div>
-          <motion.div initial="hidden" animate="visible" variants={reveal} transition={{ delay: 0.24 }} className="mt-6 flex w-full flex-col justify-center gap-3 sm:w-auto sm:flex-row">
+        <div className="mx-auto grid w-full max-w-7xl items-center gap-7 lg:grid-cols-[0.95fr_1.05fr] lg:gap-10 xl:gap-16">
+          <div className="order-2 text-center lg:order-1 lg:text-left">
+            <motion.p initial="hidden" animate="visible" variants={reveal} className="section-kicker mb-4 justify-center text-[#e9c98e] lg:justify-start">
+              RV College of Engineering · Department of EEE
+            </motion.p>
+            <motion.h1 initial="hidden" animate="visible" variants={reveal} transition={{ delay: 0.08 }} className="mx-auto max-w-[12ch] font-display text-[clamp(2.5rem,7vw,5.6rem)] font-semibold leading-[0.98] tracking-[-0.055em] text-[#f7f3ea] lg:mx-0">
+              National<br className="hidden sm:block" /> Project Expo
+            </motion.h1>
+            <motion.div initial="hidden" animate="visible" variants={reveal} transition={{ delay: 0.16 }} className="mt-6 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-sm text-[#c8c3b7] lg:justify-start">
+              <span className="font-medium text-[#edcf98]">28 November 2026</span>
+              <span className="hidden h-1 w-1 rounded-full bg-[#9a835d] sm:block" aria-hidden="true" />
+              <span className="inline-flex items-center gap-1.5"><MapPin size={14} aria-hidden="true" /> RVCE, Bengaluru</span>
+            </motion.div>
+            <motion.div initial="hidden" animate="visible" variants={reveal} transition={{ delay: 0.24 }} className="mt-7 flex flex-col justify-center gap-3 sm:flex-row lg:justify-start">
               <a href={UNSTOP_EVENT_URL} target="_blank" rel="noopener noreferrer" onClick={playClickSound} onMouseEnter={playHoverSound} className="button-primary min-h-12 justify-center">
                 Register on Unstop <ArrowUpRight size={16} aria-hidden="true" />
               </a>
               <button onClick={() => { playClickSound(); scrollTo("#expo-intro", { offset: -70 }); }} className="button-outline min-h-12 justify-center">
                 Discover the expo <ArrowDownRight size={16} aria-hidden="true" />
               </button>
+            </motion.div>
+          </div>
+
+          <motion.div initial={{ opacity: 0, scale: 0.97 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.8, delay: 0.08, ease: [0.16, 1, 0.3, 1] }} className="order-1 mx-auto w-full max-w-[min(76vw,38svh,390px)] lg:order-2 lg:max-w-[min(42vw,510px)]">
+            <div className="logo-plinth relative aspect-square overflow-hidden">
+              <EurekaLogo className="eureka-logo-art" />
+            </div>
           </motion.div>
         </div>
-        <div className="hero-art-wrap pointer-events-none absolute inset-x-0 bottom-0 -z-10 h-[250px] sm:h-[315px] lg:h-[365px]"><HeroWorkshopArt /></div>
         <button onClick={() => { playClickSound(); scrollTo("#expo-intro", { offset: -70 }); }} className="absolute bottom-5 left-1/2 hidden -translate-x-1/2 items-center gap-2 text-[10px] uppercase tracking-[0.22em] text-white/45 transition-colors hover:text-white sm:flex" aria-label="Scroll to event information">
           Scroll to explore <span className="h-px w-8 bg-[#b9955c]" />
         </button>
@@ -86,24 +86,17 @@ export function MainExperience() {
 
       <section id="prizes" className="prize-section relative isolate overflow-hidden px-5 py-12 sm:px-8 sm:py-16 lg:px-12">
         <div className="prize-geometry absolute inset-0 -z-10" aria-hidden="true" />
-        <div className="prize-medallion pointer-events-none absolute bottom-[-8rem] right-[4%] -z-10 h-[27rem] w-[27rem] rounded-full" aria-hidden="true" />
-        <div className="mx-auto grid max-w-7xl items-center gap-8 lg:grid-cols-[.85fr_1.15fr] lg:gap-16">
+        <div className="mx-auto grid max-w-7xl items-center gap-8 lg:grid-cols-[1fr_1.1fr] lg:gap-16">
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={reveal}>
             <p className="section-kicker text-[#e5c58d]">02 / Incentives</p>
-            <h2 className="editorial-heading mt-4 max-w-[11ch] text-[#f5f0e4]">Good work deserves a stage.</h2>
             <p className="mt-3 max-w-md text-sm leading-6 text-[#c6c5c0] sm:text-base">Mentorship, industry connect, certificates and goodies accompany the event prize pool.</p>
           </motion.div>
-          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={reveal} transition={{ delay: 0.1 }} className="prize-showcase">
-            <div className="prize-cup" aria-hidden="true"><Trophy size={74} strokeWidth={1.1} /></div>
-            <div className="prize-amount-wrap">
-              <span className="prize-amount">₹15,000</span>
-              <span className="prize-total-label">Total prize pool</span>
-            </div>
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={reveal} transition={{ delay: 0.1 }} className="prize-amount-wrap">
+            <span className="prize-amount">₹15,000</span>
+            <span className="prize-total-label">Total prize pool</span>
           </motion.div>
-          <div className="prize-benefits lg:col-span-2">
-            <span><Trophy size={21} aria-hidden="true" /><b>Cash prizes</b><small>For shortlisted projects</small></span>
-            <span><Award size={21} aria-hidden="true" /><b>Certificates &amp; goodies</b><small>For every participant</small></span>
-            <span><Users size={21} aria-hidden="true" /><b>Industry interaction</b><small>Mentorship opportunities</small></span>
+          <div className="lg:col-span-2 flex flex-wrap gap-x-7 gap-y-3 border-t border-white/15 pt-5 text-sm text-[#dedbd2] sm:gap-x-10">
+            <span>Mentorship</span><span className="text-[#b9955c]">/</span><span>Industry connect</span><span className="text-[#b9955c]">/</span><span>Certificates &amp; goodies</span>
             <Link href="#tracks" onClick={() => playClickSound()} className="ml-auto inline-flex items-center gap-2 font-medium text-[#f0d49f] hover:text-white">Meet the tracks <ArrowRight size={15} /></Link>
           </div>
         </div>
@@ -118,10 +111,14 @@ export function MainExperience() {
           <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
             {TRACKS.map((track, index) => (
               <motion.div key={track.id} initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-40px" }} transition={{ duration: 0.45, delay: index * 0.04 }}>
-                <Link href={`/tracks/${track.id}`} onClick={playClickSound} onMouseEnter={playHoverSound} className="track-panel group flex h-full min-h-[194px] flex-col" style={{ "--track-accent": trackAccents[index] } as CSSProperties}>
-                  <div className="track-card-top"><span className="track-number">{track.number}</span><span className="track-icon-frame">{(() => { const TrackIcon = trackIcons[index]; return <TrackIcon className="track-icon" size={25} strokeWidth={1.45} aria-hidden="true" />; })()}</span><span className="track-arrow"><ArrowUpRight size={16} aria-hidden="true" /></span></div>
-                  <h3 className="mt-4 max-w-[23ch] text-lg font-semibold leading-snug tracking-[-0.025em] text-[#202522] sm:text-xl">{track.title}</h3>
-                  <p className="mt-2 line-clamp-2 text-sm leading-6 text-[#686b65]">{track.description}</p>
+                <Link href={`/tracks/${track.id}`} onClick={playClickSound} onMouseEnter={playHoverSound} className="track-panel group flex h-full min-h-[250px] flex-col" style={{ "--track-accent": trackAccents[index] } as CSSProperties}>
+                  <div className="flex items-start justify-between gap-3">
+                    <span className="track-number">{track.number}</span>
+                    {(() => { const TrackIcon = trackIcons[index]; return <span className="track-icon-frame"><TrackIcon className="track-icon" size={18} strokeWidth={1.6} aria-hidden="true" /></span>; })()}
+                  </div>
+                  <h3 className="mt-7 max-w-[20ch] text-xl font-semibold leading-snug tracking-[-0.025em] text-[#202522] sm:text-[1.35rem]">{track.title}</h3>
+                  <p className="mt-3 line-clamp-3 text-sm leading-6 text-[#686b65]">{track.description}</p>
+                  <span className="mt-auto inline-flex items-center gap-2 pt-5 text-xs font-semibold uppercase tracking-[0.12em] text-[#484b46] transition-colors group-hover:text-[var(--track-accent)]">Explore track <MoveUpRight size={14} /></span>
                 </Link>
               </motion.div>
             ))}
