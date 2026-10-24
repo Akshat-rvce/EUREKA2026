@@ -1,5 +1,4 @@
 import { cert, getApps, initializeApp } from "firebase-admin/app";
-import { getAuth } from "firebase-admin/auth";
 import { getFirestore } from "firebase-admin/firestore";
 
 function getAdminApp() {
@@ -23,5 +22,11 @@ function getAdminApp() {
   });
 }
 
-export function adminAuth() { return getAuth(getAdminApp()); }
+// Load Firebase Auth only on routes that actually use Firebase user management.
+// The shared owner-session flow needs Firestore but does not need Firebase Auth.
+// Keeping this import lazy also avoids loading jwks-rsa/jose on every API route.
+export async function adminAuth() {
+  const { getAuth } = await import("firebase-admin/auth");
+  return getAuth(getAdminApp());
+}
 export function adminDb() { return getFirestore(getAdminApp()); }

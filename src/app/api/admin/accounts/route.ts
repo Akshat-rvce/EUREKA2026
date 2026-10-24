@@ -58,7 +58,7 @@ export async function POST(request: NextRequest) {
     const tracks = normalizeTracks(body.trackIds);
     if (!assignment || !tracks) return NextResponse.json({ error: "Choose a valid non-owner role, allowed permissions, and valid track assignments." }, { status: 400 });
     try {
-      await adminAuth().getUserByEmail(email);
+      await (await adminAuth()).getUserByEmail(email);
       return NextResponse.json({ error: "An account already exists for that email. Ask the owner to manage the existing account." }, { status: 409 });
     } catch (error) {
       if ((error as { code?: string })?.code !== "auth/user-not-found") throw error;
@@ -79,7 +79,7 @@ export async function POST(request: NextRequest) {
       throw error;
     }
     try {
-      await adminAuth().createUser({ uid, email, displayName: name, emailVerified: false });
+      await (await adminAuth()).createUser({ uid, email, displayName: name, emailVerified: false });
     } catch {
       const failedAt = new Date().toISOString();
       await profileRef.update({ invitationStatus: "delivery_failed", updatedAt: failedAt }).catch(() => {});
@@ -87,9 +87,9 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "The EUREKA invitation is saved but Firebase could not provision the account. Retry the invitation after checking Firebase Admin access." }, { status: 503 });
     }
     try {
-      const link = await adminAuth().generatePasswordResetLink(email, { url: passwordSetupContinueUrl() });
+      const link = await (await adminAuth()).generatePasswordResetLink(email, { url: passwordSetupContinueUrl() });
       await sendPasswordSetupInvitation(email, name, link);
-      await adminAuth().updateUser(uid, { disabled: false });
+      await (await adminAuth()).updateUser(uid, { disabled: false });
       const sentAt = new Date().toISOString();
       const completion = adminDb().batch();
       completion.update(profileRef, { active: true, invitationStatus: "invited", lastInvitationSentAt: sentAt, updatedAt: sentAt });
@@ -97,7 +97,7 @@ export async function POST(request: NextRequest) {
       await completion.commit();
       return NextResponse.json({ uid, invitationSent: true }, { status: 201 });
     } catch {
-      await adminAuth().updateUser(uid, { disabled: true }).catch(() => {});
+      await (await adminAuth()).updateUser(uid, { disabled: true }).catch(() => {});
       await profileRef.update({ active: false, invitationStatus: "delivery_failed", updatedAt: new Date().toISOString() }).catch(() => {});
       await adminDb().collection("adminAudit").add({ actorUid: owner.uid, actorEmail: owner.email, action: "account-invitation-delivery-failed", targetUid: uid, email, at: new Date().toISOString() }).catch(() => {});
       return NextResponse.json({ error: "The account was created but remains disabled because the invitation could not be delivered. Configure the sender and retry the invitation." }, { status: 502 });
@@ -117,12 +117,12 @@ async function sendExistingInvitation(owner: NonNullable<Awaited<ReturnType<type
   if (!profileSnap.exists || profileSnap.data()?.role === "owner") return NextResponse.json({ error: "Owner or missing accounts cannot be reinvited." }, { status: 403 });
   const profile = profileSnap.data()!;
   let authUser;
-  try { authUser = await adminAuth().getUser(uid); }
+  try { authUser = await (await adminAuth()).getUser(uid); }
   catch (error) {
     if ((error as { code?: string })?.code !== "auth/user-not-found" || !["delivery_failed", "provisioning"].includes(profile.invitationStatus)) throw error;
-    try { await adminAuth().getUserByEmail(String(profile.email)); return NextResponse.json({ error: "A Firebase account already exists for this email but does not match this invitation. No account was changed." }, { status: 409 }); }
+    try { await (await adminAuth()).getUserByEmail(String(profile.email)); return NextResponse.json({ error: "A Firebase account already exists for this email but does not match this invitation. No account was changed." }, { status: 409 }); }
     catch (lookupError) { if ((lookupError as { code?: string })?.code !== "auth/user-not-found") throw lookupError; }
-    authUser = await adminAuth().createUser({ uid, email: String(profile.email), displayName: String(profile.name), emailVerified: false });
+    authUser = await (await adminAuth()).createUser({ uid, email: String(profile.email), displayName: String(profile.name), emailVerified: false });
   }
   if (authUser.email?.toLowerCase() === process.env.FIREBASE_OWNER_EMAIL?.trim().toLowerCase()) return NextResponse.json({ error: "The permanent owner account cannot be reinvited here." }, { status: 403 });
   const revoked = profile.invitationStatus === "revoked";
@@ -132,11 +132,11 @@ async function sendExistingInvitation(owner: NonNullable<Awaited<ReturnType<type
   try {
     // Firebase may reject reset-link generation for a disabled account. Enable
     // Auth only while its Firestore profile still blocks every admin session.
-    if (authUser.disabled) await adminAuth().updateUser(uid, { disabled: false });
-    const link = await adminAuth().generatePasswordResetLink(String(profile.email), { url: passwordSetupContinueUrl() });
+    if (authUser.disabled) await (await adminAuth()).updateUser(uid, { disabled: false });
+    const link = await (await adminAuth()).generatePasswordResetLink(String(profile.email), { url: passwordSetupContinueUrl() });
     await sendPasswordSetupInvitation(String(profile.email), String(profile.name), link);
   } catch {
-    if (shouldDisableOnFailure) await adminAuth().updateUser(uid, { disabled: true }).catch(() => {});
+    if (shouldDisableOnFailure) await (await adminAuth()).updateUser(uid, { disabled: true }).catch(() => {});
     return NextResponse.json({ error: "The email provider did not accept the invitation. Access state is unchanged." }, { status: 502 });
   }
   const now = new Date().toISOString();
@@ -151,7 +151,7 @@ async function sendExistingInvitation(owner: NonNullable<Awaited<ReturnType<type
       transaction.create(adminDb().collection("adminAudit").doc(), { actorUid: owner.uid, actorEmail: owner.email, action: action === "restore" ? "account-restored-and-invited" : "account-invitation-resent", targetUid: uid, email: profile.email, at: now });
     });
   } catch (error) {
-    if (shouldDisableOnFailure) await adminAuth().updateUser(uid, { disabled: true }).catch(() => {});
+    if (shouldDisableOnFailure) await (await adminAuth()).updateUser(uid, { disabled: true }).catch(() => {});
     throw error;
   }
   return NextResponse.json({ uid, invitationSent: true });
@@ -166,7 +166,7 @@ export async function PATCH(request: NextRequest) {
     const uid = typeof body.uid === "string" ? body.uid : "";
     if (!uid || uid === owner.uid) return NextResponse.json({ error: "The permanent owner account cannot be changed here." }, { status: 400 });
     const profileRef = adminDb().collection("adminUsers").doc(uid);
-    const authUser = await adminAuth().getUser(uid);
+    const authUser = await (await adminAuth()).getUser(uid);
     if (authUser.email?.toLowerCase() === process.env.FIREBASE_OWNER_EMAIL?.trim().toLowerCase()) return NextResponse.json({ error: "The configured owner account cannot be changed here." }, { status: 403 });
     const before = await profileRef.get();
     if (!before.exists || before.data()?.role === "owner") return NextResponse.json({ error: "Owner accounts cannot be modified here." }, { status: 403 });
@@ -203,7 +203,7 @@ export async function PATCH(request: NextRequest) {
       transaction.update(profileRef, next);
       transaction.create(adminDb().collection("adminAudit").doc(), { actorUid: owner.uid, actorEmail: owner.email, action, targetUid: uid, targetEmail: prior.email, changes: Object.keys(next).filter(key => key !== "updatedAt"), at: now });
     });
-    if (typeof body.active === "boolean" || body.action === "revoke") await adminAuth().updateUser(uid, { disabled: body.action === "revoke" || body.active === false });
+    if (typeof body.active === "boolean" || body.action === "revoke") await (await adminAuth()).updateUser(uid, { disabled: body.action === "revoke" || body.active === false });
     return NextResponse.json({ ok: true });
   } catch (error) {
     if (error instanceof Error && error.message === "ACCOUNT_CONFLICT") return NextResponse.json({ error: "This user changed elsewhere. Refresh the list and try again." }, { status: 409 });
