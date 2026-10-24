@@ -15,7 +15,7 @@ const reveal: Variants = {
   visible: { opacity: 1, y: 0, transition: { duration: 0.55, ease: [0.16, 1, 0.3, 1] as const } },
 };
 
-const trackAccents = ["#b8873e", "#667c61", "#59758c", "#a96653", "#77708e"];
+const trackAccents = ["#a47d45", "#a47d45", "#a47d45", "#a47d45", "#a47d45"];
 const trackIcons = [Cpu, SunMedium, Zap, Activity, Lightbulb];
 
 export function MainExperience() {
@@ -60,8 +60,9 @@ export function MainExperience() {
         </button>
       </section>
 
-      <section id="expo-intro" className="paper-section px-5 py-14 sm:px-8 sm:py-20 lg:px-12 lg:py-24">
-        <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-end lg:gap-16">
+      <section id="expo-intro" className="overview-section paper-section relative isolate px-5 py-14 sm:px-8 sm:py-20 lg:px-12 lg:py-24">
+        <div className="overview-motif pointer-events-none absolute right-[-12rem] top-[-10rem] hidden h-[34rem] w-[34rem] lg:block" aria-hidden="true" />
+        <div className="relative z-10 mx-auto grid max-w-7xl gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-end lg:gap-16">
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={reveal}>
             <p className="section-kicker">01 / The gathering</p>
             <h2 className="editorial-heading mt-4 max-w-[14ch]">A national exhibition of student projects.</h2>
@@ -101,8 +102,8 @@ export function MainExperience() {
         </div>
       </section>
 
-      <section id="tracks" className="paper-section px-5 py-14 sm:px-8 sm:py-20 lg:px-12 lg:py-24">
-        <div className="mx-auto max-w-7xl">
+      <section id="tracks" className="track-section paper-section relative isolate px-5 py-14 sm:px-8 sm:py-20 lg:px-12 lg:py-24">
+        <div className="relative z-10 mx-auto max-w-7xl">
           <div className="mb-8 flex flex-col justify-between gap-4 sm:mb-10 sm:flex-row sm:items-end">
             <div><p className="section-kicker">03 / Expo tracks</p><h2 className="editorial-heading mt-3">Explore the five tracks.</h2></div>
             <p className="max-w-sm text-sm leading-6 text-[#666963]">Explore the disciplines represented at EUREKA ’26. Every track has its own set of engineering questions.</p>
@@ -113,7 +114,7 @@ export function MainExperience() {
                 <Link href={`/tracks/${track.id}`} onClick={playClickSound} onMouseEnter={playHoverSound} className="track-panel group flex h-full min-h-[250px] flex-col" style={{ "--track-accent": trackAccents[index] } as CSSProperties}>
                   <div className="flex items-start justify-between gap-3">
                     <span className="track-number">{track.number}</span>
-                    {(() => { const TrackIcon = trackIcons[index]; return <TrackIcon className="track-icon" size={19} strokeWidth={1.6} aria-hidden="true" />; })()}
+                    {(() => { const TrackIcon = trackIcons[index]; return <span className="track-icon-frame"><TrackIcon className="track-icon" size={18} strokeWidth={1.6} aria-hidden="true" /></span>; })()}
                   </div>
                   <h3 className="mt-7 max-w-[20ch] text-xl font-semibold leading-snug tracking-[-0.025em] text-[#202522] sm:text-[1.35rem]">{track.title}</h3>
                   <p className="mt-3 line-clamp-3 text-sm leading-6 text-[#686b65]">{track.description}</p>
