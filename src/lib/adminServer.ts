@@ -1,15 +1,26 @@
 import { cookies } from "next/headers";
-import { adminAuth, adminDb } from "@/lib/firebaseAdmin";
-import { hasPermission, type AdminProfile, type Permission } from "@/lib/adminAccess";
+import { ADMIN_SESSION_COOKIE, ownerUid, verifyAdminSession } from "@/lib/adminSession";
+import { hasPermission, OWNER_PERMISSIONS, type AdminProfile, type Permission } from "@/lib/adminAccess";
 
 export async function currentAdmin(): Promise<AdminProfile | null> {
   try {
-    const token = (await cookies()).get("eureka_admin_session")?.value;
+    const token = (await cookies()).get(ADMIN_SESSION_COOKIE)?.value;
     if (!token) return null;
-    const decoded = await adminAuth().verifySessionCookie(token, true);
-    const snap = await adminDb().collection("adminUsers").doc(decoded.uid).get();
-    if (!snap.exists || snap.data()?.active === false) return null;
-    return { uid: decoded.uid, email: decoded.email || "", ...snap.data() } as AdminProfile;
+    const ownerEmail = process.env.FIREBASE_OWNER_EMAIL?.trim().toLowerCase();
+    const session = verifyAdminSession(token);
+    if (!ownerEmail || !session || session.email !== ownerEmail) return null;
+    const uid = ownerUid(ownerEmail);
+    return {
+      uid,
+      email: ownerEmail,
+      name: "EUREKA Owner",
+      role: "owner",
+      active: true,
+      mustChangePassword: false,
+      assignedTrack: "",
+      trackIds: [],
+      permissions: OWNER_PERMISSIONS,
+    };
   } catch { return null; }
 }
 

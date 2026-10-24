@@ -1,26 +1,8 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    function signedIn() { return request.auth != null; }
-    function profile() {
-      return get(/databases/$(database)/documents/adminUsers/$(request.auth.uid));
-    }
-    function activeUser() { return signedIn() && profile().data.active == true; }
-    function can(permission) {
-      return activeUser() && (profile().data.role == 'owner' || profile().data.permissions[permission] == true);
-    }
-    function canTrack(trackId) {
-      return profile().data.role == 'owner' || ('trackIds' in profile().data && trackId in profile().data.trackIds);
-    }
-
-    match /teams/{teamId} {
-      allow get, list: if (can('registrationsRead') || can('checkinRead')) && canTrack(resource.data.trackId);
-      allow write: if false;
-    }
-    match /scores/{scoreId} {
-      allow get, list: if can('judgingRead') && canTrack(resource.data.trackId);
-      allow write: if false;
-    }
+    // All access now goes through server APIs which validate the signed owner session.
+    // Firebase Admin SDK requests bypass these rules; browser SDK requests are denied.
     match /{document=**} { allow read, write: if false; }
   }
 }
