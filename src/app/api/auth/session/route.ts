@@ -6,6 +6,15 @@ import { ADMIN_SESSION_COOKIE, ADMIN_SESSION_SECONDS, createAdminSession, ownerU
 const ATTEMPT_WINDOW_MS = 15 * 60 * 1000;
 const MAX_ATTEMPTS = 5;
 
+function logDatabaseFailure(stage: "login-attempt" | "session-audit", error: unknown) {
+  const value = error && typeof error === "object" ? error as { name?: unknown; code?: unknown } : {};
+  const code = typeof value.code === "string" || typeof value.code === "number" ? String(value.code).slice(0, 80) : undefined;
+  const name = typeof value.name === "string" ? value.name.slice(0, 80) : "UnknownError";
+  // Keep diagnostics useful without logging credentials, service-account data,
+  // request bodies, email addresses, or raw provider error messages.
+  console.error("[admin-auth] Firestore access failed", { stage, name, ...(code ? { code } : {}) });
+}
+
 function loginAttemptRef(request: NextRequest) {
   const ip = request.headers.get("x-real-ip") || request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "local";
   const key = createHash("sha256").update(ip).digest("hex");
@@ -49,7 +58,10 @@ export async function POST(request: NextRequest) {
 
   let mayTry: boolean;
   try { mayTry = await takeLoginAttempt(request); }
-  catch { return NextResponse.json({ error: "Shared database access is not configured." }, { status: 503 }); }
+  catch (error) {
+    logDatabaseFailure("login-attempt", error);
+    return NextResponse.json({ error: "Shared database access is not configured." }, { status: 503 });
+  }
   if (!mayTry) return NextResponse.json({ error: "Too many sign-in attempts. Try again in 15 minutes." }, { status: 429 });
 
   const expectedEmail = createHash("sha256").update(ownerEmail).digest();
@@ -69,7 +81,10 @@ export async function POST(request: NextRequest) {
     const response = NextResponse.json({ ok: true });
     response.cookies.set(ADMIN_SESSION_COOKIE, createAdminSession(ownerEmail), { httpOnly: true, secure: process.env.NODE_ENV === "production", sameSite: "strict", path: "/", maxAge: ADMIN_SESSION_SECONDS });
     return response;
-  } catch { return NextResponse.json({ error: "Sign-in could not be completed. Check the server configuration." }, { status: 503 }); }
+  } catch (error) {
+    logDatabaseFailure("session-audit", error);
+    return NextResponse.json({ error: "Sign-in could not be completed. Check the server configuration." }, { status: 503 });
+  }
 }
 
 export async function DELETE() {
