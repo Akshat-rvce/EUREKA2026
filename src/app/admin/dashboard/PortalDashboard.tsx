@@ -33,24 +33,28 @@ export function exportCsv(filename: string, rows: Record<string,unknown>[]) {
   const link=document.createElement("a");link.href=URL.createObjectURL(new Blob([csv],{type:"text/csv;charset=utf-8"}));link.download=filename;link.click();URL.revokeObjectURL(link.href);
 }
 const names=[{id:"finance",name:"Finance"},{id:"registration",name:"Registration"},{id:"scoring",name:"Scoring"},{id:"logistics",name:"Logistics"},{id:"promotion",name:"Promotion"},{id:"operations",name:"Operations"}];
+const departmentSections:Record<string,string[]>={finance:["finance","tasks"],registration:["teams","tasks"],scoring:["judges","scoring","tasks"],logistics:["logistics","schedule","volunteers","tasks"],promotion:["promotion","tasks"],operations:["tasks","schedule","volunteers"]};
 
 export default function PortalDashboard({ initialUser }: { initialUser: PortalUser }) {
   const router=useRouter();const [tab,setTab]=useState(initialUser.role==="master"?"dashboard":"mine");const [viewDepartment,setViewDepartment]=useState("all");
   const [data,setData]=useState<Record<string,PortalRecord[]>>({});const [pending,setPending]=useState<PortalRecord[]>([]);const [users,setUsers]=useState<Record<string,any>[]>([]);const [audit,setAudit]=useState<Record<string,any>[]>([]);const [announcements,setAnnouncements]=useState<Record<string,any>[]>([]);const [settings,setSettings]=useState<PortalSettings>({});
   const [loading,setLoading]=useState(true);const [error,setError]=useState("");const [notice,setNotice]=useState("");const [editor,setEditor]=useState<{section:string;initial?:PortalRecord}|null>(null);
-  const dept=initialUser.role==="judge"?"scoring":({finance:"finance",registration:"teams",scoring:"scoring",logistics:"logistics",promotion:"promotion",operations:"tasks"} as Record<string,string>)[initialUser.departmentId||""]||"tasks";
-  const nav=initialUser.role==="master"?["dashboard","review","finance","teams","judges","scoring","live","tasks","schedule","volunteers","logistics","promotion","announcements","users","settings","audit"]:["mine",dept,"approved","announcements"];
+  const assignedDepartments=initialUser.departmentIds?.length?initialUser.departmentIds:initialUser.departmentId?[initialUser.departmentId]:[];
+  const userSections=initialUser.role==="judge"?["scoring"]:Array.from(new Set(assignedDepartments.flatMap(id=>departmentSections[id]||[])));
+  const userSectionsKey=userSections.join(",");
+  const dept=userSections[0]||"tasks";
+  const nav=initialUser.role==="master"?["dashboard","review","finance","teams","judges","scoring","live","tasks","schedule","volunteers","logistics","promotion","announcements","users","settings","audit"]:["mine",...userSections,"approved","announcements"];
   const loadSections=useCallback(async(list:string[])=>{const results=await Promise.all(list.map(async s=>[s,(await portalApi(`/api/portal/records?section=${s}`)).records as PortalRecord[]] as const));setData(current=>({...current,...Object.fromEntries(results)}));return Object.fromEntries(results) as Record<string,PortalRecord[]>;},[]);
   const loadExtras=useCallback(async()=>{const [a,b]=await Promise.all([portalApi("/api/admin/settings"),portalApi("/api/admin/announcements")]);setSettings(a.settings||{});setAnnouncements(b.announcements||[]);},[]);
   const refresh=useCallback(async()=>{setError("");try{
     if(portalSections.includes(tab)) await loadSections([tab]);
     if(["dashboard","review"].includes(tab)&&initialUser.role==="master") {const all=await loadSections(portalSections);setPending(Object.values(all).flat().filter(r=>r.status==="pending"));}
-    if(tab==="mine") await loadSections([dept]);
+    if(tab==="mine") await loadSections(userSectionsKey?userSectionsKey.split(","):[dept]);
     if(tab==="approved") await loadSections(portalSections);
     if(["dashboard","finance","live","settings","announcements"].includes(tab)) await loadExtras();
     if(tab==="users"&&initialUser.role==="master")setUsers((await portalApi("/api/admin/accounts")).users||[]);
     if(tab==="audit"&&initialUser.role==="master")setAudit((await portalApi("/api/admin/audit")).events||[]);
-  }catch(e){setError(e instanceof Error?e.message:"Could not load shared data.")}finally{setLoading(false)}},[tab,dept,initialUser.role,loadSections,loadExtras]);
+  }catch(e){setError(e instanceof Error?e.message:"Could not load shared data.")}finally{setLoading(false)}},[tab,dept,userSectionsKey,initialUser.role,loadSections,loadExtras]);
   useEffect(()=>{setLoading(true);void refresh();const timer=setInterval(()=>void refresh(),5000);return()=>clearInterval(timer)},[refresh]);
   const visibleToMaster=(list:PortalRecord[])=>initialUser.role==="master"&&viewDepartment!=="all"?list.filter(r=>r.createdByDepartment===viewDepartment):list;
   const rows=visibleToMaster(data[tab]||[]);const pendingForView=visibleToMaster(pending);
@@ -73,7 +77,7 @@ export default function PortalDashboard({ initialUser }: { initialUser: PortalUs
     {tab==="finance"&&<FinanceSection rows={finance} settings={settings} user={initialUser} onEdit={r=>setEditor({section:"finance",initial:r})} onDelete={removeRecord}/>}
     {tab==="teams"&&<GenericSection section="teams" rows={rows} user={initialUser} tracks={TRACKS} targetTeams={settings.budget?.targetTeams||60} onEdit={r=>setEditor({section:"teams",initial:r})} onDelete={removeRecord} onRefresh={refresh}/>}
     {["judges","scoring","tasks","schedule","volunteers","logistics","promotion"].includes(tab)&&<GenericSection section={tab} rows={rows} user={initialUser} tracks={TRACKS} onEdit={r=>setEditor({section:tab,initial:r})} onDelete={removeRecord} onRefresh={refresh}/>}
-    {tab==="mine"&&<GenericSection section={dept} rows={(data[dept]||[]).filter(r=>r.createdBy===initialUser.id)} user={initialUser} tracks={TRACKS} targetTeams={settings.budget?.targetTeams||60} onEdit={r=>setEditor({section:dept,initial:r})} onDelete={removeRecord} onRefresh={refresh}/>}
+    {tab==="mine"&&<div className="space-y-6">{(userSections.length?userSections:[dept]).map(section=><section key={section}><h2 className="mb-3 text-lg font-medium capitalize text-[#eee7d8]">{sectionLabels[section]||section}</h2><GenericSection section={section} rows={(data[section]||[]).filter(r=>r.createdBy===initialUser.id)} user={initialUser} tracks={TRACKS} targetTeams={settings.budget?.targetTeams||60} onEdit={r=>setEditor({section,initial:r})} onDelete={removeRecord} onRefresh={refresh}/></section>)}</div>}
     {tab==="approved"&&<div className="space-y-3">{Object.entries(data).flatMap(([section,list])=>visibleToMaster(list).filter(r=>r.status==="approved").map(r=><article key={section+r.id} className="rounded-xl border border-[#ded8c9] bg-white p-4"><p className="text-xs uppercase text-[#8a7448]">{section}</p><h2 className="mt-1 font-medium">{r.team_name||r.title||r.party_name||r.item||r.name||r.activity||r.project_title||"Entry"}</h2><p className="mt-2 text-sm text-[#666158]">{r.description||r.notes||r.project_title||r.body||""}</p></article>))}{!Object.values(data).flat().some(r=>visibleToMaster([r])[0]?.status==="approved")&&<p className="rounded-xl bg-white p-8 text-center text-sm">No approved shared entries yet.</p>}</div>}
     {tab==="users"&&<UsersSection users={users} onRefresh={refresh} onNotice={setNotice}/>}
     {tab==="settings"&&<SettingsSection settings={settings} onSave={async next=>{try{await portalApi("/api/admin/settings",{method:"PATCH",body:JSON.stringify({settings:next})});setNotice("Settings saved.");await refresh()}catch(e){setError(e instanceof Error?e.message:"Could not save settings.")}}} tracks={TRACKS}/>}

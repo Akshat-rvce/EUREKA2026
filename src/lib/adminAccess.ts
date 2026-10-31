@@ -8,6 +8,7 @@ export interface AdminProfile {
   active: boolean;
   mustChangePassword: boolean;
   departmentId: string | null;
+  departmentIds?: string[];
   trackIds: string[];
 }
 export const OWNER_PERMISSIONS = {} as const;
@@ -29,9 +30,10 @@ export const SECTION_DEPARTMENTS: Record<string, string[]> = {
   promotion: ["promotion"],
 };
 export const PORTAL_SECTIONS = Object.keys(SECTION_DEPARTMENTS);
-export function canManageSection(user: { role: string; departmentId?: string | null }, section: string) {
+export function canManageSection(user: { role: string; departmentId?: string | null; departmentIds?: string[] }, section: string) {
   if (user.role === "master") return true;
   if (user.role === "judge") return section === "scoring";
   const departments = SECTION_DEPARTMENTS[section] || [];
-  return Boolean(user.departmentId && departments.includes(user.departmentId));
+  const assigned = user.departmentIds?.length ? user.departmentIds : user.departmentId ? [user.departmentId] : [];
+  return assigned.some(departmentId => departments.includes(departmentId));
 }

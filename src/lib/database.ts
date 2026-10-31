@@ -40,6 +40,11 @@ export async function ensureSchema() {
         `CREATE INDEX IF NOT EXISTS attachments_uploader_idx ON attachments(uploaded_by)`,
       ];
       for (const sql of statements) await client.execute(sql);
+      const userColumns = await client.execute("PRAGMA table_info(users)");
+      if (!userColumns.rows.some(row => String((row as Record<string, unknown>).name) === "department_ids")) {
+        await client.execute("ALTER TABLE users ADD COLUMN department_ids TEXT NOT NULL DEFAULT '[]'");
+      }
+      await client.execute("UPDATE users SET department_ids=json_array(department_id) WHERE department_id IS NOT NULL AND department_ids='[]'");
       const departments = ["Finance", "Registration", "Scoring", "Logistics", "Promotion", "Operations"];
       for (const name of departments) await client.execute({ sql: "INSERT OR IGNORE INTO departments(id,name) VALUES(?,?)", args: [name.toLowerCase(), name] });
       const defaults: Record<string, unknown> = {
