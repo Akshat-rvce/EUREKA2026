@@ -3,7 +3,7 @@
 import Link from "next/link";
 import type { CSSProperties } from "react";
 import { motion, type Variants } from "framer-motion";
-import { Activity, ArrowDownRight, ArrowRight, ArrowUpRight, Cpu, Lightbulb, MapPin, MoveUpRight, SunMedium, Zap } from "lucide-react";
+import { Activity, ArrowDownRight, ArrowRight, ArrowUpRight, Cpu, MapPin, MoveUpRight, SunMedium, Workflow } from "lucide-react";
 import { EurekaLogo } from "@/components/ui/EurekaLogo";
 import { CountdownTimer } from "@/components/ui/CountdownTimer";
 import { TRACKS, SITE_CONFIG, UNSTOP_EVENT_URL } from "@/config/site";
@@ -16,7 +16,7 @@ const reveal: Variants = {
 };
 
 const trackAccents = ["#a47d45", "#a47d45", "#a47d45", "#a47d45", "#a47d45"];
-const trackIcons = [Cpu, SunMedium, Zap, Activity, Lightbulb];
+const trackIcons = [Cpu, Workflow, SunMedium, Activity, Cpu];
 
 export function MainExperience() {
   const { scrollTo } = useSmoothScroll();

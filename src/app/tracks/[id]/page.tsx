@@ -6,11 +6,11 @@ import {
   ArrowLeft,
   ArrowRight,
   ArrowUpRight,
-  Award,
   Cpu,
   Layers3,
   Sparkles,
   SunMedium,
+  Workflow,
   Trophy,
   Zap,
   Activity,
@@ -35,7 +35,7 @@ export async function generateMetadata({ params }: TrackPageProps): Promise<Meta
   return { title, description, openGraph: { title, description } };
 }
 
-const ICON_MAP = { Cpu, SunMedium, Zap, Activity, Sparkles };
+const ICON_MAP = { Cpu, SunMedium, Zap, Activity, Sparkles, Workflow };
 
 export default async function TrackDetailPage({ params }: TrackPageProps) {
   const { id } = await params;
@@ -122,20 +122,20 @@ export default async function TrackDetailPage({ params }: TrackPageProps) {
               <p className="section-kicker mb-5">Track {track.number} · Overview</p>
               <h2 className="editorial-heading max-w-md">A field of questions worth solving.</h2>
               <p className="mt-5 max-w-md text-sm leading-relaxed text-[#5d625d]">
-                Bring a project that makes a clear connection between an engineering idea and a real need. The scope is open within this domain; the examples below are starting points, not a prescribed brief.
+                Begin with a real need and follow it with a thoughtful engineering idea. The prompts below are invitations to explore; teams are welcome to define a different challenge within this theme.
               </p>
             </div>
             <div className="border-l-2 border-[#c9a66c] pl-6 sm:pl-9">
               <p className="font-display text-xl leading-relaxed text-[#303633] sm:text-2xl">{track.description}</p>
               <div className="mt-8 flex items-start gap-3 border-t border-[var(--line)] pt-5 text-sm leading-relaxed text-[#555b56]">
                 <Sparkles aria-hidden="true" className="mt-0.5 h-4 w-4 shrink-0 text-[#a77d3d]" />
-                <p>Use your own problem statement and approach. The technologies listed below are examples to help you explore the domain.</p>
+                <p>Use your own perspective and approach. The strongest ideas start with careful observation and a clear sense of who they are meant to help.</p>
               </div>
             </div>
           </div>
 
           <div className="mt-12 border-t border-[var(--line)] pt-7">
-            <p className="fact-label mb-4">Areas connected to this track</p>
+            <p className="fact-label mb-4">Themes within this track</p>
             <div className="flex flex-wrap gap-2">
               {track.tags.map((tag, index) => (
                 <span key={tag} className={`border px-3 py-2 text-sm ${index === 0 ? "border-[#c9a66c]/60 bg-white/65 text-[#302d26]" : "border-[var(--line)] text-[#505650]"}`}>{tag}</span>
@@ -147,41 +147,18 @@ export default async function TrackDetailPage({ params }: TrackPageProps) {
 
       <section className="bg-[#e9e5db]">
         <div className="mx-auto max-w-7xl px-5 py-14 sm:px-8 sm:py-20 lg:px-12">
-          <div className="grid gap-12 lg:grid-cols-2 lg:gap-20">
-            <div>
-              <p className="section-kicker mb-5">Reference points</p>
-              <h2 className="font-display text-3xl font-medium tracking-[-.035em] text-[#1b2020] sm:text-4xl">Tools and technologies</h2>
-              <p className="mt-4 max-w-xl text-sm leading-relaxed text-[#5d625d]">
-                These are examples associated with this field, not required equipment. Choose the tools that fit your project and explain why they are right for it.
-              </p>
-              <div className="mt-7 grid gap-2 sm:grid-cols-2">
-                {track.hardwareStack.map((item, index) => (
-                  <div key={item} className="flex min-h-14 items-center gap-3 border border-[#d5d1c6] bg-white/50 px-4 py-3 text-sm text-[#343a36]">
-                    <span className="font-display text-sm text-[#a77d3d]">{String(index + 1).padStart(2, "0")}</span>{item}
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div>
-              <p className="section-kicker mb-5">Evaluation framework</p>
-              <h2 className="font-display text-3xl font-medium tracking-[-.035em] text-[#1b2020] sm:text-4xl">What a strong project can show</h2>
-              <p className="mt-4 max-w-xl text-sm leading-relaxed text-[#5d625d]">
-                The track information highlights these dimensions. Use them to explain your design decisions, demonstrate what works, and describe the impact.
-              </p>
-              <div className="mt-7 divide-y divide-[#d5d1c6] border-y border-[#d5d1c6]">
-                {track.evaluationCriteria.map((criterion) => (
-                  <div key={criterion.criteria} className="flex items-center justify-between gap-5 py-4">
-                    <span className="text-sm leading-snug text-[#343a36]">{criterion.criteria}</span>
-                    <span className="shrink-0 font-display text-2xl text-[#a77d3d]">{criterion.weight}</span>
-                  </div>
-                ))}
-              </div>
-              <div className="mt-4 flex items-start gap-2 text-xs leading-relaxed text-[#73766e]">
-                <Award aria-hidden="true" className="mt-0.5 h-4 w-4 shrink-0 text-[#a77d3d]" />
-                <p>These weights are shown in the track guide. Check the event’s registration page for the latest participation details.</p>
-              </div>
-            </div>
+          <div className="max-w-2xl">
+            <p className="section-kicker mb-5">Ideas to get started</p>
+            <h2 className="font-display text-3xl font-medium tracking-[-.035em] text-[#1b2020] sm:text-4xl">Questions worth exploring.</h2>
+            <p className="mt-4 text-sm leading-relaxed text-[#5d625d]">These are open prompts, not fixed project briefs. Choose one as a starting point—or bring a question of your own that belongs in this theme.</p>
+          </div>
+          <div className="mt-9 grid gap-3 md:grid-cols-3">
+            {track.projectDirections.map((direction, index) => (
+              <article key={direction} className="min-h-48 border border-[#d5d1c6] bg-white/55 p-5 sm:p-6">
+                <span className="font-display text-2xl text-[#a77d3d]">{String(index + 1).padStart(2, "0")}</span>
+                <p className="mt-7 text-sm leading-relaxed text-[#343a36]">{direction}</p>
+              </article>
+            ))}
           </div>
         </div>
       </section>

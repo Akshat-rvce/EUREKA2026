@@ -53,115 +53,98 @@ export interface TrackItem {
   tags: string[];
   gradient: string;
   accentColor: string;
-  problemStatements: string[];
-  hardwareStack: string[];
-  evaluationCriteria: { criteria: string; weight: string }[];
+  projectDirections: string[];
 }
 
 export const TRACKS: TrackItem[] = [
   {
     id: "track-1",
     number: "01",
-    title: "Robotics, IoT & Intelligent Automation",
-    tagline: "Robotics · IoT · Embedded Systems · Autonomous Systems · Drones · Industrial Automation",
+    title: "Robotics & Automation",
+    tagline: "Intelligent machines · Human-centred automation · Reliable systems",
     prizePool: "Part of the ₹15,000 total prize pool",
     description:
-      "This track invites innovative prototypes at the intersection of mechanical actuation, embedded electronics, and sensor intelligence. Whether you are engineering autonomous ground or aerial navigation systems, industrial automation testbeds, smart IoT sensor networks, or edge-computing controllers, this domain is open to your unique problem-solving approach. Teams are encouraged to present working hardware prototypes addressing real-world challenges in logistics, manufacturing, defense, and intelligent systems.",
+      "Build machines that sense their surroundings, make decisions, and act reliably. This theme spans assistive and service robots, autonomous mobility, industrial automation, inspection, and precision mechanisms. Strong projects begin with a real task, explain how people and machines work together, and show how the system performs safely when conditions are less than perfect.",
     iconName: "Cpu",
-    tags: ["Robotics", "IoT", "Embedded Systems", "Autonomous Systems", "Drones", "Edge AI", "Sensors", "Control Systems"],
+    tags: ["Robotics", "Automation", "Autonomous systems", "Assistive machines", "Industrial innovation"],
     gradient: "from-cyan-500/15 via-black to-black",
     accentColor: "#00F0FF",
-    problemStatements: [],
-    hardwareStack: ["STM32 / ESP32 MCU", "ROS / ROS2 Framework", "LoRa / Zigbee / BLE", "IMU & LIDAR Sensors", "Servo & Stepper Drivers"],
-    evaluationCriteria: [
-      { criteria: "Autonomy & Intelligence Level", weight: "35%" },
-      { criteria: "Hardware Design & Reliability", weight: "25%" },
-      { criteria: "Real-time Performance & Latency", weight: "20%" },
-      { criteria: "Scalability & Real-world Impact", weight: "20%" },
+    projectDirections: [
+      "How might a robot take on repetitive, hazardous, or physically demanding work while keeping people safe?",
+      "Can an automated system adapt when routes, materials, lighting, or operating conditions change?",
+      "How could practical robotics improve inspection, accessibility, agriculture, or local manufacturing?",
     ],
   },
   {
     id: "track-2",
     number: "02",
-    title: "Sustainable Energy, Smart Systems & Infrastructure",
-    tagline: "Renewable Energy · Smart Grid · Energy Storage · EVs & Charging · Power Electronics · Microgrids",
+    title: "Digital Twin for Sustainable Campus",
+    tagline: "A living digital view of campus spaces, resources, and operations",
     prizePool: "Part of the ₹15,000 total prize pool",
     description:
-      "Powering a cleaner, greener tomorrow. This track focuses on renewable energy systems, intelligent power grids, next-generation energy storage, electric vehicle infrastructure, and sustainable smart buildings. Projects should address real-world challenges in energy efficiency, power quality, resource conservation, and decarbonization. Prototypes demonstrating working hardware, real-time sensing, and measurable efficiency gains are strongly encouraged.",
-    iconName: "SunMedium",
-    tags: ["Renewable Energy", "Smart Grid", "Energy Storage", "EVs & Charging", "Microgrids", "Power Electronics", "Smart Buildings", "Resource Management"],
+      "Create a useful digital counterpart of a campus space or system and keep it connected to the reality it represents. Explore buildings, classrooms, labs, water, mobility, waste, or maintenance. The aim is better decisions—lower resource use, earlier fault detection, and more thoughtful planning—not a 3D model for its own sake.",
+    iconName: "Workflow",
+    tags: ["Digital twin", "Campus planning", "Resource efficiency", "Building operations", "Sustainability"],
     gradient: "from-emerald-500/15 via-black to-black",
     accentColor: "#10B981",
-    problemStatements: [],
-    hardwareStack: ["ESP32-S3 / Raspberry Pi", "IGBT / GaN Power Modules", "CT / Voltage Sensors", "MPPT Solar Controllers", "MQTT / Modbus Protocols"],
-    evaluationCriteria: [
-      { criteria: "Energy Efficiency & Sustainability Impact", weight: "35%" },
-      { criteria: "Grid Integration & Power Quality", weight: "25%" },
-      { criteria: "System Monitoring & Data Analytics", weight: "20%" },
-      { criteria: "Economic Viability & Scalability", weight: "20%" },
+    projectDirections: [
+      "How could a campus understand where energy, water, or space is being wasted—and decide what to improve first?",
+      "Can a digital model help facilities teams spot faults early or plan maintenance before disruption occurs?",
+      "How might students and staff use a live campus view to make everyday journeys and shared spaces work better?",
     ],
   },
   {
     id: "track-3",
     number: "03",
-    title: "AI, Computing & Digital Technologies",
-    tagline: "AI/ML · Computer Vision · Cybersecurity · Software Platforms · Data Science · Cloud/Edge Computing",
+    title: "Smart Energy Systems, Microgrids & Sustainable Technologies",
+    tagline: "Resilient power · Renewable integration · Smarter energy use",
     prizePool: "Part of the ₹15,000 total prize pool",
     description:
-      "Shape the computational frontier. This track brings together cutting-edge work in artificial intelligence, machine learning, computer vision, data platforms, and secure computing architectures. Whether deploying low-latency vision algorithms for industrial inspection, designing edge-AI accelerators, building digital twins for complex machinery, or engineering robust cybersecurity frameworks, this domain rewards technical depth, architectural elegance, and practical real-world utility.",
+      "Reimagine how communities and campuses produce, store, distribute, and use energy. Explore renewable integration, microgrids, resilient backup, demand management, storage, power quality, and efficiency. Bring forward an approach that balances reliability, affordability, and environmental impact under realistic operating conditions.",
     iconName: "Zap",
-    tags: ["AI/ML", "Computer Vision", "Cybersecurity", "Data Science", "Cloud/Edge Computing", "Digital Twins", "VLSI/FPGA"],
+    tags: ["Microgrids", "Renewable energy", "Energy resilience", "Efficient buildings", "Sustainable technology"],
     gradient: "from-amber-500/15 via-black to-black",
     accentColor: "#FFD166",
-    problemStatements: [],
-    hardwareStack: ["NVIDIA Jetson / Coral TPU", "Xilinx / Intel FPGA", "Cloud: AWS / GCP / Azure", "OpenCV / TensorFlow Lite", "Docker / Kubernetes"],
-    evaluationCriteria: [
-      { criteria: "Model Accuracy & Algorithm Innovation", weight: "35%" },
-      { criteria: "System Performance & Scalability", weight: "25%" },
-      { criteria: "Security, Privacy & Robustness", weight: "20%" },
-      { criteria: "Practical Deployment & Demo Quality", weight: "20%" },
+    projectDirections: [
+      "How could a campus or neighbourhood keep essential services running when the main grid is disrupted?",
+      "Can local renewable generation, storage, and flexible demand work together more intelligently?",
+      "What practical changes could reduce energy waste without compromising comfort, safety, or access?",
     ],
   },
   {
     id: "track-4",
     number: "04",
-    title: "Healthcare, Assistive Technology & Social Impact",
-    tagline: "Healthcare · MedTech · Assistive Devices · Agriculture · Rural Technology · Safety · Education",
+    title: "MedTech & Healthcare",
+    tagline: "Better care · Earlier awareness · Greater independence",
     prizePool: "Part of the ₹15,000 total prize pool",
     description:
-      "Engineer solutions that save lives and uplift communities. This track welcomes high-impact engineering innovations in medical devices, diagnostic tools, assistive technologies for persons with disabilities, smart agriculture, rural tech infrastructure, and disaster management. Solutions should prioritize human-centered design, affordability, field reliability, and measurable positive impact on society.",
+      "Develop engineering that supports better care, earlier awareness, safer workflows, or greater independence. Projects may serve patients, clinicians, caregivers, or public health. Put people first: make the idea usable, accessible, private, and dependable, and describe clearly what a prototype can—and cannot yet—demonstrate.",
     iconName: "Activity",
-    tags: ["Healthcare", "MedTech", "Assistive Devices", "Agriculture", "Rural Technology", "Safety", "Disaster Management", "Social Impact"],
+    tags: ["MedTech", "Patient care", "Assistive health", "Clinical workflows", "Accessible design"],
     gradient: "from-rose-500/15 via-black to-black",
     accentColor: "#F43F5E",
-    problemStatements: [],
-    hardwareStack: ["ADS1299 / MAX30102 Bio-Sensors", "Raspberry Pi / Arduino", "GSM / LoRa Modules", "Soil & Environmental Sensors", "TFT / E-Paper Display"],
-    evaluationCriteria: [
-      { criteria: "Real-world Social Impact & Need", weight: "35%" },
-      { criteria: "Clinical / Field Accuracy & Reliability", weight: "25%" },
-      { criteria: "Affordability & Accessibility", weight: "20%" },
-      { criteria: "Working Prototype & Usability", weight: "20%" },
+    projectDirections: [
+      "How might a care team notice changing patient needs sooner while keeping the person at the centre of decisions?",
+      "Can an everyday healthcare task be made safer, simpler, or more accessible for patients and caregivers?",
+      "What would make a health-focused idea usable in a busy clinic or a resource-constrained community?",
     ],
   },
   {
     id: "track-5",
     number: "05",
-    title: "Open Innovation",
-    tagline: "Interdisciplinary Projects · Emerging Technologies · Novel Prototypes · Aerospace · Advanced Materials",
+    title: "Embedded Systems & IoT",
+    tagline: "Connected devices · Real-time response · Thoughtful sensing",
     prizePool: "Part of the ₹15,000 total prize pool",
     description:
-      "Where boundary-pushing engineering knows no constraints. Open Innovation welcomes cross-disciplinary, moonshot, and unconventional hardware-software projects that break traditional silos. From aerospace subsystems, CubeSats, and advanced materials to bio-inspired mechatronics and novel consumer tech, any innovative prototype that demonstrates technical ambition, creativity, and rigorous engineering belongs in this track.",
-    iconName: "Sparkles",
-    tags: ["Interdisciplinary", "Emerging Technologies", "Novel Prototypes", "Aerospace", "Advanced Materials", "Manufacturing", "Creative Engineering"],
+      "Connect sensing, computation, and control in compact systems that respond to the world around them. Explore connected devices for homes, industry, infrastructure, the environment, mobility, or agriculture. Start with a clear use case, then consider dependability, security, power, connectivity, and responsible handling of the data your system collects.",
+    iconName: "Cpu",
+    tags: ["Embedded systems", "Internet of Things", "Connected devices", "Real-time sensing", "Edge computing"],
     gradient: "from-purple-500/15 via-black to-black",
     accentColor: "#A855F7",
-    problemStatements: [],
-    hardwareStack: ["Pixhawk / Ardupilot", "3D Printer & CNC Mill", "HackRF / RTL-SDR", "NVIDIA Jetson Nano", "Custom PCB & Mechatronics"],
-    evaluationCriteria: [
-      { criteria: "Novelty, Ambition & Technical Complexity", weight: "40%" },
-      { criteria: "Proof-of-Concept & Live Demo Quality", weight: "30%" },
-      { criteria: "Interdisciplinary Depth & Innovation", weight: "15%" },
-      { criteria: "Commercialization & Dual-use Potential", weight: "15%" },
+    projectDirections: [
+      "How can connected devices help people understand and respond to changes in a shared environment?",
+      "Can an embedded system keep working safely when power, network access, or sensor readings are unreliable?",
+      "What should a connected product collect, protect, and share—and what should it leave private?",
     ],
   },
 ];

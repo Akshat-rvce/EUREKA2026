@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Zap, SunMedium, Cpu, Activity, Sparkles, ArrowRight, X, Check, Trophy, ExternalLink, Cpu as ChipIcon, HelpCircle } from "lucide-react";
+import { Zap, SunMedium, Cpu, Activity, Sparkles, ArrowRight, X, Trophy, ExternalLink, Workflow, HelpCircle } from "lucide-react";
 import { TRACKS, TrackItem, UNSTOP_EVENT_URL } from "@/config/site";
 import { playHoverSound, playClickSound } from "@/utils/audio";
 
@@ -13,6 +13,7 @@ const ICON_MAP: Record<string, any> = {
   Cpu,
   Activity,
   Sparkles,
+  Workflow,
 };
 
 export function TracksSection() {
@@ -199,43 +200,15 @@ export function TracksSection() {
                 </div>
               </div>
 
-              {/* Hardware & Sensor Tech Stack */}
-              <div className="mb-6">
-                <h4 className="text-xs uppercase tracking-wider text-cyan-400 font-mono mb-3 flex items-center gap-1.5">
-                  <ChipIcon className="w-3.5 h-3.5" />
-                  <span>RECOMMENDED HARDWARE &amp; SENSOR STACK:</span>
-                </h4>
-                <div className="flex flex-wrap gap-2">
-                  {selectedTrack.hardwareStack.map((hw) => (
-                    <span
-                      key={hw}
-                      className="px-3 py-1.5 rounded-lg text-xs font-mono bg-cyan-500/10 border border-cyan-500/20 text-cyan-200 flex items-center gap-1.5"
-                    >
-                      <Check className="w-3 h-3 text-cyan-400" />
-                      <span>{hw}</span>
-                    </span>
-                  ))}
-                </div>
-              </div>
-
-              {/* Evaluation Rubrics */}
+              {/* Theme-specific starting questions */}
               <div className="mb-8">
-                <h4 className="text-xs uppercase tracking-wider text-slate-400 font-mono mb-3">
-                  EVALUATION CRITERIA &amp; WEIGHTAGE:
-                </h4>
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
-                  {selectedTrack.evaluationCriteria.map((crit, cIdx) => (
-                    <div
-                      key={cIdx}
-                      className="p-3 rounded-xl bg-white/[0.02] border border-white/10 text-center"
-                    >
-                      <div className="text-base sm:text-lg font-mono font-bold text-emerald-400">
-                        {crit.weight}
-                      </div>
-                      <div className="text-[11px] text-slate-300 mt-1 font-normal">
-                        {crit.criteria}
-                      </div>
-                    </div>
+                <h4 className="text-xs uppercase tracking-wider text-amber-300 font-mono mb-3">QUESTIONS TO EXPLORE</h4>
+                <div className="space-y-2">
+                  {selectedTrack.projectDirections.map((direction, index) => (
+                    <p key={direction} className="flex gap-3 rounded-xl border border-white/10 bg-white/[0.025] p-3 text-xs leading-relaxed text-slate-200">
+                      <span className="font-mono text-amber-300/80">{String(index + 1).padStart(2, "0")}</span>
+                      <span>{direction}</span>
+                    </p>
                   ))}
                 </div>
               </div>
