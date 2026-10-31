@@ -6,7 +6,7 @@ export function proxy(request: NextRequest) {
 
   // Protect all /admin/dashboard routes
   if (pathname.startsWith("/admin/dashboard")) {
-    const authToken = request.cookies.get("eureka_admin_session")?.value;
+    const authToken = request.cookies.get("eureka_committee_session")?.value;
 
     if (!authToken) {
       const loginUrl = new URL("/admin", request.url);

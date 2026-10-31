@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import { currentAdmin } from "@/lib/adminServer";
+import { currentUser } from "@/lib/adminServer";
 export async function GET() {
-  const user = await currentAdmin();
-  return user ? NextResponse.json({ user }) : NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const user = await currentUser();
+  return user ? NextResponse.json({ user: { ...user, uid: user.id } }, { headers: { "Cache-Control": "no-store" } }) : NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 }

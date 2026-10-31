@@ -18,7 +18,7 @@ export default function AdminLoginPage() {
       const response = await fetch("/api/auth/session", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ email: email.trim(), password }) });
       const data = await response.json();
       if (!response.ok) throw new Error(data.error || "Access denied.");
-      router.push("/admin/dashboard");
+      router.push(data.mustChangePassword ? "/admin/change-password" : "/admin/dashboard");
     } catch (cause) {
       setError(cause instanceof Error ? cause.message : "Sign-in failed.");
       setPassword("");
@@ -31,14 +31,14 @@ export default function AdminLoginPage() {
     <section className="w-full max-w-md mx-auto my-auto py-16">
       <div className="text-[11px] uppercase tracking-[.3em] text-[#b9a778] mb-5">EUREKA / RVCE</div>
       <h1 className="text-4xl sm:text-5xl font-light tracking-tight">Admin portal<span className="text-[#b9a778]">.</span></h1>
-      <p className="mt-4 text-sm text-white/55 leading-6">Sign in with the shared EUREKA owner credentials. Anyone using this account has full owner access.</p>
+      <p className="mt-4 text-sm text-white/55 leading-6">Sign in with your personal EUREKA committee account.</p>
       {error && <p role="alert" className="mt-6 rounded-xl border border-rose-300/20 bg-rose-300/10 px-4 py-3 text-sm text-rose-200">{error}</p>}
       <form onSubmit={login} className="mt-8 space-y-4">
         <label className="block text-xs text-white/55">EMAIL ADDRESS<span className="mt-2 flex items-center gap-3 rounded-xl border border-white/10 bg-white/[.04] px-4"><Mail size={16} className="text-[#b9a778]"/><input required type="email" autoComplete="username" value={email} onChange={e=>setEmail(e.target.value)} className="w-full bg-transparent py-4 text-sm outline-none" placeholder="you@example.com"/></span></label>
         <label className="block text-xs text-white/55">PASSWORD<span className="mt-2 flex items-center gap-3 rounded-xl border border-white/10 bg-white/[.04] px-4"><LockKeyhole size={16} className="text-[#b9a778]"/><input required type="password" autoComplete="current-password" value={password} onChange={e=>setPassword(e.target.value)} className="w-full bg-transparent py-4 text-sm outline-none" placeholder="Your password"/></span></label>
         <button disabled={loading} className="w-full rounded-xl bg-[#e9ddbd] px-5 py-4 text-sm font-semibold text-[#191814] disabled:opacity-50 flex justify-between items-center">{loading ? "Signing in…" : "Sign in"}<ArrowUpRight size={17}/></button>
       </form>
-      <p className="mt-7 flex items-center gap-2 text-xs text-white/40"><ShieldCheck size={15} className="text-[#b9a778]"/> Protected by a server-verified, HTTP-only owner session.</p>
+      <p className="mt-7 flex items-center gap-2 text-xs text-white/40"><ShieldCheck size={15} className="text-[#b9a778]"/> Protected by a server-verified, private session.</p>
     </section>
     <footer className="mx-auto w-full max-w-6xl border-t border-white/10 pt-5 text-xs text-white/35">RV College of Engineering · EEE</footer>
   </main>;

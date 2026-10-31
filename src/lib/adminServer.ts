@@ -1,31 +1,41 @@
 import { cookies } from "next/headers";
-import { ADMIN_SESSION_COOKIE, ownerUid, verifyAdminSession } from "@/lib/adminSession";
-import { hasPermission, OWNER_PERMISSIONS, type AdminProfile, type Permission } from "@/lib/adminAccess";
+import { execute, sqlBool } from "@/lib/database";
+import { SESSION_COOKIE, sessionTokenHash } from "@/lib/adminSession";
 
-export async function currentAdmin(): Promise<AdminProfile | null> {
+export type PortalRole = "master" | "member" | "judge";
+export interface PortalUser {
+  id: string;
+  name: string;
+  email: string;
+  role: PortalRole;
+  departmentId: string | null;
+  trackIds: string[];
+  active: boolean;
+  mustChangePassword: boolean;
+}
+
+type UserRow = Record<string, unknown>;
+
+export async function currentUser(options: { allowPasswordChange?: boolean } = {}): Promise<PortalUser | null> {
   try {
-    const token = (await cookies()).get(ADMIN_SESSION_COOKIE)?.value;
+    const token = (await cookies()).get(SESSION_COOKIE)?.value;
     if (!token) return null;
-    const ownerEmail = process.env.FIREBASE_OWNER_EMAIL?.trim().toLowerCase();
-    const session = verifyAdminSession(token);
-    if (!ownerEmail || !session || session.email !== ownerEmail) return null;
-    const uid = ownerUid(ownerEmail);
-    return {
-      uid,
-      email: ownerEmail,
-      name: "EUREKA Owner",
-      role: "owner",
-      active: true,
-      mustChangePassword: false,
-      assignedTrack: "",
-      trackIds: [],
-      permissions: OWNER_PERMISSIONS,
-    };
-  } catch { return null; }
+    const result = await execute(`SELECT u.id,u.name,u.email,u.role,u.department_id,u.track_ids,u.is_active,u.must_change_password
+      FROM sessions s JOIN users u ON u.id=s.user_id
+      WHERE s.token_hash=? AND s.expires_at>? AND u.is_active=1 LIMIT 1`, [sessionTokenHash(token), new Date().toISOString()]);
+    const row = result.rows[0] as UserRow | undefined;
+    if (!row) return null;
+    const mustChangePassword = sqlBool(row.must_change_password);
+    if (mustChangePassword && !options.allowPasswordChange) return null;
+    let trackIds: string[] = [];
+    try { trackIds = JSON.parse(String(row.track_ids || "[]")); } catch { trackIds = []; }
+    return { id: String(row.id), name: String(row.name), email: String(row.email), role: row.role as PortalRole, departmentId: row.department_id ? String(row.department_id) : null, trackIds, active: sqlBool(row.is_active), mustChangePassword };
+  } catch {
+    return null;
+  }
 }
 
-export async function requireAdmin(permission?: Permission) {
-  const user = await currentAdmin();
-  if (!user || (permission && !hasPermission(user, permission))) return null;
-  return user;
-}
+export async function requireUser() { return currentUser(); }
+export async function requireMaster() { const user = await currentUser(); return user?.role === "master" ? user : null; }
+export const currentAdmin = currentUser;
+export const requireAdmin = requireUser;

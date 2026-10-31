@@ -1,213 +1,118 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createHash } from "node:crypto";
-import { adminAuth, adminDb } from "@/lib/firebaseAdmin";
-import { requireAdmin } from "@/lib/adminServer";
-import { OWNER_PERMISSIONS, ROLE_DEFAULTS, type AdminRole, type PermissionSet } from "@/lib/adminAccess";
+import bcrypt from "bcryptjs";
+import { randomUUID } from "node:crypto";
+import { execute, transaction } from "@/lib/database";
+import { requireMaster } from "@/lib/adminServer";
 import { TRACKS } from "@/config/site";
-import { invitationEmailConfigured, passwordSetupContinueUrl, sendPasswordSetupInvitation } from "@/lib/invitationEmail";
 
-const roles = new Set<AdminRole>(["administrator", "organizer", "judge", "checkin", "viewer", "custom"]);
-const permissionKeys: Array<keyof PermissionSet> = ["dashboard", "registrationsRead", "registrationsWrite", "checkinRead", "checkinWrite", "judgingRead", "judgingWrite", "leaderboardRead", "accountsManage", "settingsManage"];
-const validTrackIds = new Set(TRACKS.map(track => track.id));
-const isOwner = (user: Awaited<ReturnType<typeof requireAdmin>>): user is NonNullable<Awaited<ReturnType<typeof requireAdmin>>> => Boolean(user && user.role === "owner");
-const singleLoginMode = () => Boolean(process.env.EUREKA_ADMIN_PASSWORD);
-const singleLoginResponse = () => NextResponse.json({ error: "Individual accounts are unavailable while this portal uses one shared owner login." }, { status: 409 });
-const normalizeTracks = (value: unknown): string[] | null => {
-  if (!Array.isArray(value) || value.some(id => typeof id !== "string" || !validTrackIds.has(id))) return null;
-  return [...new Set(value)];
-};
-function resolveAssignment(role: unknown, input: unknown): { role: AdminRole; permissions: PermissionSet } | null {
-  if (typeof role !== "string" || !roles.has(role as AdminRole)) return null;
-  const typedRole = role as AdminRole;
-  if (typedRole !== "custom") return { role: typedRole, permissions: ROLE_DEFAULTS[typedRole as Exclude<AdminRole, "owner" | "custom">] };
-  if (!input || typeof input !== "object" || Array.isArray(input)) return null;
-  const supplied = input as Record<string, unknown>;
-  if (Object.keys(supplied).some(key => !permissionKeys.includes(key as keyof PermissionSet))) return null;
-  const permissions = {} as PermissionSet;
-  for (const key of permissionKeys) permissions[key] = supplied[key] === true;
-  if (permissions.accountsManage || permissions.settingsManage) return null;
-  return { role: typedRole, permissions };
+function originOk(request: NextRequest) { const origin=request.headers.get("origin"); return !origin || origin===request.nextUrl.origin; }
+
+const safe = (row: Record<string, unknown>) => ({ id: String(row.id), name: String(row.name), email: String(row.email), role: String(row.role), departmentId: row.department_id ? String(row.department_id) : null, trackIds: JSON.parse(String(row.track_ids || "[]")), active: Number(row.is_active) === 1, mustChangePassword: Number(row.must_change_password) === 1, createdAt: String(row.created_at), lastSignInAt: row.last_sign_in_at ? String(row.last_sign_in_at) : null });
+async function audit(tx: { execute: (arg: { sql: string; args: (string | number | null)[] }) => Promise<unknown> }, actorId: string, action: string, entityId: string, oldValue: unknown, newValue: unknown) {
+  return tx.execute({ sql: "INSERT INTO audit_log(id,user_id,action,entity,entity_id,old_json,new_json,created_at) VALUES(?,?,?,?,?,?,?,?)", args: [randomUUID(), actorId, action, "user", entityId, oldValue == null ? null : JSON.stringify(oldValue), newValue == null ? null : JSON.stringify(newValue), new Date().toISOString()] });
 }
 
 export async function GET() {
-  if (singleLoginMode()) return singleLoginResponse();
-  const owner = await requireAdmin("accountsManage");
-  if (!isOwner(owner)) return NextResponse.json({ error: "Only the owner can manage accounts." }, { status: 403 });
-  const snap = await adminDb().collection("adminUsers").get();
-  const users: Array<Record<string, unknown> & { uid: string }> = snap.docs.map(doc => ({ uid: doc.id, ...doc.data() }));
-  if (!users.some(person => person.uid === owner.uid)) users.unshift({ uid: owner.uid, email: owner.email, name: owner.name, role: "owner", active: true, invitationStatus: "owner", trackIds: [], permissions: OWNER_PERMISSIONS });
-  return NextResponse.json({ users }, { headers: { "Cache-Control": "no-store" } });
+  const master = await requireMaster();
+  if (!master) return NextResponse.json({ error: "Master access required." }, { status: 403 });
+  const result = await execute("SELECT id,name,email,role,department_id,track_ids,is_active,must_change_password,created_at,last_sign_in_at FROM users ORDER BY created_at DESC");
+  return NextResponse.json({ users: result.rows.map(row => safe(row as Record<string, unknown>)) }, { headers: { "Cache-Control": "no-store" } });
 }
 
 export async function POST(request: NextRequest) {
-  if (singleLoginMode()) return singleLoginResponse();
-  const owner = await requireAdmin("accountsManage");
-  if (!isOwner(owner)) return NextResponse.json({ error: "Only the owner can manage accounts." }, { status: 403 });
-  if (!invitationEmailConfigured()) return NextResponse.json({ error: "Invitation email is not configured. Add RESEND_API_KEY, RESEND_FROM_EMAIL, and APP_BASE_URL first. No account was created." }, { status: 503 });
-  try { passwordSetupContinueUrl(); } catch { return NextResponse.json({ error: "APP_BASE_URL must be a valid HTTPS origin for production. No account was created." }, { status: 503 }); }
+  if (!originOk(request)) return NextResponse.json({ error: "Request rejected." }, { status: 403 });
+  const master = await requireMaster();
+  if (!master) return NextResponse.json({ error: "Master access required." }, { status: 403 });
+  let body: Record<string, unknown>;
+  try { body = await request.json(); } catch { return NextResponse.json({ error: "Invalid request." }, { status: 400 }); }
+  const name = typeof body.name === "string" ? body.name.trim() : "";
+  const email = typeof body.email === "string" ? body.email.trim().toLowerCase() : "";
+  const role = body.role;
+  const departmentId = typeof body.departmentId === "string" ? body.departmentId.toLowerCase() : "";
+  const tempPassword = body.temporaryPassword;
+  const trackIds = Array.isArray(body.trackIds) ? body.trackIds.filter((v): v is string => typeof v === "string" && TRACKS.some(track=>track.id===v)).slice(0, 5) : [];
+  if (!name || name.length > 120 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || !["master", "member", "judge"].includes(String(role)) || typeof tempPassword !== "string" || tempPassword.length < 12 || tempPassword.length > 128) return NextResponse.json({ error: "Check the name, email, role, and temporary password (at least 12 characters)." }, { status: 400 });
+  if ((role === "member" || role === "judge") && !["finance", "registration", "scoring", "logistics", "promotion", "operations"].includes(departmentId)) return NextResponse.json({ error: "Choose a valid department." }, { status: 400 });
   try {
-    const body = await request.json();
-    if (body.action === "resend" || body.action === "restore") return await sendExistingInvitation(owner, body.uid, body.action);
-    const email = typeof body.email === "string" ? body.email.trim().toLowerCase() : "";
-    const name = typeof body.name === "string" ? body.name.trim() : "";
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || email.length > 254 || name.length < 2 || name.length > 100 || /[\u0000-\u001f\u007f]/.test(name)) {
-      return NextResponse.json({ error: "Enter a valid email address and a name between 2 and 100 characters." }, { status: 400 });
+    const duplicate = await execute("SELECT id FROM users WHERE email=? COLLATE NOCASE LIMIT 1", [email]);
+    if (duplicate.rows.length) return NextResponse.json({ error: "An account with that email already exists." }, { status: 409 });
+    if (role === "master") {
+      const masters = await execute("SELECT COUNT(*) AS count FROM users WHERE role='master' AND is_active=1");
+      if (Number((masters.rows[0] as Record<string, unknown>)?.count || 0) >= 2) return NextResponse.json({ error: "The portal supports at most two active Masters." }, { status: 409 });
     }
-    if (email === process.env.FIREBASE_OWNER_EMAIL?.trim().toLowerCase()) return NextResponse.json({ error: "The configured owner already has permanent access." }, { status: 409 });
-    const assignment = resolveAssignment(body.role, body.permissions);
-    const tracks = normalizeTracks(body.trackIds);
-    if (!assignment || !tracks) return NextResponse.json({ error: "Choose a valid non-owner role, allowed permissions, and valid track assignments." }, { status: 400 });
-    try {
-      await (await adminAuth()).getUserByEmail(email);
-      return NextResponse.json({ error: "An account already exists for that email. Ask the owner to manage the existing account." }, { status: 409 });
-    } catch (error) {
-      if ((error as { code?: string })?.code !== "auth/user-not-found") throw error;
-    }
-    // A stable, opaque profile/Auth uid prevents concurrent Owner submissions
-    // for the same normalized email from creating duplicate invitation rows.
-    const uid = `eureka_${createHash("sha256").update(email).digest("hex")}`;
-    const profileRef = adminDb().collection("adminUsers").doc(uid);
-    const now = new Date().toISOString();
-    const batch = adminDb().batch();
-    batch.create(profileRef, { email, name, role: assignment.role, active: false, invitationStatus: "provisioning", mustChangePassword: false, assignedTrack: tracks.length === 1 ? tracks[0] : "", trackIds: tracks, permissions: assignment.permissions, createdAt: now, createdBy: owner.uid, updatedAt: now });
-    batch.create(adminDb().collection("adminAudit").doc(), { actorUid: owner.uid, actorEmail: owner.email, action: "account-invitation-created", targetUid: uid, email, role: assignment.role, trackIds: tracks, at: now });
-    try { await batch.commit(); }
-    catch (error) {
-      if ((error as { code?: number })?.code === 6 || (error as { code?: string })?.code === "already-exists") {
-        return NextResponse.json({ error: "An EUREKA invitation already exists for this email. Refresh User Management to manage or resend it." }, { status: 409 });
-      }
-      throw error;
-    }
-    try {
-      await (await adminAuth()).createUser({ uid, email, displayName: name, emailVerified: false });
-    } catch {
-      const failedAt = new Date().toISOString();
-      await profileRef.update({ invitationStatus: "delivery_failed", updatedAt: failedAt }).catch(() => {});
-      await adminDb().collection("adminAudit").add({ actorUid: owner.uid, actorEmail: owner.email, action: "account-provisioning-failed", targetUid: uid, email, at: failedAt }).catch(() => {});
-      return NextResponse.json({ error: "The EUREKA invitation is saved but Firebase could not provision the account. Retry the invitation after checking Firebase Admin access." }, { status: 503 });
-    }
-    try {
-      const link = await (await adminAuth()).generatePasswordResetLink(email, { url: passwordSetupContinueUrl() });
-      await sendPasswordSetupInvitation(email, name, link);
-      await (await adminAuth()).updateUser(uid, { disabled: false });
-      const sentAt = new Date().toISOString();
-      const completion = adminDb().batch();
-      completion.update(profileRef, { active: true, invitationStatus: "invited", lastInvitationSentAt: sentAt, updatedAt: sentAt });
-      completion.create(adminDb().collection("adminAudit").doc(), { actorUid: owner.uid, actorEmail: owner.email, action: "account-invitation-sent", targetUid: uid, email, at: sentAt });
-      await completion.commit();
-      return NextResponse.json({ uid, invitationSent: true }, { status: 201 });
-    } catch {
-      await (await adminAuth()).updateUser(uid, { disabled: true }).catch(() => {});
-      await profileRef.update({ active: false, invitationStatus: "delivery_failed", updatedAt: new Date().toISOString() }).catch(() => {});
-      await adminDb().collection("adminAudit").add({ actorUid: owner.uid, actorEmail: owner.email, action: "account-invitation-delivery-failed", targetUid: uid, email, at: new Date().toISOString() }).catch(() => {});
-      return NextResponse.json({ error: "The account was created but remains disabled because the invitation could not be delivered. Configure the sender and retry the invitation." }, { status: 502 });
-    }
-  } catch (error) {
-    const code = (error as { code?: string })?.code;
-    if (code === "auth/email-already-exists") return NextResponse.json({ error: "An account already exists for that email." }, { status: 409 });
-    return NextResponse.json({ error: "Invitation could not be created. Check Firebase Admin and email-provider configuration." }, { status: 503 });
-  }
-}
-
-async function sendExistingInvitation(owner: NonNullable<Awaited<ReturnType<typeof requireAdmin>>>, uidValue: unknown, action: "resend" | "restore") {
-  const uid = typeof uidValue === "string" ? uidValue : "";
-  if (!uid || uid === owner.uid) return NextResponse.json({ error: "Invalid account." }, { status: 400 });
-  const profileRef = adminDb().collection("adminUsers").doc(uid);
-  const profileSnap = await profileRef.get();
-  if (!profileSnap.exists || profileSnap.data()?.role === "owner") return NextResponse.json({ error: "Owner or missing accounts cannot be reinvited." }, { status: 403 });
-  const profile = profileSnap.data()!;
-  let authUser;
-  try { authUser = await (await adminAuth()).getUser(uid); }
-  catch (error) {
-    if ((error as { code?: string })?.code !== "auth/user-not-found" || !["delivery_failed", "provisioning"].includes(profile.invitationStatus)) throw error;
-    try { await (await adminAuth()).getUserByEmail(String(profile.email)); return NextResponse.json({ error: "A Firebase account already exists for this email but does not match this invitation. No account was changed." }, { status: 409 }); }
-    catch (lookupError) { if ((lookupError as { code?: string })?.code !== "auth/user-not-found") throw lookupError; }
-    authUser = await (await adminAuth()).createUser({ uid, email: String(profile.email), displayName: String(profile.name), emailVerified: false });
-  }
-  if (authUser.email?.toLowerCase() === process.env.FIREBASE_OWNER_EMAIL?.trim().toLowerCase()) return NextResponse.json({ error: "The permanent owner account cannot be reinvited here." }, { status: 403 });
-  const revoked = profile.invitationStatus === "revoked";
-  if (revoked !== (action === "restore")) return NextResponse.json({ error: revoked ? "Restoring revoked access requires an explicit restore invitation." : "This account does not require a restore invitation." }, { status: 409 });
-  if (action === "resend" && profile.invitationStatus === "disabled") return NextResponse.json({ error: "Re-enable this account before sending a password reset invitation." }, { status: 409 });
-  const shouldDisableOnFailure = action === "restore" || profile.active !== true;
-  try {
-    // Firebase may reject reset-link generation for a disabled account. Enable
-    // Auth only while its Firestore profile still blocks every admin session.
-    if (authUser.disabled) await (await adminAuth()).updateUser(uid, { disabled: false });
-    const link = await (await adminAuth()).generatePasswordResetLink(String(profile.email), { url: passwordSetupContinueUrl() });
-    await sendPasswordSetupInvitation(String(profile.email), String(profile.name), link);
-  } catch {
-    if (shouldDisableOnFailure) await (await adminAuth()).updateUser(uid, { disabled: true }).catch(() => {});
-    return NextResponse.json({ error: "The email provider did not accept the invitation. Access state is unchanged." }, { status: 502 });
-  }
-  const now = new Date().toISOString();
-  try {
-    await adminDb().runTransaction(async transaction => {
-      const current = await transaction.get(profileRef);
-      if (!current.exists || (current.data()?.updatedAt ?? null) !== (profile.updatedAt ?? null)) throw new Error("ACCOUNT_CONFLICT");
-      const wasRevoked = current.data()?.invitationStatus === "revoked";
-      if (action === "restore" && !wasRevoked) throw new Error("ACCOUNT_CONFLICT");
-      const active = action === "restore" || ["delivery_failed", "provisioning"].includes(String(current.data()?.invitationStatus)) ? true : current.data()?.active === true;
-      transaction.update(profileRef, { active, invitationStatus: active ? (current.data()?.invitationStatus === "accepted" ? "accepted" : "invited") : current.data()?.invitationStatus, lastInvitationSentAt: now, updatedAt: now });
-      transaction.create(adminDb().collection("adminAudit").doc(), { actorUid: owner.uid, actorEmail: owner.email, action: action === "restore" ? "account-restored-and-invited" : "account-invitation-resent", targetUid: uid, email: profile.email, at: now });
+    const id = randomUUID(); const at = new Date().toISOString(); const passwordHash = await bcrypt.hash(tempPassword, 12);
+    await transaction(async tx => {
+      await tx.execute({ sql: "INSERT INTO users(id,name,email,password_hash,role,department_id,track_ids,is_active,must_change_password,created_at) VALUES(?,?,?,?,?,?,?,?,?,?)", args: [id, name, email, passwordHash, String(role), departmentId || null, JSON.stringify(trackIds), 1, 1, at] });
+      await tx.execute({ sql: "INSERT INTO audit_log(id,user_id,action,entity,entity_id,new_json,created_at) VALUES(?,?,?,?,?,?,?)", args: [randomUUID(), master.id, "user-created", "user", id, JSON.stringify({ name, email, role, departmentId, trackIds }), at] });
     });
+    return NextResponse.json({ user: { id, name, email, role, departmentId: departmentId || null, trackIds, active: true, mustChangePassword: true } }, { status: 201 });
   } catch (error) {
-    if (shouldDisableOnFailure) await (await adminAuth()).updateUser(uid, { disabled: true }).catch(() => {});
-    throw error;
+    if (error && typeof error === "object" && "code" in error && String((error as { code?: unknown }).code).includes("UNIQUE")) return NextResponse.json({ error: "An account with that email already exists." }, { status: 409 });
+    return NextResponse.json({ error: "Could not create the account." }, { status: 500 });
   }
-  return NextResponse.json({ uid, invitationSent: true });
 }
 
 export async function PATCH(request: NextRequest) {
-  if (singleLoginMode()) return singleLoginResponse();
-  const owner = await requireAdmin("accountsManage");
-  if (!isOwner(owner)) return NextResponse.json({ error: "Only the owner can manage accounts." }, { status: 403 });
-  try {
-    const body = await request.json();
-    const uid = typeof body.uid === "string" ? body.uid : "";
-    if (!uid || uid === owner.uid) return NextResponse.json({ error: "The permanent owner account cannot be changed here." }, { status: 400 });
-    const profileRef = adminDb().collection("adminUsers").doc(uid);
-    const authUser = await (await adminAuth()).getUser(uid);
-    if (authUser.email?.toLowerCase() === process.env.FIREBASE_OWNER_EMAIL?.trim().toLowerCase()) return NextResponse.json({ error: "The configured owner account cannot be changed here." }, { status: 403 });
-    const before = await profileRef.get();
-    if (!before.exists || before.data()?.role === "owner") return NextResponse.json({ error: "Owner accounts cannot be modified here." }, { status: 403 });
-    const prior = before.data()!;
-    const next: Record<string, unknown> = { updatedAt: new Date().toISOString() };
-    let action = "account-access-updated";
-    if (body.action === "revoke") {
-      next.active = false;
-      next.invitationStatus = "revoked";
-      action = "account-revoked";
-    } else if (typeof body.active === "boolean") {
-      if (body.active && prior.invitationStatus === "revoked") return NextResponse.json({ error: "Revoked access requires a fresh owner invitation." }, { status: 409 });
-      next.active = body.active;
-      next.invitationStatus = body.active ? (prior.invitationStatus === "invited" ? "invited" : "active") : "disabled";
-      action = body.active ? "account-enabled" : "account-disabled";
+  if (!originOk(request)) return NextResponse.json({ error: "Request rejected." }, { status: 403 });
+  const master = await requireMaster();
+  if (!master) return NextResponse.json({ error: "Master access required." }, { status: 403 });
+  let body: Record<string, unknown>;
+  try { body = await request.json(); } catch { return NextResponse.json({ error: "Invalid request." }, { status: 400 }); }
+  const id = typeof body.id === "string" ? body.id : ""; const action = body.action;
+  if (!id || typeof action !== "string") return NextResponse.json({ error: "Choose a user and action." }, { status: 400 });
+  if (id === master.id && ["disable", "reset-password", "role", "department", "tracks"].includes(action)) return NextResponse.json({ error: "Use the password page for your own account; you cannot disable or demote your active Master session." }, { status: 400 });
+  const found = await execute("SELECT id,name,email,role,department_id,track_ids,is_active,must_change_password,created_at,last_sign_in_at FROM users WHERE id=?", [id]);
+  const row = found.rows[0] as Record<string, unknown> | undefined;
+  if (!row) return NextResponse.json({ error: "User not found." }, { status: 404 });
+  const oldValue = safe(row); const at = new Date().toISOString();
+  let sql = ""; let args: (string | number | null)[] = []; let actionName = ""; let next: unknown = null;
+  if (action === "enable" || action === "disable") {
+    if (action === "disable" && row.role === "master") {
+      const count = await execute("SELECT COUNT(*) AS count FROM users WHERE role='master' AND is_active=1");
+      if (Number((count.rows[0] as Record<string, unknown>)?.count || 0) <= 1) return NextResponse.json({ error: "The last active Master cannot be disabled." }, { status: 409 });
     }
-    if (body.role !== undefined || body.permissions !== undefined) {
-      const assignment = resolveAssignment(body.role ?? prior.role, body.permissions ?? prior.permissions);
-      if (!assignment) return NextResponse.json({ error: "Invalid role or permissions. Only the owner role may manage accounts or security settings." }, { status: 400 });
-      next.role = assignment.role;
-      next.permissions = assignment.permissions;
+    const active = action === "enable" ? 1 : 0; sql = "UPDATE users SET is_active=? WHERE id=?"; args = [active, id]; actionName = action === "enable" ? "user-enabled" : "user-disabled"; next = { active: Boolean(active) };
+  } else if (action === "reset-password") {
+    const temp = body.temporaryPassword;
+    if (typeof temp !== "string" || temp.length < 12 || temp.length > 128) return NextResponse.json({ error: "Enter a temporary password of at least 12 characters." }, { status: 400 });
+    const hash = await bcrypt.hash(temp, 12); sql = "UPDATE users SET password_hash=?,must_change_password=1 WHERE id=?"; args = [hash, id]; actionName = "user-password-reset"; next = { mustChangePassword: true };
+  } else if (action === "tracks") {
+    const tracks = Array.isArray(body.trackIds) ? body.trackIds.filter((v): v is string => typeof v === "string" && TRACKS.some(track=>track.id===v)).slice(0,5) : null;
+    if (!tracks) return NextResponse.json({ error: "Choose valid track assignments." }, { status: 400 });
+    sql = "UPDATE users SET track_ids=? WHERE id=?"; args = [JSON.stringify(tracks), id]; actionName = "user-tracks-changed"; next = { trackIds: tracks };
+  } else if (action === "role" || action === "department") {
+    const role = action === "role" ? body.role : row.role;
+    const departmentId = action === "department" ? body.departmentId : body.departmentId ?? row.department_id;
+    const dept = typeof departmentId === "string" ? departmentId.toLowerCase() : "";
+    if (!["master", "member", "judge"].includes(String(role)) || (role !== "master" && !["finance", "registration", "scoring", "logistics", "promotion", "operations"].includes(dept))) return NextResponse.json({ error: "Choose a valid role and department." }, { status: 400 });
+    if (role === "master" && row.role !== "master") {
+      const count = await execute("SELECT COUNT(*) AS count FROM users WHERE role='master' AND is_active=1");
+      if (Number((count.rows[0] as Record<string, unknown>)?.count || 0) >= 2) return NextResponse.json({ error: "The portal supports at most two active Masters." }, { status: 409 });
     }
-    if (body.trackIds !== undefined) {
-      const tracks = normalizeTracks(body.trackIds);
-      if (!tracks) return NextResponse.json({ error: "Track assignment contains an unknown track." }, { status: 400 });
-      next.trackIds = tracks;
-    }
-    const now = new Date().toISOString();
-    await adminDb().runTransaction(async transaction => {
-      const current = await transaction.get(profileRef);
-      if (!current.exists || current.data()?.role === "owner") throw new Error("ACCOUNT_NOT_EDITABLE");
-      const currentUpdatedAt = current.data()?.updatedAt ?? null;
-      if (body.expectedUpdatedAt !== currentUpdatedAt) throw new Error("ACCOUNT_CONFLICT");
-      transaction.update(profileRef, next);
-      transaction.create(adminDb().collection("adminAudit").doc(), { actorUid: owner.uid, actorEmail: owner.email, action, targetUid: uid, targetEmail: prior.email, changes: Object.keys(next).filter(key => key !== "updatedAt"), at: now });
-    });
-    if (typeof body.active === "boolean" || body.action === "revoke") await (await adminAuth()).updateUser(uid, { disabled: body.action === "revoke" || body.active === false });
-    return NextResponse.json({ ok: true });
-  } catch (error) {
-    if (error instanceof Error && error.message === "ACCOUNT_CONFLICT") return NextResponse.json({ error: "This user changed elsewhere. Refresh the list and try again." }, { status: 409 });
-    if (error instanceof Error && error.message === "ACCOUNT_NOT_EDITABLE") return NextResponse.json({ error: "Owner accounts cannot be modified here." }, { status: 403 });
-    return NextResponse.json({ error: "Account could not be updated." }, { status: 503 });
-  }
+    sql = "UPDATE users SET role=?,department_id=? WHERE id=?"; args = [String(role), role === "master" ? null : dept, id]; actionName = action === "role" ? "user-role-changed" : "user-department-changed"; next = { role, departmentId: role === "master" ? null : dept };
+  } else return NextResponse.json({ error: "Unsupported user action." }, { status: 400 });
+  await transaction(async tx => {
+    await tx.execute({ sql, args });
+    if (action === "disable") await tx.execute({ sql: "DELETE FROM sessions WHERE user_id=?", args: [id] });
+    await audit(tx, master.id, actionName, id, oldValue, next);
+  });
+  return NextResponse.json({ ok: true });
+}
+
+export async function DELETE(request: NextRequest) {
+  if (!originOk(request)) return NextResponse.json({ error: "Request rejected." }, { status: 403 });
+  const master = await requireMaster();
+  if (!master) return NextResponse.json({ error: "Master access required." }, { status: 403 });
+  let body: Record<string, unknown>;
+  try { body = await request.json(); } catch { return NextResponse.json({ error: "Invalid request." }, { status: 400 }); }
+  const id = typeof body.id === "string" ? body.id : "";
+  if (!id || id === master.id) return NextResponse.json({ error: "The current Master cannot be revoked here." }, { status: 400 });
+  const found = await execute("SELECT id,name,email,role,department_id FROM users WHERE id=?", [id]); const row = found.rows[0] as Record<string, unknown> | undefined;
+  if (!row) return NextResponse.json({ error: "User not found." }, { status: 404 });
+  await transaction(async tx => {
+    await tx.execute({ sql: "DELETE FROM sessions WHERE user_id=?", args: [id] });
+    await tx.execute({ sql: "UPDATE users SET is_active=0 WHERE id=?", args: [id] });
+    await audit(tx, master.id, "user-access-revoked", id, row, { active: false });
+  });
+  return NextResponse.json({ ok: true });
 }

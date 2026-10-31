@@ -1,8 +1,0 @@
-rules_version = '2';
-service cloud.firestore {
-  match /databases/{database}/documents {
-    // All access now goes through server APIs which validate the signed owner session.
-    // Firebase Admin SDK requests bypass these rules; browser SDK requests are denied.
-    match /{document=**} { allow read, write: if false; }
-  }
-}
