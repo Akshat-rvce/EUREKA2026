@@ -122,10 +122,10 @@ export function Navbar() {
               <Link
                 href="/admin"
                 onClick={() => playClickSound()}
-                className="flex items-center gap-1 px-2.5 py-1 text-[11px] font-mono text-slate-500 hover:text-slate-300 transition-colors"
+                className="group flex min-h-10 items-center gap-2 rounded-xl border border-[#d6bd83]/35 bg-white/[0.035] px-3.5 text-[11px] font-medium tracking-wide text-[#e9ddc1] transition-all duration-200 hover:border-[#d6bd83]/70 hover:bg-[#d6bd83]/10 hover:text-[#fff5dc]"
               >
-                <ShieldCheck className="w-3 h-3 text-slate-600" />
-                Admin
+                <ShieldCheck className="h-3.5 w-3.5 text-[#d6bd83] transition-transform group-hover:scale-110" />
+                Committee login
               </Link>
 
               {/* Register — champagne amber gradient CTA */}
@@ -149,6 +149,15 @@ export function Navbar() {
 
             {/* Mobile: compact register button + 44px hamburger */}
             <div className="flex items-center gap-2 lg:hidden">
+              <Link
+                href="/admin"
+                onClick={() => playClickSound()}
+                aria-label="Committee admin login"
+                title="Committee admin login"
+                className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-[#d6bd83]/40 bg-white/[0.04] text-[#e9ddc1] transition-colors hover:bg-[#d6bd83]/10"
+              >
+                <ShieldCheck className="h-4 w-4 text-[#d6bd83]" />
+              </Link>
               <a
                 href={UNSTOP_EVENT_URL}
                 target="_blank"
