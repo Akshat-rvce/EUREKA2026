@@ -172,6 +172,13 @@ button { cursor: pointer; }
   box-shadow: 0 9px 28px rgba(15,18,17,.12), inset 0 1px 0 rgba(255,255,255,.75);
 }
 .portal-shell input[type="checkbox"] { accent-color: #a98243; }
+@media (max-width: 639px) {
+  .portal-shell input:not([type="checkbox"]),
+  .portal-shell select,
+  .portal-shell textarea { font-size: 16px; }
+  .portal-shell > .fixed.inset-0 { padding-bottom: env(safe-area-inset-bottom); }
+  .portal-shell .portal-welcome { border-radius: 1.25rem; }
+}
 @media (prefers-reduced-motion: reduce) {
   .portal-nav-button:hover { transform: none; }
 }
