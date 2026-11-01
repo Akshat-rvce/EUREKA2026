@@ -1,7 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import { SmoothScrollProvider } from "@/components/providers/SmoothScrollProvider";
-import { CustomCursor } from "@/components/ui/CustomCursor";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://eureka-2026.vercel.app/"),
@@ -106,7 +105,7 @@ export default function RootLayout({
       "price": "400",
       "priceCurrency": "INR",
       "availability": "https://schema.org/InStock",
-      "url": "https://unstop.com/p/eureka-26-national-expo-cum-hackathon-rvce-bangalore-2026",
+      "url": "https://unstop.com/o/V1qmrw9?lb=YHjOoGeG&utm_medium=Share&utm_source=aksharaj82270&utm_campaign=Competitions",
       "validFrom": "2026-09-01T00:00:00+05:30",
     },
   };
@@ -121,7 +120,6 @@ export default function RootLayout({
       </head>
       <body className="antialiased selection:bg-[#FFD166] selection:text-black">
         <div className="grain-overlay" aria-hidden="true" />
-        <CustomCursor />
         <SmoothScrollProvider>{children}</SmoothScrollProvider>
       </body>
     </html>

@@ -6,7 +6,7 @@
 // ============================================================================
 // 1. PRIMARY REGISTRATION LINK (EDIT THIS WHEN UNSTOP LISTING IS LIVE)
 // ============================================================================
-export const UNSTOP_EVENT_URL = "https://unstop.com/p/eureka-26-national-expo-cum-hackathon-rvce-bangalore-2026";
+export const UNSTOP_EVENT_URL = "https://unstop.com/o/V1qmrw9?lb=YHjOoGeG&utm_medium=Share&utm_source=aksharaj82270&utm_campaign=Competitions";
 
 // ============================================================================
 // 2. EVENT METADATA & BRAND CONSTANTS
@@ -96,19 +96,19 @@ export const TRACKS: TrackItem[] = [
   {
     id: "track-3",
     number: "03",
-    title: "Smart Energy Systems, Microgrids & Sustainable Technologies",
-    tagline: "Resilient power · Renewable integration · Smarter energy use",
+    title: "Smart Decentralised Energy Systems",
+    tagline: "Local generation · Shared energy · Resilient communities",
     prizePool: "Part of the ₹15,000 total prize pool",
     description:
-      "Reimagine how communities and campuses produce, store, distribute, and use energy. Explore renewable integration, microgrids, resilient backup, demand management, storage, power quality, and efficiency. Bring forward an approach that balances reliability, affordability, and environmental impact under realistic operating conditions.",
+      "Design smarter ways for campuses and communities to generate, share, store, and manage energy close to where it is used. Explore local renewable generation, community microgrids, peer-to-peer energy sharing, storage, demand response, and resilient control. Show how decentralised systems can keep essential services dependable while making clean energy more accessible and efficient.",
     iconName: "Zap",
-    tags: ["Microgrids", "Renewable energy", "Energy resilience", "Efficient buildings", "Sustainable technology"],
+    tags: ["Community microgrids", "Local renewable generation", "Energy sharing", "Storage & demand response", "Resilient control"],
     gradient: "from-amber-500/15 via-black to-black",
     accentColor: "#FFD166",
     projectDirections: [
-      "How could a campus or neighbourhood keep essential services running when the main grid is disrupted?",
-      "Can local renewable generation, storage, and flexible demand work together more intelligently?",
-      "What practical changes could reduce energy waste without compromising comfort, safety, or access?",
+      "How could a campus or neighbourhood coordinate local solar, storage, and flexible loads to keep essential services running?",
+      "Can buildings or community members share locally generated energy fairly while respecting grid and safety limits?",
+      "What control, forecasting, or market design would make a decentralised energy network reliable and affordable?",
     ],
   },
   {
@@ -242,7 +242,7 @@ export const SPONSORS: Sponsor[] = [
     name: "VoltGrid Clean Dynamics",
     tier: "Silver",
     logoPlaceholder: "VoltGrid",
-    description: "Green Energy & Smart Grid Track Sponsor",
+    description: "Smart Decentralised Energy Systems Track Sponsor",
   },
   {
     name: "Nexus Venture Catalysts",

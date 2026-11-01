@@ -2,31 +2,11 @@
 
 import React, { useState } from "react";
 import { Sparkles, ArrowUpRight, Users, CreditCard, CalendarCheck, ShieldCheck, Share2, Check } from "lucide-react";
-import confetti from "canvas-confetti";
 import { SITE_CONFIG, UNSTOP_EVENT_URL } from "@/config/site";
-import { playClickSound, playSuccessChime, playHoverSound } from "@/utils/audio";
+import { playClickSound, playHoverSound } from "@/utils/audio";
 
 export function RegisterSection() {
-  const [isRedirecting, setIsRedirecting] = useState(false);
   const [copied, setCopied] = useState(false);
-
-  const handleRegisterClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
-    e.preventDefault();
-    playSuccessChime();
-    setIsRedirecting(true);
-
-    confetti({
-      particleCount: 80,
-      spread: 70,
-      origin: { y: 0.6 },
-      colors: ["#FFD166", "#00F0FF", "#10B981", "#FFFFFF"],
-    });
-
-    setTimeout(() => {
-      window.open(UNSTOP_EVENT_URL, "_blank", "noopener,noreferrer");
-      setIsRedirecting(false);
-    }, 600);
-  };
 
   const handleShareLink = () => {
     playClickSound();
@@ -100,12 +80,14 @@ export function RegisterSection() {
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <a
               href={UNSTOP_EVENT_URL}
-              onClick={handleRegisterClick}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={playClickSound}
               onMouseEnter={playHoverSound}
               className="w-full sm:w-auto px-9 py-4 rounded-xl bg-gradient-to-r from-amber-400 to-yellow-500 hover:from-amber-300 hover:to-yellow-400 text-black font-display font-bold text-base shadow-[0_0_35px_rgba(251,191,36,0.3)] hover:shadow-[0_0_45px_rgba(251,191,36,0.5)] flex items-center justify-center gap-2.5 transition-all duration-300"
             >
               <Sparkles className="w-5 h-5 text-black" />
-              <span>{isRedirecting ? "Connecting to Unstop..." : "Register Now on Unstop"}</span>
+              <span>Register Now on Unstop</span>
               <ArrowUpRight className="w-5 h-5 text-black" />
             </a>
 
