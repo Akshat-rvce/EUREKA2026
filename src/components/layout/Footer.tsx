@@ -2,6 +2,7 @@
 
 import React from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { ArrowUp, ShieldCheck } from "lucide-react";
 import { SITE_CONFIG, UNSTOP_EVENT_URL } from "@/config/site";
 import { useSmoothScroll } from "@/components/providers/SmoothScrollProvider";
@@ -109,6 +110,45 @@ export function Footer() {
             </div>
           </div>
         </div>
+
+        <section aria-labelledby="footer-sponsors-title" className="border-b border-white/10 py-7">
+          <h2 id="footer-sponsors-title" className="mb-4 text-[10px] font-mono uppercase tracking-[.2em] text-slate-500">
+            Sponsors &amp; community partners
+          </h2>
+          <div className="grid grid-cols-3 gap-2 sm:max-w-2xl sm:gap-3">
+            <div className="flex h-16 items-center justify-center rounded-lg bg-white px-2 sm:h-[4.5rem] sm:px-4">
+              <Image
+                src="/images/sponsors/ieee-rvce-student-branch.jpg"
+                alt="IEEE Student Branch, RV College of Engineering"
+                width={1295}
+                height={266}
+                sizes="(max-width: 640px) 30vw, 200px"
+                className="max-h-10 w-full object-contain"
+              />
+            </div>
+            <div className="flex h-16 items-center justify-center rounded-lg bg-white px-2 sm:h-[4.5rem] sm:px-4">
+              <Image
+                src="/images/sponsors/ieee.png"
+                alt="IEEE"
+                width={738}
+                height={240}
+                sizes="(max-width: 640px) 30vw, 200px"
+                className="max-h-10 w-full object-contain"
+              />
+            </div>
+            <div className="flex h-16 items-center justify-center rounded-lg bg-white px-2 sm:h-[4.5rem] sm:px-4">
+              <Image
+                src="/images/sponsors/ieee-pes.gif"
+                alt="IEEE Power & Energy Society"
+                width={388}
+                height={263}
+                sizes="(max-width: 640px) 30vw, 200px"
+                unoptimized
+                className="max-h-10 w-full object-contain"
+              />
+            </div>
+          </div>
+        </section>
 
         {/* Bottom bar */}
         <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-mono text-slate-600">
