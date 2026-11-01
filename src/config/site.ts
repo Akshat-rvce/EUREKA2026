@@ -19,8 +19,7 @@ export const SITE_CONFIG = {
   date: "November 28, 2026",
   eventDateISO: "2026-11-28T09:00:00+05:30",
   venue: "RVCE Campus, Mysuru Road, RV Vidyanikethan, Bangalore, Karnataka 560059",
-  contactEmail: "eureka26.eee@rvce.edu.in",
-  contactPhone: "+91 98450 12345 / +91 87620 54321",
+  contactPhone: "+91 94832 49690 / +91 72509 65556",
   socials: {
     instagram: "https://instagram.com/eureka_rvce",
     linkedin: "https://linkedin.com/company/rvce-eee-eureka",

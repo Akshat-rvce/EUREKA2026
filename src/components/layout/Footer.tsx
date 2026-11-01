@@ -105,11 +105,6 @@ export function Footer() {
             </div>
             <div className="space-y-2 text-xs font-mono text-slate-400">
               <div>{SITE_CONFIG.venue}</div>
-              <div>
-                <a href={`mailto:${SITE_CONFIG.contactEmail}`} className="hover:text-white transition-colors">
-                  {SITE_CONFIG.contactEmail}
-                </a>
-              </div>
               <div>{SITE_CONFIG.contactPhone}</div>
             </div>
           </div>
