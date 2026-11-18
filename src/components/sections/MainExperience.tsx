@@ -61,16 +61,16 @@ export function MainExperience() {
                 Discover the expo <ArrowDownRight size={16} aria-hidden="true" />
               </button>
             </motion.div>
-            <motion.div initial="hidden" animate="visible" variants={reveal} transition={{ delay: 0.3 }} className="mt-5 flex flex-col items-center justify-center gap-2.5 sm:flex-row lg:justify-start">
-              <span className="text-[9px] font-semibold uppercase tracking-[.2em] text-[#e5c58d]">Title sponsor</span>
-              <span className="flex h-11 w-36 items-center justify-center rounded-md bg-white px-3 py-1.5 shadow-[0_8px_24px_rgba(0,0,0,.2)]">
+            <motion.div initial="hidden" animate="visible" variants={reveal} transition={{ delay: 0.3 }} className="mt-5 flex flex-col items-center justify-center gap-2.5 sm:flex-row sm:gap-4 lg:justify-start">
+              <span className="text-[10px] font-semibold uppercase tracking-[.2em] text-[#e5c58d]">Title sponsor</span>
+              <span className="flex h-24 w-56 items-center justify-center rounded-xl border border-white/80 bg-white px-5 py-3 shadow-[0_12px_32px_rgba(0,0,0,.28)] sm:h-28 sm:w-64 sm:px-6 sm:py-4">
                 <Image
                   src="/images/sponsors/ntpc.png"
                   alt="NTPC Limited, EUREKA ’26 Title Sponsor"
                   width={1272}
                   height={681}
-                  sizes="144px"
-                  className="max-h-8 w-full object-contain"
+                  sizes="(max-width: 640px) 224px, 256px"
+                  className="max-h-20 w-full object-contain sm:max-h-24"
                 />
               </span>
             </motion.div>
