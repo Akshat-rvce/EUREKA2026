@@ -7,6 +7,7 @@
 // 1. PRIMARY REGISTRATION LINK (EDIT THIS WHEN UNSTOP LISTING IS LIVE)
 // ============================================================================
 export const UNSTOP_EVENT_URL = "https://unstop.com/o/V1qmrw9?lb=YHjOoGeG&utm_medium=Share&utm_source=aksharaj82270&utm_campaign=Competitions";
+export const GOOGLE_FORM_REGISTRATION_URL = "https://forms.gle/qAhXCodsfphY53839";
 
 // ============================================================================
 // 2. EVENT METADATA & BRAND CONSTANTS
@@ -33,8 +34,8 @@ export const SITE_CONFIG = {
     deadline: "November 26, 2026",
   },
   prizes: {
-    totalPool: "₹15,000 Total Prize Pool",
-    summary: "+ Industry Connect · Mentorship · Goodies",
+    totalPool: "₹35,000+ Total Prize Pool",
+    summary: "+ ₹10,000+ Goodies & Gifts for participating teams",
   },
 };
 
@@ -61,7 +62,7 @@ export const TRACKS: TrackItem[] = [
     number: "01",
     title: "Robotics & Automation",
     tagline: "Intelligent machines · Human-centred automation · Reliable systems",
-    prizePool: "Part of the ₹15,000 total prize pool",
+    prizePool: "Part of the ₹35,000+ total prize pool",
     description:
       "Build machines that sense their surroundings, make decisions, and act reliably. This theme spans assistive and service robots, autonomous mobility, industrial automation, inspection, and precision mechanisms. Strong projects begin with a real task, explain how people and machines work together, and show how the system performs safely when conditions are less than perfect.",
     iconName: "Cpu",
@@ -79,7 +80,7 @@ export const TRACKS: TrackItem[] = [
     number: "02",
     title: "Digital Twin for Sustainable Campus",
     tagline: "A living digital view of campus spaces, resources, and operations",
-    prizePool: "Part of the ₹15,000 total prize pool",
+    prizePool: "Part of the ₹35,000+ total prize pool",
     description:
       "Create a useful digital counterpart of a campus space or system and keep it connected to the reality it represents. Explore buildings, classrooms, labs, water, mobility, waste, or maintenance. The aim is better decisions—lower resource use, earlier fault detection, and more thoughtful planning—not a 3D model for its own sake.",
     iconName: "Workflow",
@@ -97,7 +98,7 @@ export const TRACKS: TrackItem[] = [
     number: "03",
     title: "Smart Decentralised Energy Systems",
     tagline: "Local generation · Shared energy · Resilient communities",
-    prizePool: "Part of the ₹15,000 total prize pool",
+    prizePool: "Part of the ₹35,000+ total prize pool",
     description:
       "Design smarter ways for campuses and communities to generate, share, store, and manage energy close to where it is used. Explore local renewable generation, community microgrids, peer-to-peer energy sharing, storage, demand response, and resilient control. Show how decentralised systems can keep essential services dependable while making clean energy more accessible and efficient.",
     iconName: "Zap",
@@ -115,7 +116,7 @@ export const TRACKS: TrackItem[] = [
     number: "04",
     title: "MedTech & Healthcare",
     tagline: "Better care · Earlier awareness · Greater independence",
-    prizePool: "Part of the ₹15,000 total prize pool",
+    prizePool: "Part of the ₹35,000+ total prize pool",
     description:
       "Develop engineering that supports better care, earlier awareness, safer workflows, or greater independence. Projects may serve patients, clinicians, caregivers, or public health. Put people first: make the idea usable, accessible, private, and dependable, and describe clearly what a prototype can—and cannot yet—demonstrate.",
     iconName: "Activity",
@@ -133,7 +134,7 @@ export const TRACKS: TrackItem[] = [
     number: "05",
     title: "Embedded Systems & IoT",
     tagline: "Connected devices · Real-time response · Thoughtful sensing",
-    prizePool: "Part of the ₹15,000 total prize pool",
+    prizePool: "Part of the ₹35,000+ total prize pool",
     description:
       "Connect sensing, computation, and control in compact systems that respond to the world around them. Explore connected devices for homes, industry, infrastructure, the environment, mobility, or agriculture. Start with a clear use case, then consider dependability, security, power, connectivity, and responsible handling of the data your system collects.",
     iconName: "Cpu",

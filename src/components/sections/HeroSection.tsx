@@ -145,7 +145,7 @@ export function HeroSection() {
             <span className="text-white/20">•</span>
             <div className="flex items-center gap-1.5">
               <Trophy className="w-4 h-4 text-white" />
-              <span>₹15,000 Total Prize Pool</span>
+              <span>₹35,000+ Total Prize Pool</span>
             </div>
           </div>
 
@@ -171,7 +171,7 @@ export function HeroSection() {
             </div>
             <div>
               <div className="text-[11px] font-mono text-slate-400">PRIZE POOL</div>
-              <div className="font-display font-bold text-sm text-white">₹15,000 total</div>
+              <div className="font-display font-bold text-sm text-white">₹35,000+ total</div>
             </div>
           </div>
 

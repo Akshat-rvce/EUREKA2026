@@ -6,7 +6,7 @@ import { motion, type Variants } from "framer-motion";
 import { Activity, ArrowDownRight, ArrowRight, ArrowUpRight, Cpu, MapPin, MoveUpRight, SunMedium, Workflow } from "lucide-react";
 import { EurekaLogo } from "@/components/ui/EurekaLogo";
 import { CountdownTimer } from "@/components/ui/CountdownTimer";
-import { TRACKS, SITE_CONFIG, UNSTOP_EVENT_URL } from "@/config/site";
+import { TRACKS, SITE_CONFIG, UNSTOP_EVENT_URL, GOOGLE_FORM_REGISTRATION_URL } from "@/config/site";
 import { useSmoothScroll } from "@/components/providers/SmoothScrollProvider";
 import { playClickSound, playHoverSound } from "@/utils/audio";
 
@@ -89,10 +89,10 @@ export function MainExperience() {
         <div className="mx-auto grid max-w-7xl items-center gap-8 lg:grid-cols-[1fr_1.1fr] lg:gap-16">
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={reveal}>
             <p className="section-kicker text-[#e5c58d]">02 / Incentives</p>
-            <p className="mt-3 max-w-md text-sm leading-6 text-[#c6c5c0] sm:text-base">Mentorship, industry connect, certificates and goodies accompany the event prize pool.</p>
+            <p className="mt-3 max-w-md text-sm leading-6 text-[#c6c5c0] sm:text-base">Participating teams can also receive ₹10,000+ in goodies and gifts, alongside mentorship, industry connect, and certificates.</p>
           </motion.div>
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={reveal} transition={{ delay: 0.1 }} className="prize-amount-wrap">
-            <span className="prize-amount">₹15,000</span>
+            <span className="prize-amount">₹35,000+</span>
             <span className="prize-total-label">Total prize pool</span>
           </motion.div>
           <div className="lg:col-span-2 flex flex-wrap gap-x-7 gap-y-3 border-t border-white/15 pt-5 text-sm text-[#dedbd2] sm:gap-x-10">
@@ -129,9 +129,10 @@ export function MainExperience() {
       <section id="register" className="register-section px-5 py-12 sm:px-8 sm:py-16 lg:px-12">
         <div className="mx-auto grid max-w-7xl items-center gap-8 rounded-[1.75rem] bg-[#e8e3d7] p-6 sm:p-9 lg:grid-cols-[1fr_auto] lg:gap-12 lg:p-12">
           <div><p className="section-kicker">04 / Join the exhibition</p><h2 className="editorial-heading mt-3 max-w-[13ch]">Bring your project to EUREKA.</h2><p className="mt-4 max-w-xl text-sm leading-6 text-[#60635e]">{SITE_CONFIG.registration.eligibility}.</p></div>
-          <div className="flex flex-col gap-4 sm:flex-row lg:flex-col lg:items-stretch">
+          <div className="flex flex-col gap-3 lg:items-stretch">
             <div className="registration-facts"><span><small>TEAM</small>2–4 members</span><span><small>FEE</small>{SITE_CONFIG.registration.fee}</span><span><small>DEADLINE</small>{SITE_CONFIG.registration.deadline}</span></div>
             <a href={UNSTOP_EVENT_URL} target="_blank" rel="noopener noreferrer" onClick={playClickSound} onMouseEnter={playHoverSound} className="button-primary min-h-12 justify-center">Register on Unstop <ArrowUpRight size={16} /></a>
+            <a href={GOOGLE_FORM_REGISTRATION_URL} target="_blank" rel="noopener noreferrer" onClick={playClickSound} onMouseEnter={playHoverSound} className="inline-flex min-h-12 items-center justify-center gap-2 border border-[#a99d83] px-5 py-3 text-sm font-semibold text-[#303630] transition-colors hover:bg-black/[.04]">Register via Google Form <ArrowUpRight size={16} /></a>
           </div>
         </div>
       </section>

@@ -86,7 +86,7 @@ export default async function TrackDetailPage({ params }: TrackPageProps) {
                 <span className="border border-white/20 px-3 py-1.5 text-[10px] font-bold uppercase tracking-[.18em] text-white/75">Track {track.number} of 05</span>
                 <span className="inline-flex items-center gap-2 border border-[#c9a66c]/35 bg-[#c9a66c]/10 px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[.13em] text-[#e8d4ac]">
                   <Trophy aria-hidden="true" className="h-3.5 w-3.5" />
-                  ₹15,000 total event prize pool
+                  ₹35,000+ total event prize pool
                 </span>
               </div>
               <h1 className="max-w-4xl font-display text-4xl font-medium leading-[1.02] tracking-[-.045em] text-[#f4f0e7] sm:text-6xl lg:text-7xl">
@@ -170,7 +170,7 @@ export default async function TrackDetailPage({ params }: TrackPageProps) {
               <p className="section-kicker mb-4" style={{ color: "#e5c58d" }}>Take the next step</p>
               <h2 className="font-display text-3xl font-medium tracking-[-.035em] sm:text-4xl">Bring your project to EUREKA.</h2>
               <p className="mt-3 text-sm leading-relaxed text-white/60">{SITE_CONFIG.registration.teamSize} · {SITE_CONFIG.registration.fee} · {SITE_CONFIG.date} · RVCE, Bengaluru</p>
-              <p className="mt-2 text-xs text-white/45">The ₹15,000 prize pool is for the event as a whole.</p>
+              <p className="mt-2 text-xs text-white/45">The ₹35,000+ prize pool is for the event as a whole. Participating teams can also receive ₹10,000+ in goodies and gifts.</p>
             </div>
             <a href={UNSTOP_EVENT_URL} target="_blank" rel="noopener noreferrer" className="button-primary w-fit">
               Register on Unstop <ArrowUpRight aria-hidden="true" className="h-4 w-4" />

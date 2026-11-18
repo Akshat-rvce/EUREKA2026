@@ -50,7 +50,7 @@ export function TracksSection() {
           </div>
           <div className="max-w-md">
             <p className="text-sm sm:text-base text-slate-400 font-normal leading-relaxed">
-              Explore projects across five domains within the event’s ₹15,000 total prize pool.
+              Explore projects across five domains within the event’s ₹35,000+ total prize pool.
             </p>
           </div>
         </div>
@@ -157,7 +157,7 @@ export function TracksSection() {
                   TRACK {selectedTrack.number}
                 </span>
                 
-                {/* ₹15K Highlight Pill */}
+                {/* Shared event prize pool highlight */}
                 <span className="font-mono text-xs px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 flex items-center gap-1 font-bold">
                   <Trophy className="w-3.5 h-3.5" />
                   {selectedTrack.prizePool}
@@ -216,7 +216,7 @@ export function TracksSection() {
               {/* Action Buttons */}
               <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-6 border-t border-white/10">
                 <div className="text-xs font-mono text-slate-400">
-                  <span className="text-emerald-400 font-bold">Part of ₹15,000 total prize pool</span>
+                  <span className="text-emerald-400 font-bold">Part of ₹35,000+ total prize pool</span>
                 </div>
                 <div className="flex items-center gap-3 w-full sm:w-auto">
                   <button

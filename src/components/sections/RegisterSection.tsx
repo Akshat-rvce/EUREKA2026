@@ -71,7 +71,7 @@ export function RegisterSection() {
               </div>
               <div>
                 <div className="text-[11px] font-mono text-slate-400">DEADLINE</div>
-                <div className="text-sm font-bold text-white mt-0.5">20 Nov 2026</div>
+                <div className="text-sm font-bold text-white mt-0.5">{SITE_CONFIG.registration.deadline}</div>
               </div>
             </div>
           </div>

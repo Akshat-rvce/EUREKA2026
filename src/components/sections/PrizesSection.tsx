@@ -16,12 +16,12 @@ export function PrizesSection() {
           <p className="mb-3 text-xs uppercase tracking-[0.22em] text-amber-300">Recognition &amp; opportunity</p>
           <h2 className="font-display text-3xl font-semibold sm:text-5xl">A platform for promising projects</h2>
           <p className="mt-4 text-sm leading-relaxed text-white/65 sm:text-base">
-            EUREKA ’26 lists a total prize pool of ₹15,000, alongside mentorship, industry connect, certificates, and goodies.
+            EUREKA ’26 offers a total prize pool of ₹35,000+, alongside mentorship, industry connect, certificates, and ₹10,000+ in goodies and gifts for participating teams.
           </p>
         </div>
         <div className="rounded-3xl border border-amber-200/20 bg-amber-100/[0.04] p-7 text-center sm:p-10">
           <p className="text-xs uppercase tracking-[0.2em] text-white/60">Total event prize pool</p>
-          <p className="mt-2 font-display text-5xl font-semibold text-amber-200 sm:text-6xl">₹15,000</p>
+          <p className="mt-2 font-display text-5xl font-semibold text-amber-200 sm:text-6xl">₹35,000+</p>
         </div>
         <div className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {INCENTIVES.map(({ title, description, icon: Icon }) => (
