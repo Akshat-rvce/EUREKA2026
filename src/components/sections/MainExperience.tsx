@@ -90,9 +90,8 @@ export function MainExperience() {
       <section aria-labelledby="track-two-sponsor-heading" className="relative overflow-hidden border-y border-[#d6bd83]/20 bg-[#111718] px-5 py-7 text-white sm:px-8 sm:py-9 lg:px-12">
         <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-5 sm:flex-row sm:gap-8">
           <div className="text-center sm:text-left">
-            <p className="section-kicker justify-center text-[#e5c58d] sm:justify-start">Track 02 · Presenting sponsor</p>
-            <h2 id="track-two-sponsor-heading" className="mt-2 max-w-xl font-display text-2xl font-semibold tracking-tight text-[#f7f3ea] sm:text-3xl">Digital Twin for Sustainable Campus</h2>
-            <p className="mt-2 text-sm text-[#c6c5c0]">Presented by Ecokranti</p>
+            <p className="section-kicker justify-center text-[#e5c58d] sm:justify-start">Circular Economy Partner</p>
+            <h2 id="track-two-sponsor-heading" className="mt-2 max-w-xl font-display text-2xl font-semibold tracking-tight text-[#f7f3ea] sm:text-3xl">Ecokranti</h2>
           </div>
           <div className="flex min-h-24 w-full max-w-[26rem] items-center justify-center rounded-xl bg-white px-6 py-4 shadow-[0_12px_35px_rgba(0,0,0,.24)] sm:w-[26rem]">
             <Image
