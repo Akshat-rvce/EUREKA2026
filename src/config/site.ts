@@ -35,7 +35,7 @@ export const SITE_CONFIG = {
   },
   prizes: {
     totalPool: "₹35,000+ Total Prize Pool",
-    summary: "+ ₹10,000+ Goodies & Gifts for participating teams",
+    summary: "+ ₹10,000 Goodies & Gifts for participating teams",
   },
 };
 

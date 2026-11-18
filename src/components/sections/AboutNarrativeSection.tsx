@@ -63,7 +63,7 @@ const PHASES = [
     title: "Prize Pool and Incentives",
     subtitle: "₹35,000+ total prize pool",
     description:
-      "The event offers a ₹35,000+ total prize pool, alongside mentorship, industry connect, certificates, and ₹10,000+ in goodies and gifts for participating teams.",
+      "The event offers a ₹35,000+ total prize pool, alongside mentorship, industry connect, certificates, and ₹10,000 in goodies and gifts for participating teams.",
     icon: Award,
     accent: "text-purple-400",
     bgAccent: "bg-purple-400/10 border-purple-400/30",

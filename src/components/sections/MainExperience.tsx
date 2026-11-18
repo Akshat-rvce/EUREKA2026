@@ -89,7 +89,7 @@ export function MainExperience() {
         <div className="mx-auto grid max-w-7xl items-center gap-8 lg:grid-cols-[1fr_1.1fr] lg:gap-16">
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={reveal}>
             <p className="section-kicker text-[#e5c58d]">02 / Incentives</p>
-            <p className="mt-3 max-w-md text-sm leading-6 text-[#c6c5c0] sm:text-base">Participating teams can also receive ₹10,000+ in goodies and gifts, alongside mentorship, industry connect, and certificates.</p>
+            <p className="mt-3 max-w-md text-sm leading-6 text-[#c6c5c0] sm:text-base">Participating teams can also receive ₹10,000 in goodies and gifts, alongside mentorship, industry connect, and certificates.</p>
           </motion.div>
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={reveal} transition={{ delay: 0.1 }} className="prize-amount-wrap">
             <span className="prize-amount">₹35,000+</span>
