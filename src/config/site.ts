@@ -4,10 +4,9 @@
  */
 
 // ============================================================================
-// 1. PRIMARY REGISTRATION LINK (EDIT THIS WHEN UNSTOP LISTING IS LIVE)
+// 1. PRIMARY REGISTRATION FORM
 // ============================================================================
-export const UNSTOP_EVENT_URL = "https://unstop.com/o/V1qmrw9?lb=YHjOoGeG&utm_medium=Share&utm_source=aksharaj82270&utm_campaign=Competitions";
-export const GOOGLE_FORM_REGISTRATION_URL = "https://forms.gle/qAhXCodsfphY53839";
+export const REGISTRATION_FORM_URL = "https://forms.gle/moJpJUbAE2ZwpruL6";
 
 // ============================================================================
 // 2. EVENT METADATA & BRAND CONSTANTS
@@ -277,7 +276,7 @@ export const FAQS: FAQItem[] = [
   {
     question: "What is the team size requirement?",
     answer:
-      "Teams must consist of 2 to 4 members. You can designate one team lead who handles registration on Unstop.",
+      "Teams must consist of 2 to 4 members. One team lead should submit the registration form on behalf of the team.",
     category: "Participation",
   },
   {

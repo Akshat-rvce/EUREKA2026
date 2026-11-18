@@ -4,7 +4,7 @@ import React from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { ArrowUp, ShieldCheck } from "lucide-react";
-import { SITE_CONFIG, UNSTOP_EVENT_URL } from "@/config/site";
+import { SITE_CONFIG, REGISTRATION_FORM_URL } from "@/config/site";
 import { useSmoothScroll } from "@/components/providers/SmoothScrollProvider";
 import { playClickSound, playHoverSound } from "@/utils/audio";
 
@@ -77,13 +77,13 @@ export function Footer() {
               </li>
               <li>
                 <a
-                  href={UNSTOP_EVENT_URL}
+                  href={REGISTRATION_FORM_URL}
                   target="_blank"
                   rel="noopener noreferrer"
                   onMouseEnter={playHoverSound}
                   className="hover:text-white transition-colors"
                 >
-                  Register on Unstop
+                  Register Now
                 </a>
               </li>
               <li className="pt-2">

@@ -15,7 +15,7 @@ import {
   Zap,
   Activity,
 } from "lucide-react";
-import { TRACKS, SITE_CONFIG, UNSTOP_EVENT_URL } from "@/config/site";
+import { TRACKS, SITE_CONFIG, REGISTRATION_FORM_URL } from "@/config/site";
 
 interface TrackPageProps {
   params: Promise<{ id: string }>;
@@ -172,8 +172,8 @@ export default async function TrackDetailPage({ params }: TrackPageProps) {
               <p className="mt-3 text-sm leading-relaxed text-white/60">{SITE_CONFIG.registration.teamSize} · {SITE_CONFIG.registration.fee} · {SITE_CONFIG.date} · RVCE, Bengaluru</p>
               <p className="mt-2 text-xs text-white/45">The ₹35,000+ prize pool is for the event as a whole. Participating teams can also receive ₹10,000 in goodies and gifts.</p>
             </div>
-            <a href={UNSTOP_EVENT_URL} target="_blank" rel="noopener noreferrer" className="button-primary w-fit">
-              Register on Unstop <ArrowUpRight aria-hidden="true" className="h-4 w-4" />
+            <a href={REGISTRATION_FORM_URL} target="_blank" rel="noopener noreferrer" className="button-primary w-fit">
+              Register Now <ArrowUpRight aria-hidden="true" className="h-4 w-4" />
             </a>
           </div>
         </div>

@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import { SplineScene } from "@/components/ui/splite";
 import { Spotlight } from "@/components/ui/spotlight";
 import { Sparkles, Calendar, MapPin, Trophy, ArrowDown, ArrowUpRight, Gift, Briefcase, Award, Zap } from "lucide-react";
-import { SITE_CONFIG, UNSTOP_EVENT_URL } from "@/config/site";
+import { SITE_CONFIG, REGISTRATION_FORM_URL } from "@/config/site";
 import { useSmoothScroll } from "@/components/providers/SmoothScrollProvider";
 import { playHoverSound, playClickSound } from "@/utils/audio";
 
@@ -106,7 +106,7 @@ export function HeroSection() {
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto mb-8">
             <a
-              href={UNSTOP_EVENT_URL}
+              href={REGISTRATION_FORM_URL}
               target="_blank"
               rel="noopener noreferrer"
               onClick={() => playClickSound()}
@@ -114,7 +114,7 @@ export function HeroSection() {
               className="w-full sm:w-auto px-8 py-4 rounded-2xl bg-white hover:bg-slate-200 text-black font-display font-bold text-base shadow-[0_0_35px_rgba(255,255,255,0.3)] hover:shadow-[0_0_50px_rgba(255,255,255,0.5)] transition-all duration-300 flex items-center justify-center gap-2.5"
             >
               <Sparkles className="w-4 h-4 text-black" />
-              <span>Register on Unstop</span>
+              <span>Register Now</span>
               <ArrowUpRight className="w-4 h-4 text-black" />
             </a>
 

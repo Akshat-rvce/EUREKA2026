@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Zap, SunMedium, Cpu, Activity, Sparkles, ArrowRight, X, Trophy, ExternalLink, Workflow, HelpCircle } from "lucide-react";
-import { TRACKS, TrackItem, UNSTOP_EVENT_URL } from "@/config/site";
+import { TRACKS, TrackItem, REGISTRATION_FORM_URL } from "@/config/site";
 import { playHoverSound, playClickSound } from "@/utils/audio";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -226,13 +226,13 @@ export function TracksSection() {
                     Close Preview
                   </button>
                   <a
-                    href={UNSTOP_EVENT_URL}
+                    href={REGISTRATION_FORM_URL}
                     target="_blank"
                     rel="noopener noreferrer"
                     onClick={() => playClickSound()}
                     className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-amber-400 to-yellow-500 text-black font-display font-bold text-xs shadow-[0_0_20px_rgba(251,191,36,0.3)] flex items-center justify-center gap-1.5"
                   >
-                    <span>Register on Unstop</span>
+                    <span>Register Now</span>
                     <ExternalLink className="w-3.5 h-3.5" />
                   </a>
                 </div>

@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { Sparkles, ArrowUpRight, Users, CreditCard, CalendarCheck, ShieldCheck, Share2, Check } from "lucide-react";
-import { SITE_CONFIG, UNSTOP_EVENT_URL } from "@/config/site";
+import { SITE_CONFIG, REGISTRATION_FORM_URL } from "@/config/site";
 import { playClickSound, playHoverSound } from "@/utils/audio";
 
 export function RegisterSection() {
@@ -26,7 +26,7 @@ export function RegisterSection() {
         {/* Top Tag */}
         <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-amber-400 text-xs font-mono mb-8">
           <Sparkles className="w-3.5 h-3.5" />
-          <span>APPLICATIONS OPEN ON UNSTOP</span>
+          <span>REGISTRATION OPEN</span>
         </div>
 
         {/* Headline */}
@@ -79,7 +79,7 @@ export function RegisterSection() {
           {/* Primary Action Buttons */}
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <a
-              href={UNSTOP_EVENT_URL}
+              href={REGISTRATION_FORM_URL}
               target="_blank"
               rel="noopener noreferrer"
               onClick={playClickSound}
@@ -87,7 +87,7 @@ export function RegisterSection() {
               className="w-full sm:w-auto px-9 py-4 rounded-xl bg-gradient-to-r from-amber-400 to-yellow-500 hover:from-amber-300 hover:to-yellow-400 text-black font-display font-bold text-base shadow-[0_0_35px_rgba(251,191,36,0.3)] hover:shadow-[0_0_45px_rgba(251,191,36,0.5)] flex items-center justify-center gap-2.5 transition-all duration-300"
             >
               <Sparkles className="w-5 h-5 text-black" />
-              <span>Register Now on Unstop</span>
+              <span>Register Now</span>
               <ArrowUpRight className="w-5 h-5 text-black" />
             </a>
 
@@ -103,7 +103,7 @@ export function RegisterSection() {
 
           <div className="text-xs font-mono text-slate-400 mt-6 flex items-center justify-center gap-2">
             <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
-            <span>Secure registration &amp; team verification managed directly via Unstop.</span>
+            <span>Complete your team registration using the official EUREKA ’26 form.</span>
           </div>
         </div>
 

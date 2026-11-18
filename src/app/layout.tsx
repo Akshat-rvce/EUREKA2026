@@ -17,7 +17,7 @@ export const metadata: Metadata = {
     "Clean Energy Engineering Projects",
     "Smart Mobility EV Competition",
     "AIoT Edge Engineering Expo",
-    "Unstop EUREKA 2026",
+    "EUREKA 2026 registration",
   ],
   authors: [{ name: "Dept. of Electronics & Electrical Engineering, RVCE" }],
   creator: "RVCE EEE Department",
@@ -105,7 +105,7 @@ export default function RootLayout({
       "price": "400",
       "priceCurrency": "INR",
       "availability": "https://schema.org/InStock",
-      "url": "https://unstop.com/o/V1qmrw9?lb=YHjOoGeG&utm_medium=Share&utm_source=aksharaj82270&utm_campaign=Competitions",
+      "url": "https://forms.gle/moJpJUbAE2ZwpruL6",
       "validFrom": "2026-09-01T00:00:00+05:30",
     },
   };

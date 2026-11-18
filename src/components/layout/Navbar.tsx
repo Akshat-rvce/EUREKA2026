@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, ArrowUpRight, ShieldCheck, Volume2, VolumeX } from "lucide-react";
-import { UNSTOP_EVENT_URL } from "@/config/site";
+import { REGISTRATION_FORM_URL } from "@/config/site";
 import { isSoundEnabled, setSoundEnabled, playClickSound, playHoverSound } from "@/utils/audio";
 import { useSmoothScroll } from "@/components/providers/SmoothScrollProvider";
 
@@ -130,7 +130,7 @@ export function Navbar() {
 
               {/* Register — champagne amber gradient CTA */}
               <a
-                href={UNSTOP_EVENT_URL}
+                href={REGISTRATION_FORM_URL}
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={() => playClickSound()}
@@ -142,7 +142,7 @@ export function Navbar() {
                   boxShadow: "0 0 20px rgba(245,158,11,0.35), 0 2px 8px rgba(0,0,0,0.3)",
                 }}
               >
-                Register
+                Register Now
                 <ArrowUpRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
               </a>
             </div>
@@ -159,7 +159,7 @@ export function Navbar() {
                 <ShieldCheck className="h-4 w-4 text-[#d6bd83]" />
               </Link>
               <a
-                href={UNSTOP_EVENT_URL}
+                href={REGISTRATION_FORM_URL}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="px-3.5 py-1.5 rounded-xl font-display font-bold text-xs flex items-center gap-1"

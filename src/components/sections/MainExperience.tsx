@@ -6,7 +6,7 @@ import { motion, type Variants } from "framer-motion";
 import { Activity, ArrowDownRight, ArrowRight, ArrowUpRight, Cpu, MapPin, MoveUpRight, SunMedium, Workflow } from "lucide-react";
 import { EurekaLogo } from "@/components/ui/EurekaLogo";
 import { CountdownTimer } from "@/components/ui/CountdownTimer";
-import { TRACKS, SITE_CONFIG, UNSTOP_EVENT_URL, GOOGLE_FORM_REGISTRATION_URL } from "@/config/site";
+import { TRACKS, SITE_CONFIG, REGISTRATION_FORM_URL } from "@/config/site";
 import { useSmoothScroll } from "@/components/providers/SmoothScrollProvider";
 import { playClickSound, playHoverSound } from "@/utils/audio";
 
@@ -40,8 +40,8 @@ export function MainExperience() {
               <span className="inline-flex items-center gap-1.5"><MapPin size={14} aria-hidden="true" /> RVCE, Bengaluru</span>
             </motion.div>
             <motion.div initial="hidden" animate="visible" variants={reveal} transition={{ delay: 0.24 }} className="mt-7 flex flex-col justify-center gap-3 sm:flex-row lg:justify-start">
-              <a href={UNSTOP_EVENT_URL} target="_blank" rel="noopener noreferrer" onClick={playClickSound} onMouseEnter={playHoverSound} className="button-primary min-h-12 justify-center">
-                Register on Unstop <ArrowUpRight size={16} aria-hidden="true" />
+              <a href={REGISTRATION_FORM_URL} target="_blank" rel="noopener noreferrer" onClick={playClickSound} onMouseEnter={playHoverSound} className="button-primary min-h-12 justify-center">
+                Register Now <ArrowUpRight size={16} aria-hidden="true" />
               </a>
               <button onClick={() => { playClickSound(); scrollTo("#expo-intro", { offset: -70 }); }} className="button-outline min-h-12 justify-center">
                 Discover the expo <ArrowDownRight size={16} aria-hidden="true" />
@@ -131,8 +131,7 @@ export function MainExperience() {
           <div><p className="section-kicker">04 / Join the exhibition</p><h2 className="editorial-heading mt-3 max-w-[13ch]">Bring your project to EUREKA.</h2><p className="mt-4 max-w-xl text-sm leading-6 text-[#60635e]">{SITE_CONFIG.registration.eligibility}.</p></div>
           <div className="flex flex-col gap-3 lg:items-stretch">
             <div className="registration-facts"><span><small>TEAM</small>2–4 members</span><span><small>FEE</small>{SITE_CONFIG.registration.fee}</span><span><small>DEADLINE</small>{SITE_CONFIG.registration.deadline}</span></div>
-            <a href={UNSTOP_EVENT_URL} target="_blank" rel="noopener noreferrer" onClick={playClickSound} onMouseEnter={playHoverSound} className="button-primary min-h-12 justify-center">Register on Unstop <ArrowUpRight size={16} /></a>
-            <a href={GOOGLE_FORM_REGISTRATION_URL} target="_blank" rel="noopener noreferrer" onClick={playClickSound} onMouseEnter={playHoverSound} className="inline-flex min-h-12 items-center justify-center gap-2 border border-[#a99d83] px-5 py-3 text-sm font-semibold text-[#303630] transition-colors hover:bg-black/[.04]">Register via Google Form <ArrowUpRight size={16} /></a>
+            <a href={REGISTRATION_FORM_URL} target="_blank" rel="noopener noreferrer" onClick={playClickSound} onMouseEnter={playHoverSound} className="button-primary min-h-12 justify-center">Register Now <ArrowUpRight size={16} /></a>
           </div>
         </div>
       </section>
