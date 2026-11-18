@@ -53,6 +53,15 @@ export interface TrackItem {
   gradient: string;
   accentColor: string;
   projectDirections: string[];
+  presentedBy?: TrackPartner;
+  trackSponsor?: TrackPartner;
+}
+
+export interface TrackPartner {
+  name: string;
+  logo: string;
+  logoWidth: number;
+  logoHeight: number;
 }
 
 export const TRACKS: TrackItem[] = [
@@ -91,6 +100,12 @@ export const TRACKS: TrackItem[] = [
       "Can a digital model help facilities teams spot faults early or plan maintenance before disruption occurs?",
       "How might students and staff use a live campus view to make everyday journeys and shared spaces work better?",
     ],
+    presentedBy: {
+      name: "Ecokranti",
+      logo: "/images/sponsors/ecokranti.png",
+      logoWidth: 738,
+      logoHeight: 189,
+    },
   },
   {
     id: "track-3",
@@ -109,6 +124,12 @@ export const TRACKS: TrackItem[] = [
       "Can buildings or community members share locally generated energy fairly while respecting grid and safety limits?",
       "What control, forecasting, or market design would make a decentralised energy network reliable and affordable?",
     ],
+    trackSponsor: {
+      name: "NTPC",
+      logo: "/images/sponsors/ntpc.png",
+      logoWidth: 1272,
+      logoHeight: 681,
+    },
   },
   {
     id: "track-4",

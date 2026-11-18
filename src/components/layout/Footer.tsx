@@ -126,7 +126,7 @@ export function Footer() {
             />
             <span className="border-l border-[#d4cfc2] pl-4 text-[9px] font-mono uppercase leading-relaxed tracking-[.12em] text-[#665c48]">Title<br />Sponsor</span>
           </div>
-          <div className="grid grid-cols-3 gap-2 sm:max-w-2xl sm:gap-3">
+          <div className="grid grid-cols-2 gap-2 sm:max-w-3xl sm:grid-cols-4 sm:gap-3">
             <div className="flex h-16 items-center justify-center rounded-lg bg-white px-2 sm:h-[4.5rem] sm:px-4">
               <Image
                 src="/images/sponsors/ieee-rvce-student-branch.jpg"
@@ -155,6 +155,16 @@ export function Footer() {
                 height={263}
                 sizes="(max-width: 640px) 30vw, 200px"
                 unoptimized
+                className="max-h-10 w-full object-contain"
+              />
+            </div>
+            <div className="flex h-16 items-center justify-center rounded-lg bg-white px-2 sm:h-[4.5rem] sm:px-4">
+              <Image
+                src="/images/sponsors/ecokranti.png"
+                alt="Ecokranti, Track 02 presenting sponsor"
+                width={738}
+                height={189}
+                sizes="(max-width: 640px) 45vw, 180px"
                 className="max-h-10 w-full object-contain"
               />
             </div>

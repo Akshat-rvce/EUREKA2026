@@ -65,22 +65,25 @@ export function MainExperience() {
       </section>
 
       <section aria-labelledby="title-sponsor-heading" className="relative overflow-hidden border-y border-[#d6bd83]/20 bg-[#111718] px-5 py-7 text-white sm:px-8 sm:py-9 lg:px-12">
-        <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-5 sm:flex-row sm:gap-8">
-          <div className="text-center sm:text-left">
-            <p className="section-kicker justify-center text-[#e5c58d] sm:justify-start">EUREKA ’26 is proudly presented with</p>
-            <h2 id="title-sponsor-heading" className="mt-2 font-display text-2xl font-semibold tracking-tight text-[#f7f3ea] sm:text-3xl">Title Sponsor</h2>
+        <div className="mx-auto max-w-7xl">
+          <div className="flex flex-col items-center justify-between gap-5 sm:flex-row sm:gap-8">
+            <div className="text-center sm:text-left">
+              <p className="section-kicker justify-center text-[#e5c58d] sm:justify-start">EUREKA ’26 is proudly presented with</p>
+              <h2 id="title-sponsor-heading" className="mt-2 font-display text-2xl font-semibold tracking-tight text-[#f7f3ea] sm:text-3xl">Title Sponsor</h2>
+            </div>
+            <div className="flex min-h-[5.5rem] w-full max-w-[26rem] items-center justify-center rounded-xl bg-white px-6 py-3 shadow-[0_12px_35px_rgba(0,0,0,.24)] sm:w-[26rem]">
+              <Image
+                src="/images/sponsors/ntpc.png"
+                alt="NTPC Limited, EUREKA ’26 Title Sponsor"
+                width={1272}
+                height={681}
+                priority
+                sizes="(max-width: 640px) 80vw, 400px"
+                className="max-h-[4.25rem] w-full object-contain"
+              />
+            </div>
           </div>
-          <div className="flex min-h-[5.5rem] w-full max-w-[26rem] items-center justify-center rounded-xl bg-white px-6 py-3 shadow-[0_12px_35px_rgba(0,0,0,.24)] sm:w-[26rem]">
-            <Image
-              src="/images/sponsors/ntpc.png"
-              alt="NTPC Limited, EUREKA ’26 Title Sponsor"
-              width={1272}
-              height={681}
-              priority
-              sizes="(max-width: 640px) 80vw, 400px"
-              className="max-h-[4.25rem] w-full object-contain"
-            />
-          </div>
+          <p className="mt-4 text-center text-xs text-[#c6c5c0] sm:text-right">NTPC also sponsors Track 03 · Smart Decentralised Energy Systems</p>
         </div>
       </section>
 
@@ -141,6 +144,22 @@ export function MainExperience() {
                     {(() => { const TrackIcon = trackIcons[index]; return <span className="track-icon-frame"><TrackIcon className="track-icon" size={18} strokeWidth={1.6} aria-hidden="true" /></span>; })()}
                   </div>
                   <h3 className="mt-7 max-w-[20ch] text-xl font-semibold leading-snug tracking-[-0.025em] text-[#202522] sm:text-[1.35rem]">{track.title}</h3>
+                  {track.presentedBy && (
+                    <div className="mt-3 flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[.13em] text-[#62675f]">
+                      <span>Presented by</span>
+                      <span className="flex h-8 max-w-36 items-center rounded bg-white px-2">
+                        <Image src={track.presentedBy.logo} alt={track.presentedBy.name} width={track.presentedBy.logoWidth} height={track.presentedBy.logoHeight} sizes="144px" className="max-h-6 w-full object-contain" />
+                      </span>
+                    </div>
+                  )}
+                  {track.trackSponsor && (
+                    <div className="mt-3 inline-flex items-center gap-2 border border-[#d8d1c3] bg-white/65 px-2.5 py-1.5 text-[10px] font-semibold uppercase tracking-[.1em] text-[#62675f]">
+                      <span>Track sponsor</span>
+                      <span className="flex h-6 w-14 items-center bg-white px-1">
+                        <Image src={track.trackSponsor.logo} alt={track.trackSponsor.name} width={track.trackSponsor.logoWidth} height={track.trackSponsor.logoHeight} sizes="56px" className="max-h-5 w-full object-contain" />
+                      </span>
+                    </div>
+                  )}
                   <p className="mt-3 line-clamp-3 text-sm leading-6 text-[#686b65]">{track.description}</p>
                   <span className="mt-auto inline-flex items-center gap-2 pt-5 text-xs font-semibold uppercase tracking-[0.12em] text-[#484b46] transition-colors group-hover:text-[var(--track-accent)]">Explore track <MoveUpRight size={14} /></span>
                 </Link>

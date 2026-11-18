@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
 import { notFound } from "next/navigation";
 import {
   ArrowDown,
@@ -92,6 +93,19 @@ export default async function TrackDetailPage({ params }: TrackPageProps) {
               <h1 className="max-w-4xl font-display text-4xl font-medium leading-[1.02] tracking-[-.045em] text-[#f4f0e7] sm:text-6xl lg:text-7xl">
                 {track.title}
               </h1>
+              {(track.presentedBy || track.trackSponsor) && (() => {
+                const partner = track.presentedBy ?? track.trackSponsor!;
+                const label = track.presentedBy ? "Presented by" : "Track sponsor";
+                return (
+                  <div className="mt-5 inline-flex flex-wrap items-center gap-3 border border-white/10 bg-white/[.04] px-3 py-2.5 sm:gap-4 sm:px-4">
+                    <span className="text-[10px] font-semibold uppercase tracking-[.16em] text-[#e5c58d]">{label}</span>
+                    <span className="flex h-10 w-36 items-center justify-center rounded bg-white px-2">
+                      <Image src={partner.logo} alt={partner.name} width={partner.logoWidth} height={partner.logoHeight} sizes="144px" className="max-h-8 w-full object-contain" />
+                    </span>
+                    <span className="text-sm font-medium text-white/85">{partner.name}</span>
+                  </div>
+                );
+              })()}
               <p className="mt-6 max-w-3xl text-base leading-relaxed text-white/65 sm:text-lg">{track.description}</p>
               <div className="mt-8 flex flex-wrap gap-2">
                 {track.tags.map((tag) => (
