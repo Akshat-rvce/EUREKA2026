@@ -127,46 +127,29 @@ export function Footer() {
             <span className="border-l border-[#d4cfc2] pl-4 text-[9px] font-mono uppercase leading-relaxed tracking-[.12em] text-[#665c48]">Title<br />Sponsor</span>
           </div>
           <div className="grid grid-cols-2 gap-2 sm:max-w-3xl sm:grid-cols-4 sm:gap-3">
-            <div className="flex h-16 items-center justify-center rounded-lg bg-white px-2 sm:h-[4.5rem] sm:px-4">
-              <Image
-                src="/images/sponsors/ieee-rvce-student-branch.jpg"
-                alt="IEEE Student Branch, RV College of Engineering"
-                width={1295}
-                height={266}
-                sizes="(max-width: 640px) 30vw, 200px"
-                className="max-h-10 w-full object-contain"
-              />
+            <div className="flex min-h-24 flex-col items-center justify-start gap-2 rounded-lg border border-white/10 bg-white/[.025] p-2 text-center sm:p-3">
+              <div className="flex h-14 w-full items-center justify-center rounded bg-white px-2 sm:h-16 sm:px-3">
+                <Image src="/images/sponsors/ieee-rvce-student-branch.jpg" alt="IEEE Student Branch, RV College of Engineering" width={1295} height={266} sizes="(max-width: 640px) 40vw, 180px" className="max-h-10 w-full object-contain" />
+              </div>
+              <span className="text-[9px] font-mono uppercase leading-relaxed tracking-[.1em] text-slate-400">Student Community Partner</span>
             </div>
-            <div className="flex h-16 items-center justify-center rounded-lg bg-white px-2 sm:h-[4.5rem] sm:px-4">
-              <Image
-                src="/images/sponsors/ieee.png"
-                alt="IEEE"
-                width={738}
-                height={240}
-                sizes="(max-width: 640px) 30vw, 200px"
-                className="max-h-10 w-full object-contain"
-              />
+            <div className="flex min-h-24 flex-col items-center justify-start gap-2 rounded-lg border border-white/10 bg-white/[.025] p-2 text-center sm:p-3">
+              <div className="flex h-14 w-full items-center justify-center rounded bg-white px-2 sm:h-16 sm:px-3">
+                <Image src="/images/sponsors/ieee.png" alt="IEEE" width={738} height={240} sizes="(max-width: 640px) 40vw, 180px" className="max-h-10 w-full object-contain" />
+              </div>
+              <span className="text-[9px] font-mono uppercase leading-relaxed tracking-[.1em] text-slate-400">Technology &amp; Innovation Partner</span>
             </div>
-            <div className="flex h-16 items-center justify-center rounded-lg bg-white px-2 sm:h-[4.5rem] sm:px-4">
-              <Image
-                src="/images/sponsors/ieee-pes.gif"
-                alt="IEEE Power & Energy Society"
-                width={388}
-                height={263}
-                sizes="(max-width: 640px) 30vw, 200px"
-                unoptimized
-                className="max-h-10 w-full object-contain"
-              />
+            <div className="flex min-h-24 flex-col items-center justify-start gap-2 rounded-lg border border-white/10 bg-white/[.025] p-2 text-center sm:p-3">
+              <div className="flex h-14 w-full items-center justify-center rounded bg-white px-2 sm:h-16 sm:px-3">
+                <Image src="/images/sponsors/ieee-pes.gif" alt="IEEE Power & Energy Society" width={388} height={263} sizes="(max-width: 640px) 40vw, 180px" unoptimized className="max-h-10 w-full object-contain" />
+              </div>
+              <span className="text-[9px] font-mono uppercase leading-relaxed tracking-[.1em] text-slate-400">Energy Knowledge Partner</span>
             </div>
-            <div className="flex h-16 items-center justify-center rounded-lg bg-white px-2 sm:h-[4.5rem] sm:px-4">
-              <Image
-                src="/images/sponsors/ecokranti.png"
-                alt="Ecokranti, Track 02 presenting sponsor"
-                width={738}
-                height={189}
-                sizes="(max-width: 640px) 45vw, 180px"
-                className="max-h-10 w-full object-contain"
-              />
+            <div className="flex min-h-24 flex-col items-center justify-start gap-2 rounded-lg border border-white/10 bg-white/[.025] p-2 text-center sm:p-3">
+              <div className="flex h-14 w-full items-center justify-center rounded bg-white px-2 sm:h-16 sm:px-3">
+                <Image src="/images/sponsors/ecokranti.png" alt="Ecokranti" width={738} height={189} sizes="(max-width: 640px) 40vw, 180px" className="max-h-10 w-full object-contain" />
+              </div>
+              <span className="text-[9px] font-mono uppercase leading-relaxed tracking-[.1em] text-slate-400">Track 02 Sponsor</span>
             </div>
           </div>
         </section>
