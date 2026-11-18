@@ -102,7 +102,7 @@ export default function RootLayout({
       "National Project Expo organised by the Department of Electrical & Electronics Engineering at RV College of Engineering, Bengaluru.",
     "offers": {
       "@type": "Offer",
-      "price": "400",
+      "price": "499",
       "priceCurrency": "INR",
       "availability": "https://schema.org/InStock",
       "url": "https://forms.gle/moJpJUbAE2ZwpruL6",

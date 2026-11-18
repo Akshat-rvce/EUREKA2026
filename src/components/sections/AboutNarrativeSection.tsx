@@ -36,7 +36,7 @@ const PHASES = [
     points: [
       "Open to students from engineering colleges across India",
       "Inter-college and multidisciplinary teams permitted",
-      "Team size: 2 to 4 members",
+      "Team size: 1 to 4 members",
       "Hosted at RV College of Engineering, Bengaluru",
     ],
   },

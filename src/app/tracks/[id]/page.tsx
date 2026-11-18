@@ -93,12 +93,11 @@ export default async function TrackDetailPage({ params }: TrackPageProps) {
               <h1 className="max-w-4xl font-display text-4xl font-medium leading-[1.02] tracking-[-.045em] text-[#f4f0e7] sm:text-6xl lg:text-7xl">
                 {track.title}
               </h1>
-              {(track.presentedBy || track.trackSponsor) && (() => {
-                const partner = track.presentedBy ?? track.trackSponsor!;
-                const label = track.presentedBy ? "Presented by" : "Track sponsor";
+              {track.presentedBy && (() => {
+                const partner = track.presentedBy;
                 return (
                   <div className="mt-5 inline-flex flex-wrap items-center gap-3 border border-white/10 bg-white/[.04] px-3 py-2.5 sm:gap-4 sm:px-4">
-                    <span className="text-[10px] font-semibold uppercase tracking-[.16em] text-[#e5c58d]">{label}</span>
+                    <span className="text-[10px] font-semibold uppercase tracking-[.16em] text-[#e5c58d]">Presented by</span>
                     <span className="flex h-10 w-36 items-center justify-center rounded bg-white px-2">
                       <Image src={partner.logo} alt={partner.name} width={partner.logoWidth} height={partner.logoHeight} sizes="144px" className="max-h-8 w-full object-contain" />
                     </span>

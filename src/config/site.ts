@@ -27,9 +27,9 @@ export const SITE_CONFIG = {
     brochure: "https://drive.google.com/file/d/1P-oVfVZ25kpAti2hdI1WvvBA9e4HCFSA/view?usp=sharing",
   },
   registration: {
-    teamSize: "2 - 4 Members",
+    teamSize: "1 - 4 Members",
     eligibility: "Open to UG/PG Engineering Students from all AICTE/UGC recognized colleges across India",
-    fee: "₹400 / Team",
+    fee: "₹499 / Team",
     deadline: "November 26, 2026",
   },
   prizes: {
@@ -54,7 +54,6 @@ export interface TrackItem {
   accentColor: string;
   projectDirections: string[];
   presentedBy?: TrackPartner;
-  trackSponsor?: TrackPartner;
 }
 
 export interface TrackPartner {
@@ -124,12 +123,6 @@ export const TRACKS: TrackItem[] = [
       "Can buildings or community members share locally generated energy fairly while respecting grid and safety limits?",
       "What control, forecasting, or market design would make a decentralised energy network reliable and affordable?",
     ],
-    trackSponsor: {
-      name: "NTPC",
-      logo: "/images/sponsors/ntpc.png",
-      logoWidth: 1272,
-      logoHeight: 681,
-    },
   },
   {
     id: "track-4",
@@ -297,7 +290,7 @@ export const FAQS: FAQItem[] = [
   {
     question: "What is the team size requirement?",
     answer:
-      "Teams must consist of 2 to 4 members. One team lead should submit the registration form on behalf of the team.",
+      "Teams must consist of 1 to 4 members. One team lead should submit the registration form on behalf of the team.",
     category: "Participation",
   },
   {

@@ -40,6 +40,16 @@ export function MainExperience() {
               <span className="hidden h-1 w-1 rounded-full bg-[#9a835d] sm:block" aria-hidden="true" />
               <span className="inline-flex items-center gap-1.5"><MapPin size={14} aria-hidden="true" /> RVCE, Bengaluru</span>
             </motion.div>
+            <motion.div initial="hidden" animate="visible" variants={reveal} transition={{ delay: 0.2 }} aria-label="Registration details" className="mt-4 flex flex-wrap justify-center gap-2 lg:justify-start">
+              <span className="border border-[#d6bd83]/30 bg-white/[.04] px-3 py-2 text-left">
+                <span className="block text-[9px] font-semibold uppercase tracking-[.16em] text-[#d3bc8b]">Team size</span>
+                <span className="mt-0.5 block text-xs font-medium text-[#f2eee4]">{SITE_CONFIG.registration.teamSize}</span>
+              </span>
+              <span className="border border-[#d6bd83]/30 bg-white/[.04] px-3 py-2 text-left">
+                <span className="block text-[9px] font-semibold uppercase tracking-[.16em] text-[#d3bc8b]">Registration fee</span>
+                <span className="mt-0.5 block text-xs font-medium text-[#f2eee4]">{SITE_CONFIG.registration.fee}</span>
+              </span>
+            </motion.div>
             <motion.div initial="hidden" animate="visible" variants={reveal} transition={{ delay: 0.24 }} className="mt-7 flex flex-col justify-center gap-3 sm:flex-row lg:justify-start">
               <a href={REGISTRATION_FORM_URL} target="_blank" rel="noopener noreferrer" onClick={playClickSound} onMouseEnter={playHoverSound} className="button-primary min-h-12 justify-center">
                 Register Now <ArrowUpRight size={16} aria-hidden="true" />
@@ -50,6 +60,19 @@ export function MainExperience() {
               <button onClick={() => { playClickSound(); scrollTo("#expo-intro", { offset: -70 }); }} className="button-outline min-h-12 justify-center">
                 Discover the expo <ArrowDownRight size={16} aria-hidden="true" />
               </button>
+            </motion.div>
+            <motion.div initial="hidden" animate="visible" variants={reveal} transition={{ delay: 0.3 }} className="mt-5 flex flex-col items-center justify-center gap-2.5 sm:flex-row lg:justify-start">
+              <span className="text-[9px] font-semibold uppercase tracking-[.2em] text-[#e5c58d]">Title sponsor</span>
+              <span className="flex h-11 w-36 items-center justify-center rounded-md bg-white px-3 py-1.5 shadow-[0_8px_24px_rgba(0,0,0,.2)]">
+                <Image
+                  src="/images/sponsors/ntpc.png"
+                  alt="NTPC Limited, EUREKA ’26 Title Sponsor"
+                  width={1272}
+                  height={681}
+                  sizes="144px"
+                  className="max-h-8 w-full object-contain"
+                />
+              </span>
             </motion.div>
           </div>
 
@@ -62,29 +85,6 @@ export function MainExperience() {
         <button onClick={() => { playClickSound(); scrollTo("#expo-intro", { offset: -70 }); }} className="absolute bottom-5 left-1/2 hidden -translate-x-1/2 items-center gap-2 text-[10px] uppercase tracking-[0.22em] text-white/45 transition-colors hover:text-white sm:flex" aria-label="Scroll to event information">
           Scroll to explore <span className="h-px w-8 bg-[#b9955c]" />
         </button>
-      </section>
-
-      <section aria-labelledby="title-sponsor-heading" className="relative overflow-hidden border-y border-[#d6bd83]/20 bg-[#111718] px-5 py-7 text-white sm:px-8 sm:py-9 lg:px-12">
-        <div className="mx-auto max-w-7xl">
-          <div className="flex flex-col items-center justify-between gap-5 sm:flex-row sm:gap-8">
-            <div className="text-center sm:text-left">
-              <p className="section-kicker justify-center text-[#e5c58d] sm:justify-start">EUREKA ’26 is proudly presented with</p>
-              <h2 id="title-sponsor-heading" className="mt-2 font-display text-2xl font-semibold tracking-tight text-[#f7f3ea] sm:text-3xl">Title Sponsor</h2>
-            </div>
-            <div className="flex min-h-[5.5rem] w-full max-w-[26rem] items-center justify-center rounded-xl bg-white px-6 py-3 shadow-[0_12px_35px_rgba(0,0,0,.24)] sm:w-[26rem]">
-              <Image
-                src="/images/sponsors/ntpc.png"
-                alt="NTPC Limited, EUREKA ’26 Title Sponsor"
-                width={1272}
-                height={681}
-                priority
-                sizes="(max-width: 640px) 80vw, 400px"
-                className="max-h-[4.25rem] w-full object-contain"
-              />
-            </div>
-          </div>
-          <p className="mt-4 text-center text-xs text-[#c6c5c0] sm:text-right">NTPC also sponsors Track 03 · Smart Decentralised Energy Systems</p>
-        </div>
       </section>
 
       <section id="expo-intro" className="overview-section paper-section relative isolate px-5 py-14 sm:px-8 sm:py-20 lg:px-12 lg:py-24">
@@ -152,14 +152,6 @@ export function MainExperience() {
                       </span>
                     </div>
                   )}
-                  {track.trackSponsor && (
-                    <div className="mt-3 inline-flex items-center gap-2 border border-[#d8d1c3] bg-white/65 px-2.5 py-1.5 text-[10px] font-semibold uppercase tracking-[.1em] text-[#62675f]">
-                      <span>Track sponsor</span>
-                      <span className="flex h-6 w-14 items-center bg-white px-1">
-                        <Image src={track.trackSponsor.logo} alt={track.trackSponsor.name} width={track.trackSponsor.logoWidth} height={track.trackSponsor.logoHeight} sizes="56px" className="max-h-5 w-full object-contain" />
-                      </span>
-                    </div>
-                  )}
                   <p className="mt-3 line-clamp-3 text-sm leading-6 text-[#686b65]">{track.description}</p>
                   <span className="mt-auto inline-flex items-center gap-2 pt-5 text-xs font-semibold uppercase tracking-[0.12em] text-[#484b46] transition-colors group-hover:text-[var(--track-accent)]">Explore track <MoveUpRight size={14} /></span>
                 </Link>
@@ -173,7 +165,7 @@ export function MainExperience() {
         <div className="mx-auto grid max-w-7xl items-center gap-8 rounded-[1.75rem] bg-[#e8e3d7] p-6 sm:p-9 lg:grid-cols-[1fr_auto] lg:gap-12 lg:p-12">
           <div><p className="section-kicker">04 / Join the exhibition</p><h2 className="editorial-heading mt-3 max-w-[13ch]">Bring your project to EUREKA.</h2><p className="mt-4 max-w-xl text-sm leading-6 text-[#60635e]">{SITE_CONFIG.registration.eligibility}.</p></div>
           <div className="flex flex-col gap-3 lg:items-stretch">
-            <div className="registration-facts"><span><small>TEAM</small>2–4 members</span><span><small>FEE</small>{SITE_CONFIG.registration.fee}</span><span><small>DEADLINE</small>{SITE_CONFIG.registration.deadline}</span></div>
+            <div className="registration-facts"><span><small>TEAM</small>{SITE_CONFIG.registration.teamSize}</span><span><small>FEE</small>{SITE_CONFIG.registration.fee}</span><span><small>DEADLINE</small>{SITE_CONFIG.registration.deadline}</span></div>
             <a href={REGISTRATION_FORM_URL} target="_blank" rel="noopener noreferrer" onClick={playClickSound} onMouseEnter={playHoverSound} className="button-primary min-h-12 justify-center">Register Now <ArrowUpRight size={16} /></a>
           </div>
         </div>
