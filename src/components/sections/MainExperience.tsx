@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import type { CSSProperties } from "react";
 import { motion, type Variants } from "framer-motion";
 import { Activity, ArrowDownRight, ArrowRight, ArrowUpRight, Cpu, MapPin, MoveUpRight, SunMedium, Workflow } from "lucide-react";
@@ -58,6 +59,26 @@ export function MainExperience() {
         <button onClick={() => { playClickSound(); scrollTo("#expo-intro", { offset: -70 }); }} className="absolute bottom-5 left-1/2 hidden -translate-x-1/2 items-center gap-2 text-[10px] uppercase tracking-[0.22em] text-white/45 transition-colors hover:text-white sm:flex" aria-label="Scroll to event information">
           Scroll to explore <span className="h-px w-8 bg-[#b9955c]" />
         </button>
+      </section>
+
+      <section aria-labelledby="title-sponsor-heading" className="relative overflow-hidden border-y border-[#d6bd83]/20 bg-[#111718] px-5 py-7 text-white sm:px-8 sm:py-9 lg:px-12">
+        <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-5 sm:flex-row sm:gap-8">
+          <div className="text-center sm:text-left">
+            <p className="section-kicker justify-center text-[#e5c58d] sm:justify-start">EUREKA ’26 is proudly presented with</p>
+            <h2 id="title-sponsor-heading" className="mt-2 font-display text-2xl font-semibold tracking-tight text-[#f7f3ea] sm:text-3xl">Title Sponsor</h2>
+          </div>
+          <div className="flex min-h-[5.5rem] w-full max-w-[26rem] items-center justify-center rounded-xl bg-white px-6 py-3 shadow-[0_12px_35px_rgba(0,0,0,.24)] sm:w-[26rem]">
+            <Image
+              src="/images/sponsors/ntpc.png"
+              alt="NTPC Limited, EUREKA ’26 Title Sponsor"
+              width={1272}
+              height={681}
+              priority
+              sizes="(max-width: 640px) 80vw, 400px"
+              className="max-h-[4.25rem] w-full object-contain"
+            />
+          </div>
+        </div>
       </section>
 
       <section id="expo-intro" className="overview-section paper-section relative isolate px-5 py-14 sm:px-8 sm:py-20 lg:px-12 lg:py-24">
