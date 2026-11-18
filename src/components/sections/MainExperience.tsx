@@ -104,6 +104,17 @@ export function MainExperience() {
             />
           </div>
         </div>
+        <div className="mx-auto mt-6 flex max-w-7xl flex-col items-center justify-center gap-3 border-t border-white/10 pt-5 sm:flex-row sm:gap-6">
+          <span className="text-[10px] font-semibold uppercase tracking-[.18em] text-[#c6c5c0]">In association with</span>
+          <div className="flex items-center gap-3">
+            <span className="flex h-12 w-28 items-center justify-center rounded-md bg-white px-3 py-2">
+              <Image src="/images/sponsors/ieee.png" alt="IEEE" width={738} height={240} sizes="112px" className="max-h-8 w-full object-contain" />
+            </span>
+            <span className="flex h-12 w-28 items-center justify-center rounded-md bg-white px-3 py-1.5">
+              <Image src="/images/sponsors/ieee-pes.gif" alt="IEEE Power & Energy Society" width={388} height={263} sizes="112px" unoptimized className="max-h-9 w-full object-contain" />
+            </span>
+          </div>
+        </div>
       </section>
 
       <section id="expo-intro" className="overview-section paper-section relative isolate px-5 py-14 sm:px-8 sm:py-20 lg:px-12 lg:py-24">
