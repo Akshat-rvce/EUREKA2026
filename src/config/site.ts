@@ -24,7 +24,7 @@ export const SITE_CONFIG = {
     instagram: "https://instagram.com/eureka_rvce",
     linkedin: "https://linkedin.com/company/rvce-eee-eureka",
     github: "https://github.com/rvce-eureka",
-    brochure: "/docs/EUREKA26_Official_Brochure.pdf",
+    brochure: "https://drive.google.com/file/d/1P-oVfVZ25kpAti2hdI1WvvBA9e4HCFSA/view?usp=sharing",
   },
   registration: {
     teamSize: "2 - 4 Members",

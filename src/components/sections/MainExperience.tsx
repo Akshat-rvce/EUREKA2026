@@ -4,7 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import type { CSSProperties } from "react";
 import { motion, type Variants } from "framer-motion";
-import { Activity, ArrowDownRight, ArrowRight, ArrowUpRight, Cpu, MapPin, MoveUpRight, SunMedium, Workflow } from "lucide-react";
+import { Activity, ArrowDownRight, ArrowRight, ArrowUpRight, Cpu, FileText, MapPin, MoveUpRight, SunMedium, Workflow } from "lucide-react";
 import { EurekaLogo } from "@/components/ui/EurekaLogo";
 import { CountdownTimer } from "@/components/ui/CountdownTimer";
 import { TRACKS, SITE_CONFIG, REGISTRATION_FORM_URL } from "@/config/site";
@@ -43,6 +43,9 @@ export function MainExperience() {
             <motion.div initial="hidden" animate="visible" variants={reveal} transition={{ delay: 0.24 }} className="mt-7 flex flex-col justify-center gap-3 sm:flex-row lg:justify-start">
               <a href={REGISTRATION_FORM_URL} target="_blank" rel="noopener noreferrer" onClick={playClickSound} onMouseEnter={playHoverSound} className="button-primary min-h-12 justify-center">
                 Register Now <ArrowUpRight size={16} aria-hidden="true" />
+              </a>
+              <a href={SITE_CONFIG.socials.brochure} target="_blank" rel="noopener noreferrer" onClick={playClickSound} onMouseEnter={playHoverSound} className="button-outline min-h-12 justify-center">
+                <FileText size={16} aria-hidden="true" /> View Brochure
               </a>
               <button onClick={() => { playClickSound(); scrollTo("#expo-intro", { offset: -70 }); }} className="button-outline min-h-12 justify-center">
                 Discover the expo <ArrowDownRight size={16} aria-hidden="true" />
